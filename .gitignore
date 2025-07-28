@@ -1,0 +1,123 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# Environment
+.env
+.env.*.local
+.env.local
+.env.test.local
+.env.development.local
+
+# Logs
+logs/
+*.log
+*.log.*
+log.txt
+
+# Coverage
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Editor folders
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# Build output
+dist/
+build/
+out/
+tmp/
+temp/
+.cache/
+.cache-loader/
+.babel_cache/
+.next/
+.nuxt/
+.svelte-kit/
+.cypress_cache/
+storybook-static/
+
+# Testing
+jest/
+jest-coverage/
+__snapshots__/
+*.lcov
+
+# TypeScript
+*.tsbuildinfo
+
+# Webpack/Parcel/Vite
+*.webpack.js
+*.parcel-cache
+.parcel-cache/
+.vite/
+
+# PM2
+.pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Firebase / GCP
+.firebaserc
+.firebase/
+.firebase-debug.log
+.firestore/
+
+# Docker
+docker-compose.override.yml
+.docker/
+*.env.docker
+
+# MacOS specific
+.AppleDouble
+.LSOverride
+
+# VSCode settings
+*.code-workspace
+
+# Misc
+*.tgz
+*.orig
+*.swp
+*.swo
+*.bak
+*.tmp
+*.temp
+
+# Binaries
+*.exe
+*.out
+*.app
+*.dll
+*.so
+*.dylib
+*.bin
+
+# Other optional
+eslintcache
+stylelintcache
+.pnp/
+.pnp.js
+
+# Monorepo tools
+.turbo/
+.turborepo/
+.nx/
