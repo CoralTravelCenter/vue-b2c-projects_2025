@@ -1,6 +1,5 @@
 import {defineCustomElement} from 'vue';
 import CoralPopup from './components/CoralPopup.ce.vue';
-import css from './components/CoralPopup.scss?raw'
 
 // Регистрируем кастомный элемент
 const CoralElement = defineCustomElement(CoralPopup);
@@ -8,12 +7,12 @@ customElements.define('coral-popup', CoralElement);
 
 // Вставляем его в конец body
 document
-	.querySelector('body')
-	?.insertAdjacentHTML('beforeend', `
+    .querySelector('body')
+    ?.insertAdjacentHTML('beforeend', `
 
 <coral-popup
   auto-show
-  expires="2025-07-27"
+  expires="2025-07-31"
 >
 
   <div class="popup-visual" slot="visual">
@@ -46,4 +45,3 @@ document
   </div>
 </coral-popup>
 `);
-
