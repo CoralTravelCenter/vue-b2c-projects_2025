@@ -10,18 +10,18 @@ customElements.define('coral-popup', CoralElement);
 const CoralPopupTriggerElement = defineCustomElement(CoralPopupTrigger)
 customElements.define('coral-popup-trigger', CoralPopupTriggerElement);
 
-// Вставляем его в конец body
+
 document
     .querySelector('.js-timer-block')
     ?.insertAdjacentHTML('beforebegin', `
 <coral-popup-trigger id="coral-popup-trigger">
-    <div class="icon">%</div>
-    <span class="text">
+    <div slot="icon" class="icon">%</div>
+    <span slot="text" class="text">
         Скидка <br> до 20 000₽
     </span>
+</div>
 </coral-popup-trigger>
-<coral-popup 
-trigger="#coral-popup-trigger"
+<coral-popup
 expires="2025-07-31"
 >
      <img
@@ -56,14 +56,8 @@ expires="2025-07-31"
 </coral-popup>
 `);
 
-// const triger = document.querySelector('#coral-popup-trigger');
-// let placeToInsert: HTMLElement | null | undefined = null;
-// if (triger) {
-//     mediaMatcher(992, (isMobile: Boolean) => {
-//         !isMobile
-//             ? placeToInsert = document?.querySelector('[href*="/where-to-buy"]')?.parentElement?.parentElement
-//             : placeToInsert = document?.querySelector('.right-group')
-//
-//         placeToInsert.append(triger)
-//     })
-// }
+const placeToInsert = document?.querySelector('.header-client-side-desktop > div > div > div')
+const popupTrigger = document?.querySelector('coral-popup-trigger')
+if (placeToInsert && popupTrigger) {
+    placeToInsert?.append(popupTrigger)
+}

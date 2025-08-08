@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
 import {usePopupTriggers} from '@/composables/usePopupTriggers'
 
 const props = defineProps<{
@@ -46,6 +46,10 @@ const {triggerInternal} = usePopupTriggers({
 defineExpose({
 	open: triggerInternal,
 	close: closePopup
+})
+
+onMounted(() => {
+	document.addEventListener('open', show)
 })
 </script>
 

@@ -1,8 +1,23 @@
+<script lang="ts">
+import {onMounted, ref} from 'vue'
+
+const btn = ref(null)
+
+onMounted(() => {
+	const host = btn.value?.getRootNode()?.host
+	btn?.value.addEventListener('click', () => {
+		host.dispatchEvent(
+				new CustomEvent('open', {bubbles: true, composed: true})
+		)
+	})
+})
+</script>
+
 <template>
-	<Teleport to=".header-client-side-desktop > div > div > div">
-		<button name="trigger" class="popup-trigger">
-		</button>
-	</Teleport>
+	<button class="popup-trigger" ref="btn">
+		<slot name="icon"></slot>
+		<slot name="text"></slot>
+	</button>
 </template>
 
 <style scoped>
