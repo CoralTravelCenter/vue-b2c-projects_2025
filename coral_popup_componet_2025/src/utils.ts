@@ -14,3 +14,11 @@ export async function hostReactAppReady(
         waiter();
     });
 }
+
+export function mediaMatcher(size, callback) {
+    const mobileWidthMediaQuery = window.matchMedia(`(max-width: ${size}px)`);
+    callback(mobileWidthMediaQuery.matches);
+    mobileWidthMediaQuery.addEventListener("change", (e) =>
+        callback(e.matches),
+    );
+}

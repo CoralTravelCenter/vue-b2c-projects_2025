@@ -14,51 +14,9 @@ customElements.define('coral-popup-trigger', CoralPopupTriggerElement);
 document
     .querySelector('.js-timer-block')
     ?.insertAdjacentHTML('beforebegin', `
-
-<!--<style>-->
-<!--#coral-popup-trigger {-->
-<!--    font-family: inherit;-->
-<!--    display: flex;-->
-<!--    align-items: center;-->
-<!--    justify-content: space-between;-->
-<!--    gap: 8px;-->
-<!--    background: transparent;-->
-<!--    padding: 7px 16px 7px 8px;-->
-<!--    border: 1px solid rgba(0, 0, 0, 0.15);-->
-<!--    border-radius: 40px;-->
-<!--    width: fit-content;-->
-<!--    cursor: pointer;-->
-<!--    flex-shrink: 0;-->
-<!--    transition: border-color 0.3s ease;-->
-<!--}-->
-
-<!--#coral-popup-trigger:hover {-->
-<!--    border-color: #66d1ff;-->
-<!--}-->
-
-<!--#coral-popup-trigger .icon {-->
-<!--    width: 32px;-->
-<!--    height: 32px;-->
-<!--    display: flex;-->
-<!--    align-items: center;-->
-<!--    justify-content: center;-->
-<!--    background: #e84f0e;-->
-<!--    border-radius: 100%;-->
-<!--    color: #ffffff;-->
-<!--}-->
-
-<!--#coral-popup-trigger .text > p {-->
-<!--    margin: 0;-->
-<!--    line-height: 1;-->
-<!--    font-weight: 600;-->
-<!--    font-size: 12px;-->
-<!--    color: #000;-->
-<!--    text-align: left;-->
-<!--}-->
-<!--</style>-->
 <coral-popup-trigger id="coral-popup-trigger">
-    <div slot="icon" class="icon">%</div>
-    <span slot="text" class="text">
+    <div class="icon">%</div>
+    <span class="text">
         Скидка <br> до 20 000₽
     </span>
 </coral-popup-trigger>
@@ -97,3 +55,15 @@ expires="2025-07-31"
     </ul>
 </coral-popup>
 `);
+
+// const triger = document.querySelector('#coral-popup-trigger');
+// let placeToInsert: HTMLElement | null | undefined = null;
+// if (triger) {
+//     mediaMatcher(992, (isMobile: Boolean) => {
+//         !isMobile
+//             ? placeToInsert = document?.querySelector('[href*="/where-to-buy"]')?.parentElement?.parentElement
+//             : placeToInsert = document?.querySelector('.right-group')
+//
+//         placeToInsert.append(triger)
+//     })
+// }
