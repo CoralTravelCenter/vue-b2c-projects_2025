@@ -1,23 +1,24 @@
 <script lang="ts">
-import {onMounted, ref} from 'vue'
+import {onMounted} from "vue";
 
-const btn = ref(null)
 
 onMounted(() => {
-	const host = btn.value?.getRootNode()?.host
-	btn?.value.addEventListener('click', () => {
-		host.dispatchEvent(
-				new CustomEvent('open', {bubbles: true, composed: true})
-		)
-	})
+	const customEv = new CustomEvent('open-popup', {
+		bubbles: true,
+		composed: true,
+	});
+	console.log(customEv);
+	document.dispatchEvent(customEv)
 })
 </script>
 
 <template>
-	<button class="popup-trigger" ref="btn">
-		<slot name="icon"></slot>
-		<slot name="text"></slot>
-	</button>
+	<Teleport to=".header-client-side-desktop > div > div > div">
+		<button class="popup-trigger">
+			<slot name="icon"></slot>
+			<slot name="text"></slot>
+		</button>
+	</Teleport>
 </template>
 
 <style scoped>
@@ -42,5 +43,3 @@ onMounted(() => {
 	}
 }
 </style>
-<script setup lang="ts">
-</script>

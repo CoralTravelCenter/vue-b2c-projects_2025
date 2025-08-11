@@ -4,7 +4,6 @@ import CoralPopupTrigger from './components/CoralPopupTrigger.ce.vue';
 import {hostReactAppReady} from "@/utils";
 
 await hostReactAppReady()
-// Регистрируем кастомный элемент
 const CoralElement = defineCustomElement(CoralPopup);
 customElements.define('coral-popup', CoralElement);
 const CoralPopupTriggerElement = defineCustomElement(CoralPopupTrigger)
@@ -22,7 +21,8 @@ document
 </div>
 </coral-popup-trigger>
 <coral-popup
-expires="2025-07-31"
+expires="2025-08-15"
+auto-show="true"
 >
      <img
         slot="visual"
@@ -55,9 +55,3 @@ expires="2025-07-31"
     </ul>
 </coral-popup>
 `);
-
-const placeToInsert = document?.querySelector('.header-client-side-desktop > div > div > div')
-const popupTrigger = document?.querySelector('coral-popup-trigger')
-if (placeToInsert && popupTrigger) {
-    placeToInsert?.append(popupTrigger)
-}

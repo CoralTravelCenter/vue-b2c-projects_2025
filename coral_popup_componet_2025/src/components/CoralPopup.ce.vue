@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
-import {usePopupTriggers} from '@/composables/usePopupTriggers'
+import {nextTick, onMounted, ref} from 'vue'
 
 const props = defineProps<{
-	autoShow?: number;
+	autoShow?: boolean;
 	expires?: string;
 	redirect?: string;
 	trigger?: string;
 }>()
 
-const visible = ref(false)
+const mounted = ref(false) // показывает/скрывает overlay (v-if)
+const visible = ref(false) // показывает/скрывает сам диалог (v-if)
 
 function isExpired(): boolean {
 	if (!props.expires) return false
@@ -18,13 +18,20 @@ function isExpired(): boolean {
 	return now.getTime() > date.getTime()
 }
 
-function show() {
-	visible.value = true
-	document.body.style.overflow = 'hidden'
+function showPopup() {
+	mounted.value = true                  // смонтировать overlay
+	nextTick(() => {                      // затем плавно показать диалог
+		visible.value = true
+		document.body.style.overflow = 'hidden'
+	})
 }
 
 function closePopup() {
-	visible.value = false
+	visible.value = false                 // запуск leave-анимации диалога
+}
+
+function afterDialogLeave() {
+	mounted.value = false                 // убрать overlay после диалога
 	document.body.style.overflow = ''
 }
 
@@ -36,34 +43,24 @@ function handleButtonClick() {
 	}
 }
 
-const {triggerInternal} = usePopupTriggers({
-	autoShow: props.autoShow,
-	trigger: props.trigger,
-	isExpired,
-	show
-})
-
-defineExpose({
-	open: triggerInternal,
-	close: closePopup
-})
-
 onMounted(() => {
-	document.addEventListener('open', show)
+	setTimeout(() => {
+		if (!isExpired() && props.autoShow) showPopup()
+	}, 2000)
 })
 </script>
 
 <template>
 	<div
 			class="popup-overlay"
-			v-show="visible"
+			v-if="mounted"
 			:data-state="visible ? 'open' : 'closed'"
 			@click.self="closePopup"
 	>
 		<div class="popup-backdrop" aria-hidden="true"/>
 
-		<transition name="dialog-fade">
-			<div class="popup-dialog" v-show="visible">
+		<transition name="dialog-fade" @after-leave="afterDialogLeave">
+			<div class="popup-dialog" v-if="visible">
 				<button class="popup-close" @click="closePopup">
 					<svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<g stroke-width="0"/>
@@ -93,7 +90,7 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-@import "CoralPopup.scss";
+@import "./CoralPopup.scss";
 
 *, *::before, *::after {
 	box-sizing: border-box;
