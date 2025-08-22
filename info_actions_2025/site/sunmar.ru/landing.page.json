@@ -1,0 +1,8 @@
+{
+  "env": {
+    "brand": "sunmar-next",
+    "cmsWidgetContainer": "<div>{{ widget_markup }}</div>",
+    "cdnAssetsURL": "//b2ccdn.sunmar.ru/content/landing-pages/info-actions-2025"
+  },
+  "sections": []
+}
