@@ -5,7 +5,13 @@ import * as path from 'node:path';
 
 export default defineConfig({
     plugins: [
-        vue(),
+        vue({
+            template: {
+                compilerOptions: {
+                    isCustomElement: (tag) => tag.includes('-')
+                }
+            }
+        }),
         monkey({
             entry: 'src/main.ts',
             userscript: {

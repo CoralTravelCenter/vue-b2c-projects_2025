@@ -1,24 +1,18 @@
-<script lang="ts">
-import {onMounted} from "vue";
-
-
-onMounted(() => {
+<script setup lang="ts">
+function createEvt() {
 	const customEv = new CustomEvent('open-popup', {
 		bubbles: true,
 		composed: true,
 	});
-	console.log(customEv);
 	document.dispatchEvent(customEv)
-})
+}
 </script>
 
 <template>
-	<Teleport to=".header-client-side-desktop > div > div > div">
-		<button class="popup-trigger">
-			<slot name="icon"></slot>
-			<slot name="text"></slot>
-		</button>
-	</Teleport>
+	<button class="popup-trigger" @click="createEvt">
+		<slot name="icon"></slot>
+		<slot name="text"></slot>
+	</button>
 </template>
 
 <style scoped>

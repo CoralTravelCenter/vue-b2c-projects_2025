@@ -2,7 +2,7 @@
 import {nextTick, onMounted, ref} from 'vue'
 
 const props = defineProps<{
-	autoShow?: boolean;
+	autoShow?: string;
 	expires?: string;
 	redirect?: string;
 	trigger?: string;
@@ -14,7 +14,7 @@ const visible = ref(false) // показывает/скрывает сам ди�
 function isExpired(): boolean {
 	if (!props.expires) return false
 	const now = new Date()
-	const date = new Date(`${props.expires}T23:59:59`)
+	const date = new Date(`${props.expires}`)
 	return now.getTime() > date.getTime()
 }
 
@@ -47,46 +47,52 @@ onMounted(() => {
 	setTimeout(() => {
 		if (!isExpired() && props.autoShow) showPopup()
 	}, 2000)
+
+	document.addEventListener('open-popup', () => {
+		if (!isExpired() && props.autoShow) showPopup()
+	})
 })
 </script>
 
 <template>
-	<div
-			class="popup-overlay"
-			v-if="mounted"
-			:data-state="visible ? 'open' : 'closed'"
-			@click.self="closePopup"
-	>
-		<div class="popup-backdrop" aria-hidden="true"/>
+	<teleport to="body">
+		<div
+				class="popup-overlay"
+				v-if="mounted"
+				:data-state="visible ? 'open' : 'closed'"
+				@click.self="closePopup"
+		>
+			<div class="popup-backdrop" aria-hidden="true"/>
 
-		<transition name="dialog-fade" @after-leave="afterDialogLeave">
-			<div class="popup-dialog" v-if="visible">
-				<button class="popup-close" @click="closePopup">
-					<svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<g stroke-width="0"/>
-						<g stroke-linecap="round" stroke-linejoin="round"/>
-						<path d="m16 8-8 8m0-8 8 8" stroke="#000" stroke-width="1.5" stroke-linecap="round"
-									stroke-linejoin="round"/>
-					</svg>
-				</button>
+			<transition name="dialog-fade" @after-leave="afterDialogLeave">
+				<div class="popup-dialog" v-if="visible">
+					<button class="popup-close" @click="closePopup">
+						<svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<g stroke-width="0"/>
+							<g stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="m16 8-8 8m0-8 8 8" stroke="#000" stroke-width="1.5" stroke-linecap="round"
+										stroke-linejoin="round"/>
+						</svg>
+					</button>
 
-				<!-- Фиксированная структура с именованными слотами -->
-				<div class="popup-visual">
-					<slot name="visual"/>
-					<slot name="ligal"/>
+					<!-- Фиксированная структура с именованными слотами -->
+					<div class="popup-visual">
+						<slot name="visual"/>
+						<slot name="ligal"/>
+					</div>
+
+					<div class="popup-content">
+						<slot name="title"/>
+						<slot name="subtitle"/>
+						<slot name="button" @click="handleButtonClick"/>
+						<slot name="list"/>
+						<slot name="footnote"/>
+						<slot name="disclaimers"/>
+					</div>
 				</div>
-
-				<div class="popup-content">
-					<slot name="title"/>
-					<slot name="subtitle"/>
-					<slot name="button" @click="handleButtonClick"/>
-					<slot name="list"/>
-					<slot name="footnote"/>
-					<slot name="disclaimers"/>
-				</div>
-			</div>
-		</transition>
-	</div>
+			</transition>
+		</div>
+	</teleport>
 </template>
 
 <style scoped lang="scss">

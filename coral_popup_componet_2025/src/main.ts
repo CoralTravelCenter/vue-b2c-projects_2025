@@ -3,16 +3,30 @@ import CoralPopup from './components/CoralPopup.ce.vue';
 import CoralPopupTrigger from './components/CoralPopupTrigger.ce.vue';
 import {hostReactAppReady} from "@/utils";
 
+function generateRandomId(length = 12) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let randomId = '';
+    for (let i = 0; i < length; i++) {
+        randomId += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return randomId;
+}
+
+function insertOnce(target: HTMLElement, position: InsertPosition, html: string, randomId: string) {
+    const BODY = document.body;
+    if (!BODY.querySelector(`[data-inserted="${randomId}"]`)) {
+        target.insertAdjacentHTML(position, html);
+        BODY.setAttribute('data-inserted', randomId);
+    }
+}
+
 await hostReactAppReady()
 const CoralElement = defineCustomElement(CoralPopup);
 customElements.define('coral-popup', CoralElement);
 const CoralPopupTriggerElement = defineCustomElement(CoralPopupTrigger)
 customElements.define('coral-popup-trigger', CoralPopupTriggerElement);
 
-
-document
-    .querySelector('.js-timer-block')
-    ?.insertAdjacentHTML('beforebegin', `
+const html = `
 <coral-popup-trigger id="coral-popup-trigger">
     <div slot="icon" class="icon">%</div>
     <span slot="text" class="text">
@@ -21,7 +35,7 @@ document
 </div>
 </coral-popup-trigger>
 <coral-popup
-expires="2025-08-15"
+expires="2025-09-15"
 auto-show="true"
 >
      <img
@@ -39,8 +53,9 @@ auto-show="true"
     <p slot="subtitle">Еще есть половина лета, чтобы отдохнуть на море с выгодой</p>
     <button slot="button" class="popup-btn">Продолжить бронирование</button>
     <ul class="popup-list" slot="list">
-      <li>Промокод: <span class="promo" style="color: #0072ce;
-  font-weight: bold;">ЖАРА</span></li>
+      <li>Промокод: 
+      <span class="promo" style="color: #0072ce; font-weight: 700;">ЖАРА</span>
+      </li>
       <li>Скидка: <strong>до 20 000 ₽</strong></li>
       <li>Даты акции: <strong>18.07.2025 – 21.07.2025</strong></li>
       <li>Даты начала отдыха: <strong>июль – сентябрь 2025</strong></li>
@@ -54,4 +69,11 @@ auto-show="true"
       <li>**Акция распространяется только на новые неоплаченные бронирования пакетных туров или отелей на сайте coral.ru. Она не суммируется с другими предложениями Coral Travel и программой лояльности CoralBonus и не распространяется на GDS билеты в составе пакетного тура.</li>
     </ul>
 </coral-popup>
-`);
+`;
+
+insertOnce(
+    document?.querySelector('section.benefits'),
+    'beforebegin',
+    html,
+    generateRandomId()
+)
