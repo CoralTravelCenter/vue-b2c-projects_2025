@@ -1,9 +1,10 @@
 <script setup>
 import {CopyOutlined} from '@ant-design/icons-vue'
-import {useClipboard, useMediaQuery} from '@vueuse/core'
+import {useMediaQuery} from '@vueuse/core'
+import {ref} from "vue";
 
 const {
-	visual, name, description, url, promo_end_text, erid,
+	visual, name, description, url, promo_end_text, erid, entry_point
 } = defineProps({
 	visual: String,
 	name: String,
@@ -11,15 +12,14 @@ const {
 	url: String,
 	promo_end_text: String,
 	erid: String,
+	entry_point: String,
 })
 
-const {copy, copied, isSupported} = useClipboard()
 const isMobile = useMediaQuery('(hover: none), (pointer: coarse)')
+const copied = ref(false);
 
-// опционально: helper для клика
-function onCopy() {
-	if (!isSupported) return
-	copy(erid)
+function onRedirect() {
+	window.open(url.value, '_blank');
 }
 </script>
 
@@ -36,9 +36,12 @@ function onCopy() {
 					<span class="ligal">ООО "Центрбронь" erid:</span>&nbsp;
 					<span class="erid">{{ erid }}</span>
 				</div>
-
-				<!-- .stop чтобы клик по кнопке не закрывал тултип на мобиле (trigger='click') -->
-				<button class="copy" @click.stop="onCopy" :disabled="!isSupported" aria-label="Скопировать erid">
+				<button
+						class="copy"
+						aria-label="Скопировать erid"
+						v-clipboard="erid"
+						@clipboard:success="copied = true"
+				>
 					<CopyOutlined :style="{ color: copied ? '#52c41a' : '#535353'}"/>
 				</button>
 			</template>
@@ -54,15 +57,30 @@ function onCopy() {
 			<h5 class="promo-card__title" v-html="name"></h5>
 			<div class="promo-card__time">
         <span class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+          <svg class="coral-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
+							 fill="none">
             <circle cx="11" cy="11" r="10" stroke="#535353" stroke-linejoin="round"/>
             <path d="M11 4V11H16" stroke="#535353" stroke-linejoin="round"/>
           </svg>
+					<svg class="sunmar-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+							 fill="none">
+  <circle cx="12" cy="12" r="9" fill="#2E3465" fill-opacity="0.2" stroke="#2E3465" stroke-width="1.5"
+					stroke-linejoin="round"/>
+  <path d="M12 5.69995V12H16.5" stroke="#2E3465" stroke-width="1.5" stroke-linejoin="round"/>
+</svg>
         </span>
-				{{ promo_end_text }}
+				<span class="time-text">{{ promo_end_text }}</span>
 			</div>
 			<p class="promo-card__description" v-html="description"></p>
-			<a :href="url" target="_blank" class="promo-card__link prime-btn">Подробнее</a>
+			<a class="promo-card__link prime-btn" v-if="!entry_point" :href="url" target="_blank">Подробнее</a>
+			<button
+					v-else
+					v-entry="entry_point"
+					@redirect="onRedirect"
+					class="promo-card__link prime-btn"
+			>
+				Подробнее
+			</button>
 		</div>
 	</article>
 </template>
@@ -77,6 +95,13 @@ function onCopy() {
 
 	&__visual {
 		height: 220px;
+
+		img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
 	}
 
 	&__content {
@@ -94,6 +119,7 @@ function onCopy() {
 	&__description {
 		margin-top: auto !important;
 		margin-bottom: 16px !important;
+		font-weight: 400;
 	}
 
 	&__time {
@@ -102,6 +128,7 @@ function onCopy() {
 		align-items: center;
 		gap: 8px;
 		font-size: 16px;
+		font-weight: 400;
 
 		.icon {
 			width: 22px;
@@ -111,6 +138,62 @@ function onCopy() {
 
 	&__link {
 		width: fit-content;
+	}
+
+	.coral-icon {
+		display: block;
+	}
+
+	.sunmar-icon {
+		display: none;
+	}
+}
+
+.promo-card.sunmar {
+	border-radius: 16px;
+
+	.promo-card__content {
+		background: var(--Base-color_Base_Light_Gray, #F5F5F8);
+		padding: 24px;
+	}
+
+	.promo-card__title {
+		font-size: 28px;
+		text-align: center;
+		margin-bottom: 24px !important;
+		order: 1;
+	}
+
+	.promo-card__description {
+		order: 2;
+		text-align: center;
+	}
+
+	.promo-card__time {
+		order: 3;
+		justify-content: center;
+		margin-bottom: 20px !important;
+	}
+
+	.promo-card__link {
+		order: 4;
+		margin: 0 auto;
+		border-radius: 40px;
+		font-weight: 600;
+		padding-inline: 32px;
+		background: var(--gradient_Primary, linear-gradient(245deg, var(--Gradient-color_Gradinet_Primary_Second, #D8242A) 15.84%, var(--Gradient-color_Gradient_Primary_First, #E7317D) 84.16%));
+	}
+
+	.time-text {
+		color: #2E3465;
+	}
+
+	.coral-icon {
+		display: none;
+	}
+
+	.sunmar-icon {
+		display: block;
 	}
 }
 
@@ -129,7 +212,6 @@ function onCopy() {
 	height: auto;
 	line-height: 20px;
 }
-
 
 .content {
 	padding: 8px;
@@ -159,5 +241,4 @@ function onCopy() {
 		filter: brightness(90%);
 	}
 }
-
 </style>

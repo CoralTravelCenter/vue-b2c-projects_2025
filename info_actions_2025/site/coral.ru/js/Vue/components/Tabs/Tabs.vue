@@ -59,6 +59,7 @@ function selectFilter(filter) {
 		text-align: center;
 		cursor: pointer;
 		background: #fff;
+		line-height: 1;
 		transition: all 300ms ease;
 
 		@media (min-width: 1280px) {
@@ -69,6 +70,23 @@ function selectFilter(filter) {
 	&__item.js-active {
 		background: #0093D0;
 		color: #FFFFFF;
+	}
+}
+
+.tabs-navigation.sunmar {
+
+	.tabs-navigation__list {
+		background: #F5F5F8;
+	}
+
+	.tabs-navigation__item {
+		background: #F5F5F8;
+		padding: 16px 30px;
+		font-weight: 600;
+	}
+
+	.tabs-navigation__item.js-active {
+		background: #061A3E;
 	}
 }
 </style>

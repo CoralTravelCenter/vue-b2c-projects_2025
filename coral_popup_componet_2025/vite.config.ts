@@ -6,6 +6,7 @@ import * as path from 'node:path';
 export default defineConfig({
     plugins: [
         vue({
+            customElement: true,
             template: {
                 compilerOptions: {
                     isCustomElement: (tag) => tag.includes('-')

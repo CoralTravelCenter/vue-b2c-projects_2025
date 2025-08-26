@@ -27,26 +27,27 @@ const filteredPromotions = computed(() => {
 })
 
 const params = useUrlSearchParams('history')
-const eridToShow = computed(() =>
-		params.mw === 'true'
-)
+const domen = location.host.includes('coral')
+const isApplication = computed(() => params.mw === 'true')
 </script>
 
 <template>
-	<Tabs :filters="filters" v-model="currentFilter"/>
+	<Tabs :filters="filters" v-model="currentFilter" :class="domen ? 'coral' : 'sunmar'"/>
 	<div class="cards-container" :key="currentFilter">
 		<Card
+				:class="domen ? 'coral' : 'sunmar'"
 				v-for="promotion in filteredPromotions"
-				v-ym-coralbonus="promotion.filter === 'Акции CoralBonus' ? promotion : null"
 				:key="promotion.name"
-				:data-special="promotion.special ? 'true' : null"
 				:data-filter="promotion.filter"
 				:visual="promotion.visual"
 				:name="promotion.name"
 				:description="promotion.description"
 				:url="promotion.url"
 				:promo_end_text="promotion.promo_end_text"
-				:erid="eridToShow ? promotion.app_erid : promotion.erid"
+				:erid="isApplication ? promotion.app_erid : promotion.erid"
+				:entry_point="promotion.entry_point"
+				v-show="!(isApplication && promotion.name.includes('SunmarBonus'))"
+				v-bonus="promotion.filter.includes('Bonus') && promotion.name"
 		/>
 	</div>
 </template>
@@ -64,6 +65,12 @@ const eridToShow = computed(() =>
 
 	@media (min-width: 1280px) {
 		@include mixins.flex-grid(4, 24px, start);
+	}
+}
+
+.cards-container:has(.sunmar) {
+	@media (min-width: 1280px) {
+		@include mixins.flex-grid(3, 24px, start);
 	}
 }
 </style>

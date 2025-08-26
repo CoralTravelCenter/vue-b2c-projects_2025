@@ -48,8 +48,9 @@ onMounted(() => {
 		if (!isExpired() && props.autoShow) showPopup()
 	}, 2000)
 
-	document.addEventListener('open-popup', () => {
-		if (!isExpired() && props.autoShow) showPopup()
+	document.addEventListener('coral:open-popup', (e) => {
+		console.log('Поймано событие', e.detail) // { source: 'trigger' }
+		// здесь вызвать showPopup()
 	})
 })
 </script>
@@ -61,6 +62,7 @@ onMounted(() => {
 				v-if="mounted"
 				:data-state="visible ? 'open' : 'closed'"
 				@click.self="closePopup"
+				@some-event="showPopup"
 		>
 			<div class="popup-backdrop" aria-hidden="true"/>
 
@@ -95,101 +97,6 @@ onMounted(() => {
 	</teleport>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 @import "./CoralPopup.scss";
-
-*, *::before, *::after {
-	box-sizing: border-box;
-}
-
-.popup-overlay {
-	position: fixed;
-	inset: 0;
-	z-index: 1000;
-	padding: 40px 24px;
-	display: flex;
-	align-items: start;
-	justify-content: center;
-	overflow-y: scroll;
-}
-
-.popup-dialog {
-	background: #fff;
-	position: relative;
-	border-radius: 20px;
-	max-width: 374px;
-	width: 100%;
-	font-size: 16px;
-
-	@media (max-width: 768px) {
-		font-size: 14px;
-	}
-}
-
-.popup-visual {
-	position: relative;
-}
-
-.popup-content {
-	padding: 14px 24px;
-}
-
-/* затемнение */
-.popup-backdrop {
-	position: fixed;
-	inset: 0;
-	background: rgba(0, 0, 0, 0.5);
-	z-index: -1;
-	animation: fadeInBackdrop 0.3s ease forwards;
-	pointer-events: none;
-}
-
-.popup-close {
-	position: absolute;
-	width: 3em;
-	height: 3em;
-	background: #fff;
-	border-radius: 100%;
-	z-index: 5;
-	border: none;
-	top: -1.5em;
-	right: -1.5em;
-	cursor: pointer;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 0;
-}
-
-.popup-close svg {
-	width: 20px;
-	height: 20px;
-}
-
-@keyframes fadeInBackdrop {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
-}
-
-/* анимация попапа */
-.dialog-fade-enter-active,
-.dialog-fade-leave-active {
-	transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.dialog-fade-enter-from,
-.dialog-fade-leave-to {
-	opacity: 0;
-	transform: scale(0.95);
-}
-
-.dialog-fade-enter-to,
-.dialog-fade-leave-from {
-	opacity: 1;
-	transform: scale(1);
-}
 </style>

@@ -20,14 +20,15 @@ function insertOnce(target: HTMLElement, position: InsertPosition, html: string,
     }
 }
 
-await hostReactAppReady()
-const CoralElement = defineCustomElement(CoralPopup);
-customElements.define('coral-popup', CoralElement);
-const CoralPopupTriggerElement = defineCustomElement(CoralPopupTrigger)
-customElements.define('coral-popup-trigger', CoralPopupTriggerElement);
+(async () => {
+    await hostReactAppReady()
+    const CoralElement = defineCustomElement(CoralPopup);
+    customElements.define('coral-popup', CoralElement);
+    const CoralPopupTriggerElement = defineCustomElement(CoralPopupTrigger)
+    customElements.define('coral-popup-trigger', CoralPopupTriggerElement);
 
-const html = `
-<coral-popup-trigger id="coral-popup-trigger">
+    const html = `
+<coral-popup-trigger>
     <div slot="icon" class="icon">%</div>
     <span slot="text" class="text">
         Скидка <br> до 20 000₽
@@ -71,9 +72,12 @@ auto-show="true"
 </coral-popup>
 `;
 
-insertOnce(
-    document?.querySelector('section.benefits'),
-    'beforebegin',
-    html,
-    generateRandomId()
-)
+    insertOnce(
+        document?.querySelector('section.benefits'),
+        'beforebegin',
+        html,
+        generateRandomId()
+    )
+
+    document.querySelector('.header-client-side-desktop > div > div > div')?.append(document.body.querySelector('coral-popup-trigger'))
+})()

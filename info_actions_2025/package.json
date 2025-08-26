@@ -7,6 +7,8 @@
     "@ant-design/icons-vue": "^7.0.1",
     "@vueuse/core": "^13.7.0",
     "ant-design-vue": "^4.2.6",
-    "dayjs": "^1.11.13"
+    "copy-to-clipboard": "^3.3.3",
+    "dayjs": "^1.11.13",
+    "vue-clipboard": "^0.0.1"
   }
 }

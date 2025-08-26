@@ -1,6 +1,6 @@
 window._promotion_settings = [
   {
-    toggle: "#popup-trigger",
+    toggle: "",
     filter: "Другие акции",
     name: "Новый год наоборот",
     visual: "https://b2ccdn.coral.ru/content/img/Promo_page_Coral_684x364_NY.webp",
@@ -10,7 +10,7 @@ window._promotion_settings = [
     app_erid: "09987",
     promo_end_text: "до 13 апреля 2028 г.",
     promo_end: "2028-07-13",
-    special: true
+    entry_point: "novy-gog"
   },
   {
     toggle: "",
