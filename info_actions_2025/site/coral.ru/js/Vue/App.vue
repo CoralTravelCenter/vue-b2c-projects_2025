@@ -5,53 +5,82 @@ import Card from "./components/Card/Card.vue";
 import {computed, ref} from "vue";
 import {useUrlSearchParams} from "@vueuse/core";
 
-const currentFilter = ref('Все акции')
+const currentFilter = ref("Все акции");
 
-const promotionsArr = ref(window._promotion_settings ?? [])
+const promotionsArr = ref(window._promotion_settings ?? []);
 
 // только свежие акции
 const freshOffers = computed(() =>
 		promotionsArr.value.filter(o => filterFreshOffers(o))
-)
+);
 
-// категории: "Все акции" + уникальные фильтры из freshOffers
+/**
+ * Нормализуем поле filter:
+ * - принимаем строку "A, B" или массив ["A","B"]
+ * - триммим, убираем пустые, дедуплицируем
+ * - сохраняем исходные поля промо
+ */
+const offersNormalized = computed(() =>
+		freshOffers.value.map(p => {
+			const raw = p.filter ?? "";
+			const arr = Array.isArray(raw)
+					? raw
+					: String(raw)
+							.split(",")
+							.map(s => s.trim())
+							.filter(Boolean);
+
+			const filtersArr = [...new Set(arr)]; // дедуп
+
+			return {...p, filtersArr};
+		})
+);
+
+// список табов
 const filters = computed(() => {
-	const names = freshOffers.value.map(p => p.filter).filter(Boolean)
-	return ['Все акции', ...new Set(names)]
-})
+	const set = new Set();
+	offersNormalized.value.forEach(p => p.filtersArr.forEach(f => set.add(f)));
+	return ["Все акции", ...set];
+});
 
-// карточки для отображения
+// фильтрация карточек
 const filteredPromotions = computed(() => {
-	if (currentFilter.value === 'Все акции') return freshOffers.value
-	return freshOffers.value.filter(p => p.filter === currentFilter.value)
-})
+	if (currentFilter.value === "Все акции") return offersNormalized.value;
+	return offersNormalized.value.filter(p =>
+			p.filtersArr.includes(currentFilter.value)
+	);
+});
 
-const params = useUrlSearchParams('history')
-const domen = location.host.includes('coral')
-const isApplication = computed(() => params.mw === 'true')
+const params = useUrlSearchParams("history");
+const domen = location.host.includes("coral");
+const isApplication = computed(() => params.mw === "true");
+
+/** Хелпер: является ли акция Bonus-типа */
+const isBonus = p => p.filtersArr.some(f => /bonus/i.test(f));
 </script>
 
 <template>
 	<Tabs :filters="filters" v-model="currentFilter" :class="domen ? 'coral' : 'sunmar'"/>
+
 	<div class="cards-container" :key="currentFilter">
 		<Card
-				:class="domen ? 'coral' : 'sunmar'"
 				v-for="promotion in filteredPromotions"
 				:key="promotion.name"
-				:data-filter="promotion.filter"
+				:class="domen ? 'coral' : 'sunmar'"
+				:data-filter="promotion.filtersArr.join(', ')"
 				:visual="promotion.visual"
 				:name="promotion.name"
 				:description="promotion.description"
 				:url="promotion.url"
 				:promo_end_text="promotion.promo_end_text"
+				:ligal="promotion.ligal"
 				:erid="isApplication ? promotion.app_erid : promotion.erid"
 				:entry_point="promotion.entry_point"
 				v-show="!(isApplication && promotion.name.includes('SunmarBonus'))"
-				v-bonus="promotion.filter.includes('Bonus') && promotion.name"
+				v-bonus="isBonus(promotion) && promotion.name"
 		/>
 	</div>
 </template>
-
 
 <style scoped lang="scss">
 @use '../../../common/css/mixins';

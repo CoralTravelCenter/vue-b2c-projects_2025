@@ -1,10 +1,17 @@
 <script setup>
 import {CopyOutlined} from '@ant-design/icons-vue'
 import {useMediaQuery} from '@vueuse/core'
-import {ref} from "vue";
+import {ref} from 'vue'
 
 const {
-	visual, name, description, url, promo_end_text, erid, entry_point
+	visual = '',
+	name = '',
+	description = '',
+	url = '',
+	promo_end_text = '',
+	erid = '',
+	entry_point = '',
+	ligal = '',
 } = defineProps({
 	visual: String,
 	name: String,
@@ -13,13 +20,23 @@ const {
 	promo_end_text: String,
 	erid: String,
 	entry_point: String,
+	ligal: String,
 })
 
+// не реактивно — отлично для статичного конфига
 const isMobile = useMediaQuery('(hover: none), (pointer: coarse)')
-const copied = ref(false);
+const copied = ref(false)
+let copiedTimer = null
+
+function onCopySuccess() {
+	copied.value = true
+	clearTimeout(copiedTimer)
+	copiedTimer = setTimeout(() => (copied.value = false), 1500)
+}
 
 function onRedirect() {
-	window.open(url.value, '_blank');
+	if (!url) return
+	window.open(url, '_blank', 'noopener,noreferrer')
 }
 </script>
 
@@ -27,22 +44,23 @@ function onRedirect() {
 	<article class="promo-card">
 		<a-tooltip
 				placement="bottomRight"
-				:overlay-inner-style="{display: 'flex', alignItems: 'center', padding: 0 }"
+				:overlay-inner-style="{ display: 'flex', alignItems: 'center', padding: 0 }"
 				:trigger="isMobile ? 'click' : 'hover'"
 		>
 			<template #title>
 				<span class="copy-status" v-if="copied">Скопировано!</span>
 				<div v-else class="content">
-					<span class="ligal">ООО "Центрбронь" erid:</span>&nbsp;
+					<span class="ligal">{{ ligal }} erid:</span>&nbsp;
 					<span class="erid">{{ erid }}</span>
 				</div>
 				<button
 						class="copy"
+						type="button"
 						aria-label="Скопировать erid"
 						v-clipboard="erid"
-						@clipboard:success="copied = true"
+						@clipboard:success="onCopySuccess"
 				>
-					<CopyOutlined :style="{ color: copied ? '#52c41a' : '#535353'}"/>
+					<CopyOutlined :style="{ color: copied ? '#52c41a' : '#535353' }"/>
 				</button>
 			</template>
 
@@ -50,11 +68,12 @@ function onRedirect() {
 		</a-tooltip>
 
 		<div class="promo-card__visual">
-			<img class="promo-card__image" :src="visual" :alt="name">
+			<img class="promo-card__image" :src="visual" :alt="name || 'Промо'" loading="lazy" decoding="async"/>
 		</div>
 
 		<div class="promo-card__content">
 			<h5 class="promo-card__title" v-html="name"></h5>
+
 			<div class="promo-card__time">
         <span class="icon">
           <svg class="coral-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
@@ -62,21 +81,33 @@ function onRedirect() {
             <circle cx="11" cy="11" r="10" stroke="#535353" stroke-linejoin="round"/>
             <path d="M11 4V11H16" stroke="#535353" stroke-linejoin="round"/>
           </svg>
-					<svg class="sunmar-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+          <svg class="sunmar-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
 							 fill="none">
-  <circle cx="12" cy="12" r="9" fill="#2E3465" fill-opacity="0.2" stroke="#2E3465" stroke-width="1.5"
-					stroke-linejoin="round"/>
-  <path d="M12 5.69995V12H16.5" stroke="#2E3465" stroke-width="1.5" stroke-linejoin="round"/>
-</svg>
+            <circle cx="12" cy="12" r="9" fill="#2E3465" fill-opacity="0.2" stroke="#2E3465" stroke-width="1.5"
+										stroke-linejoin="round"/>
+            <path d="M12 5.69995V12H16.5" stroke="#2E3465" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
         </span>
 				<span class="time-text">{{ promo_end_text }}</span>
 			</div>
+
 			<p class="promo-card__description" v-html="description"></p>
-			<a class="promo-card__link prime-btn" v-if="!entry_point" :href="url" target="_blank">Подробнее</a>
+
+			<a
+					v-if="!entry_point"
+					class="promo-card__link prime-btn"
+					:href="url"
+					target="_blank"
+					rel="noopener noreferrer"
+			>
+				Подробнее
+			</a>
+
 			<button
 					v-else
 					v-entry="entry_point"
 					@redirect="onRedirect"
+					type="button"
 					class="promo-card__link prime-btn"
 			>
 				Подробнее
@@ -86,6 +117,7 @@ function onRedirect() {
 </template>
 
 <style scoped lang="scss">
+/* стили без изменений */
 .promo-card {
 	display: flex;
 	flex-direction: column;
@@ -108,7 +140,7 @@ function onRedirect() {
 		display: flex;
 		flex-direction: column;
 		padding: 16px 20px 20px 20px;
-		background: #FFFFFF;
+		background: #ffffff;
 		flex-grow: 1;
 	}
 
@@ -117,7 +149,6 @@ function onRedirect() {
 	}
 
 	&__description {
-		margin-top: auto !important;
 		margin-bottom: 16px !important;
 		font-weight: 400;
 	}
@@ -137,6 +168,7 @@ function onRedirect() {
 	}
 
 	&__link {
+		margin-top: auto !important;
 		width: fit-content;
 	}
 
@@ -153,7 +185,7 @@ function onRedirect() {
 	border-radius: 16px;
 
 	.promo-card__content {
-		background: var(--Base-color_Base_Light_Gray, #F5F5F8);
+		background: var(--Base-color_Base_Light_Gray, #f5f5f8);
 		padding: 24px;
 	}
 
@@ -185,7 +217,7 @@ function onRedirect() {
 	}
 
 	.time-text {
-		color: #2E3465;
+		color: #2e3465;
 	}
 
 	.coral-icon {
@@ -203,7 +235,7 @@ function onRedirect() {
 	right: 8px;
 	border-radius: var(--radius-border_Radius_XXXL, 48px);
 	opacity: 0.72;
-	background: var(--Base-color_Base_Light, #FFF);
+	background: var(--Base-color_Base_Light, #fff);
 	border: none;
 	padding: 2px 8px;
 	font-size: 12px;
@@ -213,13 +245,7 @@ function onRedirect() {
 	line-height: 20px;
 }
 
-.content {
-	padding: 8px;
-	font-size: 12px;
-	display: flex;
-	align-items: center;
-}
-
+.content,
 .copy-status {
 	padding: 8px;
 	font-size: 12px;
