@@ -4,6 +4,13 @@ import monkey from 'vite-plugin-monkey';
 import * as path from 'node:path';
 
 export default defineConfig({
+    css: {
+        preprocessorOptions: {
+            scss: {
+                api: 'modern-compiler'
+            }
+        }
+    },
     plugins: [
         vue({
             customElement: true,

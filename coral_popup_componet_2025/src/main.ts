@@ -1,7 +1,7 @@
 import {defineCustomElement} from 'vue';
 import CoralPopup from './components/CoralPopup.ce.vue';
-import CoralPopupTrigger from './components/CoralPopupTrigger.ce.vue';
 import {hostReactAppReady} from "@/utils";
+import CoralPopupTrigger from './components/CoralPopupTrigger.ce.vue';
 
 function generateRandomId(length = 12) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -20,24 +20,31 @@ function insertOnce(target: HTMLElement, position: InsertPosition, html: string,
     }
 }
 
+type CoralPopupEl = HTMLElement & { showPopup: () => void };
+
+const HEADER_SELECTOR = '.header-client-side-desktop > div > div > div';
+const CoralElement = defineCustomElement(CoralPopup);
+const CoralElementTrigger = defineCustomElement(CoralPopupTrigger);
+customElements.define('coral-popup', CoralElement);
+customElements.define('coral-popup-trigger', CoralElementTrigger);
+
 (async () => {
-    await hostReactAppReady()
-    const CoralElement = defineCustomElement(CoralPopup);
-    customElements.define('coral-popup', CoralElement);
-    const CoralPopupTriggerElement = defineCustomElement(CoralPopupTrigger)
-    customElements.define('coral-popup-trigger', CoralPopupTriggerElement);
+    await hostReactAppReady();
+
+    await Promise.all([
+        customElements.whenDefined('coral-popup'),
+        customElements.whenDefined('coral-popup-trigger'),
+    ]);
 
     const html = `
 <coral-popup-trigger>
-    <div slot="icon" class="icon">%</div>
+<div slot="icon" class="icon">%</div>
     <span slot="text" class="text">
         Скидка <br> до 20 000₽
     </span>
-</div>
 </coral-popup-trigger>
 <coral-popup
 expires="2025-09-15"
-auto-show="true"
 >
      <img
         slot="visual"
@@ -47,7 +54,7 @@ auto-show="true"
         width="374"
         height="262"
     />
-    <span slot="ligal" class="popup-ligal" style="color: #FFFFFF;">
+    <span slot="ligal" class="popup-ligal">
       Реклама. ООО «ТО КОРАЛ ТРЕВЕЛ ЦЕНТР» erid: 2W5zFG913g41
     </span>
     <h2 slot="title">Статус «в отпуске»</h2>
@@ -79,5 +86,13 @@ auto-show="true"
         generateRandomId()
     )
 
-    document.querySelector('.header-client-side-desktop > div > div > div')?.append(document.body.querySelector('coral-popup-trigger'))
+    const popup = document.querySelector<CoralPopupEl>('coral-popup');
+    if (popup) document.body.append(popup);
+
+    const trigger = document.querySelector('coral-popup-trigger');
+    const header = document.querySelector(HEADER_SELECTOR);
+    if (trigger && header) header.append(trigger);
+
+    trigger?.addEventListener('click', () => popup?.showPopup());
+
 })()

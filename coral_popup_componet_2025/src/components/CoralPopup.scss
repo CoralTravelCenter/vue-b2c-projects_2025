@@ -107,7 +107,7 @@
   bottom: 8px;
   right: 20px;
   font-size: 6px;
-  color: white;
+  color: #ffffff;
 }
 
 /* Заголовок */
@@ -169,7 +169,7 @@
 
 /* Дисклеймер */
 ::slotted([slot="disclaimers"]) {
-  font-size: 0.75rem;
+  font-size: 11px;
   color: #666;
   list-style: none;
   padding: 0;
