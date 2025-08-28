@@ -1,7 +1,7 @@
 import {defineCustomElement} from 'vue';
-import CoralPopup from './components/CoralPopup.ce.vue';
+import CoralPopup from './components/CoralPopup/CoralPopup.ce.vue';
 import {hostReactAppReady} from "@/utils";
-import CoralPopupTrigger from './components/CoralPopupTrigger.ce.vue';
+import CoralPopupTrigger from './components/CoralPopupTrigger/CoralPopupTrigger.ce.vue';
 
 function generateRandomId(length = 12) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -12,10 +12,10 @@ function generateRandomId(length = 12) {
     return randomId;
 }
 
-function insertOnce(target: HTMLElement, position: InsertPosition, html: string, randomId: string) {
+function insertOnce(target: HTMLElement | null, position: InsertPosition, html: string, randomId: string) {
     const BODY = document.body;
     if (!BODY.querySelector(`[data-inserted="${randomId}"]`)) {
-        target.insertAdjacentHTML(position, html);
+        target?.insertAdjacentHTML(position, html);
         BODY.setAttribute('data-inserted', randomId);
     }
 }
@@ -37,7 +37,9 @@ customElements.define('coral-popup-trigger', CoralElementTrigger);
     ]);
 
     const html = `
-<coral-popup-trigger>
+<coral-popup-trigger 
+redirect-to="/poleznaya-informatsiya/offers/hot-offers/promocodes/?banner_on_site=bubble-promocodes"
+>
 <div slot="icon" class="icon">%</div>
     <span slot="text" class="text">
         Скидка <br> до 20 000₽
@@ -93,6 +95,5 @@ expires="2025-09-15"
     const header = document.querySelector(HEADER_SELECTOR);
     if (trigger && header) header.append(trigger);
 
-    trigger?.addEventListener('click', () => popup?.showPopup());
-
+    !trigger?.hasAttribute('redirect-to') && trigger?.addEventListener('click', () => popup?.showPopup());
 })()

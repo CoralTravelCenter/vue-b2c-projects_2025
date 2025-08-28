@@ -15,7 +15,7 @@ export async function hostReactAppReady(
     });
 }
 
-export function mediaMatcher(size, callback) {
+export function mediaMatcher(size: number, callback: any) {
     const mobileWidthMediaQuery = window.matchMedia(`(max-width: ${size}px)`);
     callback(mobileWidthMediaQuery.matches);
     mobileWidthMediaQuery.addEventListener("change", (e) =>
