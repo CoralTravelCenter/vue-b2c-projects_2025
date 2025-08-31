@@ -1,7 +1,9 @@
+import {hostReactAppReady} from "@/utils";
 import {defineCustomElement} from 'vue';
 import CoralPopup from './components/CoralPopup/CoralPopup.ce.vue';
-import {hostReactAppReady} from "@/utils";
 import CoralPopupTrigger from './components/CoralPopupTrigger/CoralPopupTrigger.ce.vue';
+import CoralJaz from './components/CoralJaz/CoralJaz.ce.vue';
+import './index.css';
 
 function generateRandomId(length = 12) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -23,10 +25,9 @@ function insertOnce(target: HTMLElement | null, position: InsertPosition, html: 
 type CoralPopupEl = HTMLElement & { showPopup: () => void };
 
 const HEADER_SELECTOR = '.header-client-side-desktop > div > div > div';
-const CoralElement = defineCustomElement(CoralPopup);
-const CoralElementTrigger = defineCustomElement(CoralPopupTrigger);
-customElements.define('coral-popup', CoralElement);
-customElements.define('coral-popup-trigger', CoralElementTrigger);
+customElements.define('coral-popup', defineCustomElement(CoralPopup));
+customElements.define('coral-popup-trigger', defineCustomElement(CoralPopupTrigger));
+customElements.define('coral-jaz', defineCustomElement(CoralJaz));
 
 (async () => {
     await hostReactAppReady();
@@ -34,6 +35,7 @@ customElements.define('coral-popup-trigger', CoralElementTrigger);
     await Promise.all([
         customElements.whenDefined('coral-popup'),
         customElements.whenDefined('coral-popup-trigger'),
+        customElements.whenDefined('coral-jaz'),
     ]);
 
     const html = `
@@ -63,8 +65,7 @@ expires="2025-09-15"
     <p slot="subtitle">Еще есть половина лета, чтобы отдохнуть на море с выгодой</p>
     <button slot="button" class="popup-btn">Продолжить бронирование</button>
     <ul class="popup-list" slot="list">
-      <li>Промокод: 
-      <span class="promo" style="color: #0072ce; font-weight: 700;">ЖАРА</span>
+      <li>Промокод: <span class="promo" style="color: #0072ce; font-weight: 700;">ЖАРА</span>
       </li>
       <li>Скидка: <strong>до 20 000 ₽</strong></li>
       <li>Даты акции: <strong>18.07.2025 – 21.07.2025</strong></li>
@@ -79,6 +80,9 @@ expires="2025-09-15"
       <li>**Акция распространяется только на новые неоплаченные бронирования пакетных туров или отелей на сайте coral.ru. Она не суммируется с другими предложениями Coral Travel и программой лояльности CoralBonus и не распространяется на GDS билеты в составе пакетного тура.</li>
     </ul>
 </coral-popup>
+<coral-jaz>
+    <span slot="text"></span>
+</coral-jaz>
 `;
 
     insertOnce(
@@ -89,7 +93,9 @@ expires="2025-09-15"
     )
 
     const popup = document.querySelector<CoralPopupEl>('coral-popup');
+    const jaz = document.querySelector('coral-jaz');
     if (popup) document.body.append(popup);
+    if (jaz) document.body.append(jaz);
 
     const trigger = document.querySelector('coral-popup-trigger');
     const header = document.querySelector(HEADER_SELECTOR);
