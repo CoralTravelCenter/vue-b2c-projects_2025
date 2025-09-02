@@ -21,7 +21,7 @@ export default defineConfig({
             }
         }),
         monkey({
-            entry: 'src/main.ts',
+            entry: 'src/main.js',
             userscript: {
                 namespace: 'npm/vite-plugin-monkey',
                 match: ['https://www.coral.ru/*'],
@@ -40,18 +40,27 @@ export default defineConfig({
     build: {
         target: 'esnext',
         lib: {
-            entry: 'src/main.ts',
+            entry: 'src/main.js',
             name: 'CoralPopup',
             fileName: () => 'coral-popup.js',
             formats: ['iife'],
         },
         rollupOptions: {
-            external: ['vue'],
             output: {
                 globals: {
                     vue: 'Vue',
                 },
             },
         },
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                drop_console: true,     // убираем console.*
+                drop_debugger: true     // убираем debugger
+            },
+            format: {
+                comments: false         // удаляем все комментарии
+            }
+        }
     },
 });
