@@ -26,7 +26,7 @@ export default defineConfig({
                 namespace: 'npm/vite-plugin-monkey',
                 match: ['https://www.coral.ru/*'],
                 icon: 'https://vitejs.dev/logo.svg',
-                name: 'coral-popup',
+                name: 'coral_components_2025',
                 version: '1.0.0',
                 description: 'Popup as Web Component for Coral',
             },

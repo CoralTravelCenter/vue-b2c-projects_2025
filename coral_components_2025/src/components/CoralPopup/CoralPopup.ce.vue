@@ -49,7 +49,6 @@ function handleButtonClick() {
 onMounted(() => {
 	setTimeout(() => {
 		if (!isExpired() && props.autoShow) {
-			// любое непустое строковое значение autoShow ведёт к автопоказу — как и было
 			showPopup()
 		}
 	}, 2000)
