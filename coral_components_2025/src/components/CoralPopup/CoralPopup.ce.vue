@@ -69,11 +69,9 @@ defineExpose({showPopup})
 		<transition name="dialog-fade" @after-leave="afterDialogLeave">
 			<div class="popup-dialog" v-if="visible">
 				<button class="popup-close" @click="closePopup">
-					<svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-						<g stroke-width="0"/>
-						<g stroke-linecap="round" stroke-linejoin="round"/>
-						<path d="m16 8-8 8m0-8 8 8" stroke="#000" stroke-width="1.5" stroke-linecap="round"
-									stroke-linejoin="round"/>
+					<svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M14.6666 1.3335L1.33331 14.6668" stroke="#535353"/>
+						<path d="M1.33329 1.3335L14.6666 14.6668" stroke="#535353"/>
 					</svg>
 				</button>
 

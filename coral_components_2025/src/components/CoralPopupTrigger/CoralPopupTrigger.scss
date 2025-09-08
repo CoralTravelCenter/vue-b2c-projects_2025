@@ -1,4 +1,9 @@
+:host {
+  box-sizing: border-box !important;
+}
+
 .coral-popup-trigger {
+  font-family: 'Manrope', sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
