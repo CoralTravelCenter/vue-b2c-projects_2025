@@ -1,6 +1,7 @@
 import './index.css';
 import {defineCustomElement} from "vue";
 import CoralJoint from '@/components/CoralJoint/CoralJoint.ce.vue'
+import {hostReactAppReady} from "@/utils";
 
 // if (!customElements.get('coral-popup')) {
 //     customElements.define('coral-popup', defineCustomElement(CoralPopup))
@@ -15,7 +16,7 @@ if (!customElements.get('coral-joint')) {
 
 
 const markup: string = `
-<coral-joint>
+<coral-joint hotels="ATALLA HOTEL, XANADU MAKADI BAY" lookup-days="14" lookup-nights="7">
 <img slot="visual" src="https://b2ccdn.coral.ru/content/pages/Small_carousel_Coral_548x210.jpg">
 <div slot="location">
 <span>Египет, Шарм-эш-Шейх</span>
@@ -25,7 +26,7 @@ const markup: string = `
 `;
 
 (async () => {
-    // await hostReactAppReady()
+    await hostReactAppReady()
     // await Promise.all([
     //     customElements.whenDefined('coral-popup'),
     //     customElements.whenDefined('coral-popup-trigger'),

@@ -24,11 +24,11 @@ export default defineConfig({
             entry: 'src/main.ts',
             userscript: {
                 namespace: 'npm/vite-plugin-monkey',
-                match: ['https://b2cpilotui.coral.ru/*'],
+                match: ['https://www.coral.ru/*'],
                 icon: 'https://vitejs.dev/logo.svg',
                 name: 'coral_components_2025',
                 version: '1.0.0',
-                description: 'Popup as Web Component for Coral',
+                description: 'Reusable Components',
             },
         }),
     ],
@@ -41,8 +41,8 @@ export default defineConfig({
         target: 'esnext',
         lib: {
             entry: 'src/main.ts',
-            name: 'CoralPopup',
-            fileName: () => 'coral-popup.js',
+            name: 'CoralComponents',
+            fileName: () => 'coral-components.js',
             formats: ['iife'],
         },
         rollupOptions: {
@@ -55,11 +55,11 @@ export default defineConfig({
         minify: 'terser',
         terserOptions: {
             compress: {
-                drop_console: true,     // убираем console.*
-                drop_debugger: true     // убираем debugger
+                drop_console: true,
+                drop_debugger: true
             },
             format: {
-                comments: false         // удаляем все комментарии
+                comments: false
             }
         }
     },

@@ -15,10 +15,20 @@ export async function hostReactAppReady(
     });
 }
 
-export function mediaMatcher(size: number, callback: any) {
-    const mobileWidthMediaQuery = window.matchMedia(`(max-width: ${size}px)`);
-    callback(mobileWidthMediaQuery.matches);
-    mobileWidthMediaQuery.addEventListener("change", (e) =>
-        callback(e.matches),
-    );
+function formatDate(date: Date): string {
+    if (isNaN(date.getTime())) {
+        throw new Error("Invalid date provided to formatDate");
+    }
+    return date.toISOString().split("T")[0];
+}
+
+export function calculateDates(depth: number, nights: number): [string, string] {
+    const today = new Date();
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() + depth);
+
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + nights);
+
+    return [formatDate(startDate), formatDate(endDate)];
 }

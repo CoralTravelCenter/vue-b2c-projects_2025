@@ -1,12 +1,35 @@
 <script setup lang="ts">
-import {onMounted} from "vue";
-import useHotelsData from "@/composibles/useHotelData";
+import {computed, onMounted, ref} from 'vue'
+import useHotelData from '@/composibles/useHotelData'
+
+const {hotels, lookupDays, lookupNights} = defineProps<{
+	hotels: string
+	lookupDays: string
+	lookupNights: string
+}>()
 
 
-onMounted(() => {
-	useHotelsData()
+const hotelData = ref<Array<{ formattedPrice: string; isElite: boolean }>>([])
+const hotelRating = ref<string[]>([])
+
+const requestedHotelsArr = computed(() =>
+		hotels
+				.split(',')
+				.map(h => h.trim())
+				.filter(Boolean)
+)
+
+onMounted(async () => {
+	try {
+		const {data, rating} = await useHotelData(requestedHotelsArr, lookupDays, lookupNights)
+		hotelData.value = data
+		hotelRating.value = rating
+	} catch (e) {
+		console.error('Ошибка загрузки данных:', e)
+	}
 })
 </script>
+
 
 <template>
 	<!--	<button class="joint-trigger">-->
