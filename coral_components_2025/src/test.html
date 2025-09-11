@@ -1,20 +1,148 @@
-<coral-popup
-        image-url="https://framerusercontent.com/images/bP2sbtLwrHdZK7un4zBeBJ8d234.jpg"
-        ligal="Реклама. ООО «ТО КОРАЛ ТРЕВЕЛ ЦЕНТР» erid: 2W5zFG913g41"
-        ligal-color="#FFFFFF"
-        title="Статус «в отпуске»"
-        subtitle="Еще есть половина лета, чтобы отдохнуть на море с выгодой"
-        button-type="link"
-        button-text="Продолжить бронирование"
-        button-href="https://coral.ru"
-        promo-code="ЖАРА"
-        promo-discount="до 20 000 ₽"
-        promo-date-range="18.07.2025 – 21.07.2025 г."
-        promo-travel-range="июль - сентябрь 2025 г."
-        promo-destinations="все"
-        footnote="Чтобы воспользоваться промокодом, введите его в поле «Примечание к заказу» в пункте «Другое» или сообщите менеджеру"
-        disclaimers='[
-"*Скидка 5 000 ₽ на туры и отели от 150 000 ₽, скидка 10 000 ₽ на туры и отели от 300 000 ₽, скидка 15 000 ₽ на туры и отели от 450 000 ₽, скидка 20 000 ₽ на туры и отели от 600 000 ₽",
-"**Акция распространяется только на новые не оплаченные бронирования пакетных туров или отелей на сайте coral.ru. Она не суммируется с другими предложениями Coral Travel и программой лояльности CoralBonus и не распространяется на GDS билеты в составе пакетного тура."
-	]'
-></coral-popup>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CoralPopup Test</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				padding: 20px;
+			}
+			.test-section {
+				margin: 20px 0;
+				padding: 20px;
+				border: 1px solid #ddd;
+				border-radius: 8px;
+			}
+			.test-button {
+				background: #007bff;
+				color: white;
+				border: none;
+				padding: 10px 20px;
+				border-radius: 4px;
+				cursor: pointer;
+				margin: 10px 0;
+			}
+			.test-button:hover {
+				background: #0056b3;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>CoralPopup Component Tests</h1>
+
+		<div class="test-section">
+			<h2>Test 1: Default Slot with Custom Content</h2>
+			<button class="test-button" onclick="showPopup1()">
+				Show Custom Content Popup
+			</button>
+
+			<coral-popup id="popup1">
+				<div style="padding: 20px; background: #f0f8ff; border-radius: 8px">
+					<h3>Custom Content Example</h3>
+					<p>
+						This popup uses the default slot with completely custom HTML
+						content.
+					</p>
+					<ul>
+						<li>Flexible layout</li>
+						<li>Custom styling</li>
+						<li>Any HTML elements</li>
+					</ul>
+					<button
+						onclick="closePopup('popup1')"
+						style="
+							background: #28a745;
+							color: white;
+							border: none;
+							padding: 10px 20px;
+							border-radius: 4px;
+							cursor: pointer;
+						"
+					>
+						Close
+					</button>
+				</div>
+			</coral-popup>
+		</div>
+
+		<div class="test-section">
+			<h2>Test 2: Named Slots</h2>
+			<button class="test-button" onclick="showPopup2()">
+				Show Named Slots Popup
+			</button>
+
+			<coral-popup id="popup2">
+				<img
+					slot="visual"
+					src="https://via.placeholder.com/400x200/4CAF50/white?text=Visual"
+					alt="Visual content"
+				/>
+				<h2 slot="title">Named Slots Example</h2>
+				<p slot="subtitle">
+					This popup uses specific named slots for structured content.
+				</p>
+				<ul slot="list">
+					<li>Structured content</li>
+					<li>Consistent styling</li>
+					<li>Easy to maintain</li>
+				</ul>
+				<button slot="button">Action Button</button>
+				<small slot="footnote">* This is a footnote</small>
+			</coral-popup>
+		</div>
+
+		<div class="test-section">
+			<h2>Test 3: Mixed Content</h2>
+			<button class="test-button" onclick="showPopup3()">
+				Show Mixed Content Popup
+			</button>
+
+			<coral-popup id="popup3">
+				<img
+					slot="visual"
+					src="https://via.placeholder.com/400x200/FF9800/white?text=Mixed"
+					alt="Mixed content"
+				/>
+				<div>
+					<h2>Mixed Content Example</h2>
+					<p>This popup combines default slot content with named slots.</p>
+					<div
+						style="
+							background: #fff3cd;
+							padding: 10px;
+							border-radius: 4px;
+							margin: 10px 0;
+						"
+					>
+						<strong>Note:</strong> You can mix different content types flexibly.
+					</div>
+				</div>
+				<button slot="button">Mixed Action</button>
+			</coral-popup>
+		</div>
+
+		<script>
+			function showPopup(id) {
+				const popup = document.getElementById(id)
+				if (popup && popup.showPopup) {
+					popup.showPopup()
+				}
+			}
+
+			function closePopup(id) {
+				const popup = document.getElementById(id)
+				if (popup) {
+					popup.visible = false
+				}
+			}
+
+			// Make functions globally available
+			window.showPopup1 = () => showPopup('popup1')
+			window.showPopup2 = () => showPopup('popup2')
+			window.showPopup3 = () => showPopup('popup3')
+			window.closePopup = closePopup
+		</script>
+	</body>
+</html>
