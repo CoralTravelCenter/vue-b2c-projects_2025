@@ -8,7 +8,7 @@ type Props = {
 	redirect?: string
 }
 
-const props = defineProps<Props>()
+const { autoShow, expires, redirect } = defineProps<Props>()
 
 // States
 const mounted = ref(false)
@@ -16,7 +16,7 @@ const visible = ref(false)
 
 // Functions
 function shouldShowPopup(expires: string | undefined): boolean {
-	if (!props.autoShow) return false
+	if (autoShow) return false
 	if (!expires) return true
 
 	try {
@@ -45,8 +45,8 @@ function afterDialogLeave() {
 }
 
 function handleButtonClick() {
-	if (props.redirect) {
-		window.open(props.redirect, '_blank')
+	if (redirect) {
+		window.open(redirect, '_blank')
 	} else {
 		closePopup()
 	}
@@ -54,7 +54,7 @@ function handleButtonClick() {
 
 function initPopup() {
 	setTimeout(() => {
-		if (shouldShowPopup(props.expires)) {
+		if (shouldShowPopup(expires)) {
 			showPopup()
 		}
 	}, 2000)
@@ -62,7 +62,6 @@ function initPopup() {
 
 // Lifecycle Hooks
 onMounted(initPopup)
-
 // Expose public methods
 defineExpose({ showPopup })
 </script>
