@@ -1,14 +1,15 @@
-import './index.css';
 import {defineCustomElement} from "vue";
 import CoralJoint from '@/components/CoralJoint/CoralJoint.ce.vue'
+import CoralPopup from '@/components/CoralPopup/CoralPopup.ce.vue'
+import CoralPopupTrigger from '@/components/CoralPopupTrigger/CoralPopupTrigger.ce.vue'
 import {hostReactAppReady} from "@/utils";
 
-// if (!customElements.get('coral-popup')) {
-//     customElements.define('coral-popup', defineCustomElement(CoralPopup))
-// }
-// if (!customElements.get('coral-popup-trigger')) {
-//     customElements.define('coral-popup-trigger', defineCustomElement(CoralPopupTrigger))
-// }
+if (!customElements.get('coral-popup')) {
+    customElements.define('coral-popup', defineCustomElement(CoralPopup))
+}
+if (!customElements.get('coral-popup-trigger')) {
+    customElements.define('coral-popup-trigger', defineCustomElement(CoralPopupTrigger))
+}
 
 if (!customElements.get('coral-joint')) {
     customElements.define('coral-joint', defineCustomElement(CoralJoint))
@@ -16,13 +17,23 @@ if (!customElements.get('coral-joint')) {
 
 
 const markup: string = `
-<coral-joint hotels="ATALLA HOTEL, XANADU MAKADI BAY" lookup-days="14" lookup-nights="7">
-<img slot="visual" src="https://b2ccdn.coral.ru/content/pages/Small_carousel_Coral_548x210.jpg">
-<div slot="location">
-<span>Египет, Шарм-эш-Шейх</span>
-</div>
-<h3 slot="hotelName">IBEROTEL REDSINA (ex. MAGIC WORLD SHARM)</h3>
-</coral-joint>
+ <coral-joint
+        countries="Турция"
+        hotels='[
+           {
+            "name": "ATALLA HOTEL", 
+            "benefits": ["Популярный отель", "Реновация 2023"],
+            "erid": "12345"
+           },
+           {
+            "name": "XANADU MAKADI BAY", 
+            "benefits": ["Отличная цена в мае", "Большая территория"],
+            "erid": "5678"
+           }
+        ]'
+        lookup-days="14"
+        lookup-nights="7"
+></coral-joint>
 `;
 
 (async () => {

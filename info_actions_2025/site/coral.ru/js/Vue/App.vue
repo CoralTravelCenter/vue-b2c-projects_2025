@@ -14,12 +14,7 @@ const freshOffers = computed(() =>
 		promotionsArr.value.filter(o => filterFreshOffers(o))
 );
 
-/**
- * Нормализуем поле filter:
- * - принимаем строку "A, B" или массив ["A","B"]
- * - триммим, убираем пустые, дедуплицируем
- * - сохраняем исходные поля промо
- */
+
 const offersNormalized = computed(() =>
 		freshOffers.value.map(p => {
 			const raw = p.filter ?? "";
@@ -36,14 +31,14 @@ const offersNormalized = computed(() =>
 		})
 );
 
-// список табов
+
 const filters = computed(() => {
 	const set = new Set();
 	offersNormalized.value.forEach(p => p.filtersArr.forEach(f => set.add(f)));
 	return ["Все акции", ...set];
 });
 
-// фильтрация карточек
+
 const filteredPromotions = computed(() => {
 	if (currentFilter.value === "Все акции") return offersNormalized.value;
 	return offersNormalized.value.filter(p =>
@@ -52,20 +47,21 @@ const filteredPromotions = computed(() => {
 });
 
 const params = useUrlSearchParams("history");
-const domen = location.host.includes("coral");
+const domen = true;
 const isApplication = computed(() => params.mw === "true");
 
-/** Хелпер: является ли акция Bonus-типа */
+
 const isBonus = p => p.filtersArr.some(f => /bonus/i.test(f));
 </script>
 
 <template>
 	<Tabs :filters="filters" v-model="currentFilter" :class="domen ? 'coral' : 'sunmar'"/>
 
-	<div class="cards-container" :key="currentFilter">
+	<ul class="cards-container" :key="currentFilter">
 		<Card
 				v-for="promotion in filteredPromotions"
 				:key="promotion.name"
+				class="card"
 				:class="domen ? 'coral' : 'sunmar'"
 				:data-filter="promotion.filtersArr.join(', ')"
 				:visual="promotion.visual"
@@ -79,13 +75,16 @@ const isBonus = p => p.filtersArr.some(f => /bonus/i.test(f));
 				v-show="!(isApplication && promotion.name.includes('SunmarBonus'))"
 				v-bonus="isBonus(promotion) && promotion.name"
 		/>
-	</div>
+	</ul>
 </template>
 
 <style scoped lang="scss">
 @use '../../../common/css/mixins';
 
 .cards-container {
+	list-style: none;
+	padding: 0;
+	margin: 0;
 	@include mixins.flex-grid(1, 24px, center);
 
 	@media (min-width: 768px) {

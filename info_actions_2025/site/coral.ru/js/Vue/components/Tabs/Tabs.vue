@@ -59,7 +59,7 @@ function selectFilter(filter) {
 		text-align: center;
 		cursor: pointer;
 		background: #fff;
-		line-height: 1;
+		line-height: 24px;
 		transition: all 300ms ease;
 
 		@media (min-width: 1280px) {
@@ -74,15 +74,33 @@ function selectFilter(filter) {
 }
 
 .tabs-navigation.sunmar {
-
 	.tabs-navigation__list {
 		background: #F5F5F8;
+		justify-content: center;
+		padding: 8px;
+		border-radius: 24px;
+		gap: 4px;
+
+		@media (min-width: 1024px) {
+			gap: 8px;
+			overflow-x: scroll;
+			scroll-snap-type: x mandatory;
+			justify-content: start;
+			flex-wrap: nowrap;
+		}
 	}
 
 	.tabs-navigation__item {
 		background: #F5F5F8;
 		padding: 16px 30px;
 		font-weight: 600;
+		width: calc(50% - 2px);
+
+		@media (min-width: 1024px) {
+			width: auto;
+			flex: 1 0 auto;
+			scroll-snap-align: start;
+		}
 	}
 
 	.tabs-navigation__item.js-active {

@@ -1,60 +1,70 @@
 <script setup lang="ts">
-import {nextTick, onMounted, ref} from 'vue'
+import {nextTick, onMounted, ref} from 'vue';
 
+// Props
 type Props = {
-	autoShow?: string
-	expires?: string
-	redirect?: string
-}
+	autoShow?: boolean;
+	expires?: string;
+	redirect?: string;
+};
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
-const mounted = ref(false)
-const visible = ref(false)
+// States
+const mounted = ref(false);
+const visible = ref(false);
 
-function isExpired(): boolean {
-	const {expires} = props
-	if (!expires) return false
+// Functions
+function shouldShowPopup(expires: string | undefined): boolean {
+	if (!props.autoShow) return false;
+	if (!expires) return true;
 
-	const ts = Date.parse(expires)
-	if (Number.isNaN(ts)) return false
-
-	return Date.now() > ts
+	try {
+		const expiryDate = new Date(expires);
+		return Date.now() < expiryDate.getTime();
+	} catch (error) {
+		console.error('Invalid date format:', error);
+		return false;
+	}
 }
 
 async function showPopup() {
-	mounted.value = true
-	await nextTick()
-	visible.value = true
-	document.body.style.overflow = 'hidden'
+	mounted.value = true;
+	await nextTick();
+	visible.value = true;
+	document.body.classList.add('popup-open');
 }
 
 function closePopup() {
-	visible.value = false
+	visible.value = false;
 }
 
 function afterDialogLeave() {
-	mounted.value = false
-	document.body.style.overflow = ''
+	mounted.value = false;
+	document.body.classList.remove('popup-open');
 }
 
 function handleButtonClick() {
 	if (props.redirect) {
-		window.open(props.redirect, '_blank')
+		window.open(props.redirect, '_blank');
 	} else {
-		closePopup()
+		closePopup();
 	}
 }
 
-onMounted(() => {
+function initPopup() {
 	setTimeout(() => {
-		if (!isExpired() && props.autoShow) {
-			showPopup()
+		if (shouldShowPopup(props.expires)) {
+			showPopup();
 		}
-	}, 2000)
-})
+	}, 2000);
+}
 
-defineExpose({showPopup})
+// Lifecycle Hooks
+onMounted(initPopup);
+
+// Expose public methods
+defineExpose({showPopup});
 </script>
 
 
@@ -80,14 +90,14 @@ defineExpose({showPopup})
 					<slot name="ligal"/>
 				</div>
 
-				<div class="popup-content">
+				<slot name="content" class="popup-content">
 					<slot name="title"/>
 					<slot name="subtitle"/>
 					<slot name="button" @click="handleButtonClick"/>
 					<slot name="list"/>
 					<slot name="footnote"/>
 					<slot name="disclaimers"/>
-				</div>
+				</slot>
 			</div>
 		</transition>
 	</div>

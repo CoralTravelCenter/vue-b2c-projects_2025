@@ -5,7 +5,7 @@ window._promotion_settings = [
     name: "Новый год наоборот",
     visual: "https://b2ccdn.coral.ru/content/img/Promo_page_Coral_684x364_NY.webp",
     url: "/main/newyear/?banner_on_site=offers-newyear26&erid=2W5zFG6XHVA",
-    description: "Тут будет описание акции в две строки",
+    description: "Тут будет описание акции в две строки. <br> Тут будет описание акции в две строки",
     ligal: "ООО Прости Господи",
     erid: "1213232343",
     app_erid: "09987",

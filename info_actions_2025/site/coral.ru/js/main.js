@@ -6,7 +6,6 @@ import ymBonus from "./Vue/directives/ymbonus.directive";
 import Clipboard from './Vue/directives/clipboard.directive';
 import vEntry from './Vue/directives/entry.directive';
 
-
 (async () => {
   await hostReactAppReady();
   const app = createApp(App)

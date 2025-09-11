@@ -18,3 +18,9 @@ export interface Category {
     name: string;
     starCount: number;
 }
+
+export interface Hotel {
+    name: string;
+    benefits: string[];
+    erid: string;
+}

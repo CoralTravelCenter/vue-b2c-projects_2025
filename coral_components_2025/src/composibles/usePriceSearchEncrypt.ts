@@ -4,10 +4,11 @@ import {calculateDates} from "@/utils";
 import {ArrivalLocation} from "@/types";
 
 
-export default async function usePriceSearchEncrypt(locations: ArrivalLocation[], days: number, nights: number) {
+export default async function usePriceSearchEncrypt(locations: ArrivalLocation[], days: number, nights: number): Promise<any> {
+    const beginDates = calculateDates(days, nights);
     const payload = {
         searchCriterias: {
-            beginDates: calculateDates(days, nights),
+            beginDates,
             arrivalLocations: locations,
             nights: [{value: nights}],
             roomCriterias: [
@@ -29,5 +30,6 @@ export default async function usePriceSearchEncrypt(locations: ArrivalLocation[]
             categories: [],
         }
     }
-    return await useFetch(ONLY_HOTEL_ENDPOINTS.PRICE_SEARCH_LIST, payload)
+    const data = await useFetch(ONLY_HOTEL_ENDPOINTS.PRICE_SEARCH_LIST, payload)
+    return {data, beginDates}
 }

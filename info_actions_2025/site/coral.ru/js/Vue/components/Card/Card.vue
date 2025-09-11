@@ -4,14 +4,14 @@ import {useMediaQuery} from '@vueuse/core'
 import {ref} from 'vue'
 
 const {
-	visual = '',
-	name = '',
-	description = '',
-	url = '',
-	promo_end_text = '',
-	erid = '',
-	entry_point = '',
-	ligal = '',
+	visual,
+	name,
+	description,
+	url,
+	promo_end_text,
+	erid,
+	entry_point,
+	ligal,
 } = defineProps({
 	visual: String,
 	name: String,
@@ -23,7 +23,6 @@ const {
 	ligal: String,
 })
 
-// не реактивно — отлично для статичного конфига
 const isMobile = useMediaQuery('(hover: none), (pointer: coarse)')
 const copied = ref(false)
 let copiedTimer = null
@@ -41,40 +40,42 @@ function onRedirect() {
 </script>
 
 <template>
-	<article class="promo-card">
-		<a-tooltip
-				placement="bottomRight"
-				:overlay-inner-style="{ display: 'flex', alignItems: 'center', padding: 0 }"
-				:trigger="isMobile ? 'click' : 'hover'"
-		>
-			<template #title>
-				<span class="copy-status" v-if="copied">Скопировано!</span>
-				<div v-else class="content">
-					<span class="ligal">{{ ligal }} erid:</span>&nbsp;
-					<span class="erid">{{ erid }}</span>
-				</div>
-				<button
-						class="copy"
-						type="button"
-						aria-label="Скопировать erid"
-						v-clipboard="erid"
-						@clipboard:success="onCopySuccess"
-				>
-					<CopyOutlined :style="{ color: copied ? '#52c41a' : '#535353' }"/>
-				</button>
-			</template>
+	<li class="promo-card">
+		<article>
+			<a-tooltip
+					placement="bottomRight"
+					:overlay-inner-style="{ display: 'flex', alignItems: 'center', padding: 0 }"
+					:trigger="isMobile ? 'click' : 'hover'"
+			>
+				<template #title>
+					<span class="copy-status" v-if="copied">Скопировано!</span>
+					<div v-else class="content">
+						<span class="ligal">{{ ligal }} erid:</span>&nbsp;
+						<span class="erid">{{ erid }}</span>
+					</div>
+					<button
+							class="copy"
+							type="button"
+							aria-label="Скопировать erid"
+							v-clipboard="erid"
+							@clipboard:success="onCopySuccess"
+					>
+						<CopyOutlined :style="{ color: copied ? '#52c41a' : '#535353' }"/>
+					</button>
+				</template>
 
-			<a-button class="tooltip-trigger">Реклама</a-button>
-		</a-tooltip>
+				<a-button class="tooltip-trigger">Реклама</a-button>
+			</a-tooltip>
 
-		<div class="promo-card__visual">
-			<img class="promo-card__image" :src="visual" :alt="name || 'Промо'" loading="lazy" decoding="async"/>
-		</div>
-
-		<div class="promo-card__content">
-			<h5 class="promo-card__title" v-html="name"></h5>
-
-			<div class="promo-card__time">
+			<div class="promo-card__visual">
+				<img class="promo-card__image" :src="visual" :alt="name || 'Промо'" loading="lazy" decoding="async"/>
+			</div>
+			<div class="promo-card__content">
+				<h5 class="promo-card__title" v-html="name"></h5>
+				<p class="promo-card__description" v-html="description"></p>
+			</div>
+			<div class="promo-card__footer">
+				<div class="promo-card__time">
         <span class="icon">
           <svg class="coral-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
 							 fill="none">
@@ -88,45 +89,55 @@ function onRedirect() {
             <path d="M12 5.69995V12H16.5" stroke="#2E3465" stroke-width="1.5" stroke-linejoin="round"/>
           </svg>
         </span>
-				<span class="time-text">{{ promo_end_text }}</span>
+					<span class="time-text">{{ promo_end_text }}</span>
+				</div>
+				<a
+						v-if="!entry_point"
+						class="promo-card__link prime-btn"
+						:href="url"
+						target="_blank"
+						rel="noopener noreferrer"
+				>
+					Подробнее
+				</a>
+				<button
+						v-else
+						v-entry="entry_point"
+						@redirect="onRedirect"
+						type="button"
+						class="promo-card__link prime-btn"
+				>
+					Подробнее
+				</button>
 			</div>
-
-			<p class="promo-card__description" v-html="description"></p>
-
-			<a
-					v-if="!entry_point"
-					class="promo-card__link prime-btn"
-					:href="url"
-					target="_blank"
-					rel="noopener noreferrer"
-			>
-				Подробнее
-			</a>
-
-			<button
-					v-else
-					v-entry="entry_point"
-					@redirect="onRedirect"
-					type="button"
-					class="promo-card__link prime-btn"
-			>
-				Подробнее
-			</button>
-		</div>
-	</article>
+		</article>
+	</li>
 </template>
 
 <style scoped lang="scss">
-/* стили без изменений */
 .promo-card {
-	display: flex;
-	flex-direction: column;
 	border-radius: 20px;
 	overflow: hidden;
 	position: relative;
 
+	article {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		align-items: start;
+		background: #FFFFFF;
+	}
+
 	&__visual {
 		height: 220px;
+
+		@media (min-width: 1280px) {
+			height: 150px;
+		}
+
+		@media (min-width: 1440px) {
+			height: 180px;
+		}
 
 		img {
 			width: 100%;
@@ -139,9 +150,13 @@ function onRedirect() {
 	&__content {
 		display: flex;
 		flex-direction: column;
-		padding: 16px 20px 20px 20px;
-		background: #ffffff;
 		flex-grow: 1;
+		padding: 16px 20px 8px 16px;
+	}
+
+	&__footer {
+		margin-top: auto;
+		padding: 8px 20px 16px 20px;
 	}
 
 	&__title {
@@ -183,21 +198,25 @@ function onRedirect() {
 
 .promo-card.sunmar {
 	border-radius: 16px;
+	background: #f5f5f8;
+
+	.promo-card__visual {
+		height: 250px;
+	}
 
 	.promo-card__content {
-		background: var(--Base-color_Base_Light_Gray, #f5f5f8);
 		padding: 24px;
+		border-radius: 20px;
+		margin-top: -15px;
 	}
 
 	.promo-card__title {
 		font-size: 28px;
 		text-align: center;
 		margin-bottom: 24px !important;
-		order: 1;
 	}
 
 	.promo-card__description {
-		order: 2;
 		text-align: center;
 	}
 
