@@ -1,8 +1,12 @@
 <script lang="ts" setup>
+
+// Типы пропсов
 type Props = {
 	redirectTo: string
 }
-defineProps<Props>()
+
+// Пропсы
+const {redirectTo} = defineProps<Props>()
 </script>
 
 <template>
@@ -10,7 +14,7 @@ defineProps<Props>()
 		<slot name="icon"></slot>
 		<slot name="text"></slot>
 	</a>
-	<button v-else class="coral-popup-trigger">
+	<button v-else class="coral-popup-trigger" @click="show">
 		<slot name="icon"></slot>
 		<slot name="text"></slot>
 	</button>

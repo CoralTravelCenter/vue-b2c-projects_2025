@@ -59,3 +59,14 @@ export function formattedDates(datesArr: string[]) {
         return `${day}.${month}.${year}`;
     }).join(' - ');
 }
+
+export function mediaMatcher(
+    size: number,
+    callback: (isMatch: boolean) => void
+): void {
+    const mediaQuery = window.matchMedia(`(max-width: ${size}px)`)
+    callback(mediaQuery.matches)
+    mediaQuery.addEventListener('change', (e: MediaQueryListEvent) => {
+        callback(e.matches)
+    })
+}

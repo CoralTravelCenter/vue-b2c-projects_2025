@@ -1,0 +1,18 @@
+@use 'tokens' as *;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Внутри шадоу именно :host — источник переменных */
+:host {
+  /* CSS vars дублируем для внешней переопределяемости */
+  --color_Btn_Bg_Default: #{$btn-bg};
+  --color_Text_Light: #{$text-light};
+  --transition: #{$transition};
+  --color_Btn_Bg_Hover: #{$btn-bg-hover};
+  --color_Btn_Bg_Pressed: #{$btn-bg-pressed};
+  --color_Btn_Bg_Focused: #{$btn-bg-focused};
+  --color_Btn_Border_Focused: #{$btn-border-focused};
+  --color_Btn_Bg_Disabled: #{$btn-bg-disabled};
+}

@@ -31,27 +31,33 @@ const hotelsArr: Hotel[] = JSON.parse(hotels);
 const requestedHotelNames: ComputedRef<string[]> = computed(() => {
 	return hotelsArr.map(({name}) => name);
 });
-
 const requestedBenefits: ComputedRef<string[][]> = computed(() => {
 	return hotelsArr.map(({benefits}) => benefits);
 });
-
 const hotelErids: ComputedRef<string[]> = computed(() => {
 	return hotelsArr.map(({erid}) => erid);
 });
+const hotelLigals: ComputedRef<string[]> = computed(() => {
+	return hotelsArr.map(({ligal}) => ligal);
+});
 
-// Clipboard
+// VueUse
 const {copy, copied} = useClipboard();
-
-// Media Query
 const notLargeScreen = useMediaQuery('(max-width: 993px)');
 
-// State
+// Стэйт
 const isActive: ShallowRef<boolean> = shallowRef(false);
 
 // Functions
-function handleTrigger() {
+function handleTrigger(e: MouseEvent) {
 	isActive.value = !isActive.value;
+	// if (e.type === 'mouseover' || e.type === 'click') {
+	// 	ym(96674199, 'reachGoal', 'joint_popup_show')
+	// }
+}
+
+function handleTourButton() {
+	// ym(96674199, 'reachGoal', 'joint_popup_click')
 }
 
 // Fetch Hotel Data
@@ -69,7 +75,12 @@ onMounted(fetchHotelData);
 
 
 <template>
-	<button class="joint-trigger" @click="notLargeScreen && handleTrigger">
+	<button
+			class="joint-trigger"
+			:class="{'out-of-view': isActive}"
+			@click="handleTrigger"
+			@mouseover="handleTrigger"
+	>
 				<span class="icon wobble-hor-bottom-loop">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 21 20" fill="none">
 						<path d="M3.49988 9.14001L17.4999 3.14001V17.14L3.49988 13.14V9.14001Z" stroke="white"
@@ -87,8 +98,13 @@ onMounted(fetchHotelData);
 				</span>
 		Надо брать
 	</button>
-	<swiper-container :class="{'out-of-view': !isActive}" :slides-per-view="1" pagination="true"
-										space-between="8">
+	<swiper-container
+			:class="{'out-of-view': !isActive}"
+			:slides-per-view="1"
+			@mouseleave="handleTrigger"
+			pagination="true"
+			space-between="8"
+	>
 		<div v-if="notLargeScreen" slot="container-start">
 			<button class="popup-close" @click="handleTrigger">
 				<svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -136,17 +152,21 @@ onMounted(fetchHotelData);
 				<a href="#" class="prime-btn"
 					 :data-onlyhotel-lookup-destination="countries"
 					 :data-onlyhotel-lookup-regions="hotel.hotelName"
-					 :data-onlyhotel-lookup-depth-days="lookupDays">Выбрать тур</a>
+					 :data-onlyhotel-lookup-depth-days="lookupDays"
+					 @click="handleTourButton"
+				>
+					Выбрать тур
+				</a>
 				<div class="ligal-container">
 					<span v-if="!copied" class="ligal">Реклама</span>
 					<span
 							class="erid"
 							v-if="!copied"
 							@click="copy(hotelErids[idx])">
-						"ООО Центрбронь"
+						{{ hotelLigals[idx] }}
 						<span>{{ hotelErids[idx] }}</span>
 					</span>
-					<span v-if="copied">Скопировано!</span>
+					<span class="success" v-if="copied">Скопировано!</span>
 				</div>
 			</div>
 		</swiper-slide>

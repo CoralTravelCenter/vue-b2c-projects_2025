@@ -23,4 +23,15 @@ export interface Hotel {
     name: string;
     benefits: string[];
     erid: string;
+    ligal: string
+}
+
+
+declare global {
+    function ym(
+        counterId: number,
+        action: string,
+        target?: string,
+        params?: Record<string, any>
+    ): void
 }

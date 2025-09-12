@@ -1,110 +1,120 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from 'vue'
+import {nextTick, onMounted, onUnmounted, ref} from 'vue'
 
-// Props
+// Типы пропсов
 type Props = {
 	autoShow?: boolean
-	expires?: string
-	redirect?: string
+	yandexMetrika?: string
+	expires: string
 }
 
-const { autoShow, expires, redirect } = defineProps<Props>()
+// Пропсы
+const {autoShow, expires, yandexMetrika} = withDefaults(defineProps<Props>(), {
+	autoShow: false,
+})
 
-// States
+// Стэйты
 const mounted = ref(false)
 const visible = ref(false)
 
-// Functions
-function shouldShowPopup(expires: string | undefined): boolean {
-	if (autoShow) return false
+// Сверяем дату
+function shouldShowPopup(): boolean {
+	if (!autoShow) return false
 	if (!expires) return true
-
-	try {
-		const expiryDate = new Date(expires)
-		return Date.now() < expiryDate.getTime()
-	} catch (error) {
-		console.error('Invalid date format:', error)
-		return false
-	}
+	const t = new Date(expires).getTime()
+	return Number.isFinite(t) ? Date.now() < t : false
 }
 
-async function showPopup() {
+// Метод показа
+async function show() {
+	if (visible.value) return
 	mounted.value = true
 	await nextTick()
 	visible.value = true
-	document.body.classList.add('popup-open')
-}
-
-function closePopup() {
-	visible.value = false
-}
-
-function afterDialogLeave() {
-	mounted.value = false
-	document.body.classList.remove('popup-open')
-}
-
-function handleButtonClick() {
-	if (redirect) {
-		window.open(redirect, '_blank')
-	} else {
-		closePopup()
+	scrollLock()
+	// Вешаем метрику
+	if (yandexMetrika) {
+		ym(96674199, 'reachGoal', 'pop_up', {'promocode': yandexMetrika})
 	}
 }
 
-function initPopup() {
-	setTimeout(() => {
-		if (shouldShowPopup(expires)) {
-			showPopup()
-		}
-	}, 2000)
+// Метод скрытия
+function hide() {
+	if (!visible.value) return
+	visible.value = false
+	scrollBack()
 }
 
-// Lifecycle Hooks
-onMounted(initPopup)
-// Expose public methods
-defineExpose({ showPopup })
+// Переключение атрибута overlay
+function toggle() {
+	visible.value ? hide() : show()
+}
+
+// Убираем скролл
+function scrollLock() {
+	document.body.classList.add('js-scroll-lock')
+}
+
+// Возвращаем скролл
+function scrollBack() {
+	document.body.classList.remove('js-scroll-lock')
+}
+
+// Закрытие по Esc
+function onKeydown(e: KeyboardEvent) {
+	if (e.key === 'Escape' && visible.value) hide()
+}
+
+// Инициализация
+function init() {
+	if (!shouldShowPopup()) return
+	setTimeout(show, 2000)
+}
+
+// Хуки
+onMounted(() => {
+	document.addEventListener('keydown', onKeydown, true)
+	init()
+})
+onUnmounted(() => {
+	document.removeEventListener('keydown', onKeydown, true)
+})
+
+// Методы наружу
+defineExpose({show, hide, toggle})
 </script>
 
 <template>
 	<div
-		class="popup-overlay"
-		v-if="mounted"
-		:data-state="visible ? 'open' : 'closed'"
-		@click.self="closePopup"
+			v-if="mounted"
+			class="popup-overlay"
+			:data-state="visible ? 'open' : 'closed'"
+			@click.self="hide"
 	>
-		<div class="popup-backdrop" aria-hidden="true" />
-		<transition name="dialog-fade" @after-leave="afterDialogLeave">
-			<div class="popup-dialog" v-if="visible">
-				<button class="popup-close" @click="closePopup">
-					<svg
-						width="14"
-						height="14"
-						viewBox="0 0 16 16"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<path d="M14.6666 1.3335L1.33331 14.6668" stroke="#535353" />
-						<path d="M1.33329 1.3335L14.6666 14.6668" stroke="#535353" />
+		<div class="popup-backdrop" aria-hidden="true"/>
+
+		<transition name="dialog-fade" @after-leave="mounted = false">
+			<div v-if="visible" class="popup-dialog" role="dialog" aria-modal="true">
+				<button class="popup-close" type="button" @click="hide" aria-label="Закрыть">
+					<svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M14.6666 1.3335L1.33331 14.6668" stroke="#535353"/>
+						<path d="M1.33329 1.3335L14.6666 14.6668" stroke="#535353"/>
 					</svg>
 				</button>
 
 				<div class="popup-visual">
-					<slot name="visual" />
-					<slot name="ligal" />
+					<slot name="visual"/>
+					<slot name="ligal"/>
 				</div>
 
 				<div class="popup-content">
-					<!-- Default slot for flexible content -->
-					<slot />
-
-					<!-- Named slots for specific content types -->
-					<slot name="title" />
-					<slot name="subtitle" />
-					<slot name="button" @click="handleButtonClick" />
-					<slot name="list" />
-					<slot name="footnote" />
-					<slot name="disclaimers" />
+					<slot/>
+					<slot name="title"/>
+					<slot name="subtitle"/>
+					<slot name="button" @click="hide"></slot>
+					<slot name="list"/>
+					<slot name="footnote"/>
+					<slot name="disclaimers"/>
 				</div>
 			</div>
 		</transition>

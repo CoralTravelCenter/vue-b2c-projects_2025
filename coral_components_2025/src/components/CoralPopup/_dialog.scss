@@ -1,0 +1,89 @@
+@use 'tokens' as *;
+
+.popup-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 422px;
+  background: $color-white;
+  color: $color-text;
+  border-radius: $radius-lg;
+  font-size: inherit;
+}
+
+.popup-visual {
+  position: relative;
+}
+
+.popup-prime-button {
+  &:hover {
+    background-color: $color-primary-hover;
+  }
+
+  &:active {
+    background-color: $color-primary-active;
+  }
+}
+
+.popup-content {
+  padding: 16px;
+}
+
+/* Кнопка закрытия */
+.popup-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 5;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
+  background: $color-white;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: border-color $dur-quick $ease;
+
+  svg path {
+    transition: stroke $dur-quick $ease;
+  }
+
+  &:hover {
+    border-color: $color-primary-hover;
+
+    svg path {
+      stroke: $color-primary-hover;
+    }
+  }
+
+  &:active {
+    border-color: $color-primary-active;
+
+    svg path {
+      stroke: $color-primary-active;
+    }
+  }
+}
+
+/* Анимация появления/исчезновения диалога */
+.dialog-fade-enter-active,
+.dialog-fade-leave-active {
+  transition: opacity $dur-quick $ease, transform $dur-quick $ease;
+}
+
+.dialog-fade-enter-from,
+.dialog-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.dialog-fade-enter-to,
+.dialog-fade-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
