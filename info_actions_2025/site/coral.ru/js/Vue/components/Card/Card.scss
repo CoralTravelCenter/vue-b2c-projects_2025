@@ -1,0 +1,187 @@
+/* === Карточка === */
+.promo-card {
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+
+  article {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: start;
+    background: #FFFFFF;
+  }
+
+  &__visual {
+    height: 220px;
+    width: 100%;
+    @media (min-width: 1280px) {
+      height: 150px;
+    }
+    @media (min-width: 1440px) {
+      height: 180px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 16px 20px;
+    width: 100%;
+  }
+
+  &__footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  &__title {
+    margin-bottom: 8px !important;
+  }
+
+  &__description {
+    margin-bottom: 16px !important;
+    font-weight: 400;
+  }
+
+  &__time {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 400;
+
+    .icon {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+
+  &__link {
+    margin-top: 0 !important;
+    width: fit-content;
+    white-space: nowrap;
+  }
+
+  .coral-icon {
+    display: block;
+  }
+
+  .sunmar-icon {
+    display: none;
+  }
+}
+
+/* Вариант SUNMAR */
+.promo-card.sunmar {
+  border-radius: 16px;
+  background: #f5f5f8;
+
+  .promo-card__visual {
+    height: 250px;
+  }
+
+  .promo-card__content {
+    padding: 24px;
+    border-radius: 20px;
+    margin-top: -15px;
+    background: #f5f5f8;
+  }
+
+  .promo-card__title {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 24px !important;
+  }
+
+  .promo-card__description {
+    text-align: center;
+  }
+
+  /* Футер — колонкой и центрирован, но по-прежнему у дна карточки */
+  .promo-card__footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .promo-card__time {
+    order: 3;
+    justify-content: center;
+    margin-bottom: 20px !important;
+  }
+
+  .promo-card__link {
+    order: 4;
+    margin: 0 auto;
+    border-radius: 40px;
+    font-weight: 600;
+    padding-inline: 32px;
+    background: var(--gradient_Primary, linear-gradient(245deg, var(--Gradient-color_Gradinet_Primary_Second, #D8242A) 15.84%, var(--Gradient-color_Gradient_Primary_First, #E7317D) 84.16%));
+  }
+
+  .time-text {
+    color: #2e3465;
+  }
+
+  .coral-icon {
+    display: none;
+  }
+
+  .sunmar-icon {
+    display: block;
+  }
+}
+
+/* Плашка "Реклама" (как было) */
+:deep(.tooltip-trigger.ant-btn) {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border-radius: var(--radius-border_Radius_XXXL, 48px);
+  opacity: 0.72;
+  background: #fff;
+  border: none;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.85);
+  height: auto;
+  line-height: 20px;
+}
+
+.content, .copy-status {
+  padding: 8px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.copy {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 0;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+    filter: brightness(90%);
+  }
+}

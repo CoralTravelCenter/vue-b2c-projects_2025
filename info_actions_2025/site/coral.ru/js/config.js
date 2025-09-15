@@ -2,7 +2,7 @@ window._promotion_settings = [
   {
     toggle: "",
     filter: "Другие акции, Акции CoralBonus",
-    name: "Новый год наоборот",
+    name: "Новый год<br> наоборот",
     visual: "https://b2ccdn.coral.ru/content/img/Promo_page_Coral_684x364_NY.webp",
     url: "/main/newyear/?banner_on_site=offers-newyear26&erid=2W5zFG6XHVA",
     description: "Тут будет описание акции в две строки. <br> Тут будет описание акции в две строки",

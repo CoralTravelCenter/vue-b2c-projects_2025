@@ -2,13 +2,14 @@ import {defineCustomElement} from "vue";
 import CoralJoint from '@/components/CoralJoint/CoralJoint.ce.vue'
 import CoralPopupTrigger from '@/components/CoralPopupTrigger/CoralPopupTrigger.ce.vue'
 import CoralPopup from '@/components/CoralPopup/CoralPopup.ce.vue'
-import {hostReactAppReady} from "@/utils";
+import {hostReactAppReady, mediaMatcher} from "@/utils";
+import './index.css';
 
-// interface CoralPopupElement extends HTMLElement {
-//     show(): void
-//
-//     hide(): void
-// }
+interface CoralPopupElement extends HTMLElement {
+    show(): void,
+
+    hide(): void
+}
 
 
 if (!customElements.get('coral-popup')) {
@@ -87,23 +88,28 @@ const markup: string = `
     ])
     document.body.insertAdjacentHTML('beforeend', markup)
 
-    // const popup = document.querySelector('coral-popup') as CoralPopupElement
-    // const trigger = document.querySelector('coral-popup-trigger') as HTMLElement | null
-    //
-    // if (popup) {
-    //     document.body.append(popup)
-    // }
-    //
-    // if (trigger) {
-    //     let container: HTMLElement | null | undefined = null
-    //     mediaMatcher(993, (isMobile) => {
-    //         container = isMobile
-    //             ? document?.querySelector('.header-mobile .right-group')
-    //             : document?.querySelector('a[href*="where-to-buy"]')?.parentElement?.parentElement
-    //     })
-    //     container?.append(trigger)
-    //     if (!trigger.hasAttribute('href')) {
-    //         trigger.addEventListener('click', () => popup.show())
-    //     }
-    // }
+    const popup = document.querySelector('coral-popup') as CoralPopupElement
+    const trigger = document.querySelector('coral-popup-trigger') as HTMLElement | null
+
+    if (popup) {
+        document.body.append(popup)
+    }
+
+    if (trigger) {
+        let container: HTMLElement | null = null
+
+        mediaMatcher(993, (isMobile: boolean) => {
+            container = isMobile
+                ? (document.querySelector('.header-mobile .right-group') as HTMLElement | null)
+                : (document.querySelector('a[href*="where-to-buy"]')?.parentElement?.parentElement as HTMLElement | null)
+        })
+
+        if (container) {
+            container?.append(trigger)
+        }
+
+        if (!trigger.hasAttribute('href')) {
+            trigger.addEventListener('click', () => popup.show())
+        }
+    }
 })()

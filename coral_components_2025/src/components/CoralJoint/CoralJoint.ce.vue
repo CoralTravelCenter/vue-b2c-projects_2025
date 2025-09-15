@@ -27,6 +27,10 @@ const hotelData = shallowRef<Array<{
 
 const hotelsArr: Hotel[] = JSON.parse(hotels);
 
+// VueUse
+const {copy, copied} = useClipboard();
+const notLargeScreen = useMediaQuery('(max-width: 993px)');
+
 // Computed Properties
 const requestedHotelNames: ComputedRef<string[]> = computed(() => {
 	return hotelsArr.map(({name}) => name);
@@ -40,24 +44,27 @@ const hotelErids: ComputedRef<string[]> = computed(() => {
 const hotelLigals: ComputedRef<string[]> = computed(() => {
 	return hotelsArr.map(({ligal}) => ligal);
 });
-
-// VueUse
-const {copy, copied} = useClipboard();
-const notLargeScreen = useMediaQuery('(max-width: 993px)');
+const dynamicEvent: ComputedRef<string> = computed(() => {
+	return notLargeScreen.value ? 'click' : 'mouseover'
+})
 
 // Стэйт
 const isActive: ShallowRef<boolean> = shallowRef(false);
 
 // Functions
 function handleTrigger(e: MouseEvent) {
+	console.log(e.type)
 	isActive.value = !isActive.value;
-	// if (e.type === 'mouseover' || e.type === 'click') {
-	// 	ym(96674199, 'reachGoal', 'joint_popup_show')
-	// }
+	document.body.classList.toggle('js-scroll-lock');
+	// ym(96674199, 'reachGoal', 'joint_popup_show')
 }
 
 function handleTourButton() {
 	// ym(96674199, 'reachGoal', 'joint_popup_click')
+}
+
+function handleCloseButton() {
+	isActive.value = !isActive.value;
 }
 
 // Fetch Hotel Data
@@ -78,8 +85,7 @@ onMounted(fetchHotelData);
 	<button
 			class="joint-trigger"
 			:class="{'out-of-view': isActive}"
-			@click="handleTrigger"
-			@mouseover="handleTrigger"
+			v-on:[dynamicEvent]="handleTrigger"
 	>
 				<span class="icon wobble-hor-bottom-loop">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 21 20" fill="none">
@@ -101,12 +107,12 @@ onMounted(fetchHotelData);
 	<swiper-container
 			:class="{'out-of-view': !isActive}"
 			:slides-per-view="1"
-			@mouseleave="handleTrigger"
+			v-on="!notLargeScreen && { mouseleave: handleTrigger }"
 			pagination="true"
 			space-between="8"
 	>
 		<div v-if="notLargeScreen" slot="container-start">
-			<button class="popup-close" @click="handleTrigger">
+			<button class="popup-close" @click="handleCloseButton">
 				<svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path d="M14.6666 1.3335L1.33331 14.6668" stroke="#535353"/>
 					<path d="M1.33329 1.3335L14.6666 14.6668" stroke="#535353"/>
@@ -127,7 +133,7 @@ onMounted(fetchHotelData);
 				<span>{{ hotel.location }}</span>
 			</div>
 			<h3>{{ hotel.hotelName }}</h3>
-			<ul class="rating">
+			<ul class="rating" v-if="typeof hotel.rating === 'number'">
 				<li class="star" v-for="_star in hotel.rating">
 					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
 						<path
@@ -136,6 +142,7 @@ onMounted(fetchHotelData);
 					</svg>
 				</li>
 			</ul>
+			<span v-else class="rating">{{ hotel.rating }}</span>
 			<ul class="benefits">
 				<li class="benefit" v-for="benefit in requestedBenefits[idx]">{{ benefit }}</li>
 			</ul>

@@ -47,7 +47,7 @@ const filteredPromotions = computed(() => {
 });
 
 const params = useUrlSearchParams("history");
-const domen = true;
+const domen = computed(() => location.origin.includes('coral.ru'));
 const isApplication = computed(() => params.mw === "true");
 
 

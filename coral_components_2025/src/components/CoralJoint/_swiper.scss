@@ -5,6 +5,7 @@ swiper-container {
   width: 100%;
   align-items: stretch;
   transition: transform $transition;
+  pointer-events: all;
 
   @media (max-width: $bp-mobile) {
     max-width: 300px;
