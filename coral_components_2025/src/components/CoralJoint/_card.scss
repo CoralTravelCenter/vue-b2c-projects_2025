@@ -124,22 +124,28 @@ span.rating {
   font-size: 12px;
   text-align: center;
   cursor: pointer;
+
+  .ligal, .erid, .success {
+    font-size: 10px;
+  }
 }
 
 .erid {
   display: none;
 }
 
-.ligal-container:hover {
-  .ligal {
-    display: none;
+@media (hover: hover) {
+  .ligal-container:hover {
+    .ligal {
+      display: none;
+    }
+
+    .erid {
+      display: block;
+    }
   }
 
-  .erid {
-    display: block;
+  .success {
+    color: #52C41A;
   }
-}
-
-.success {
-  color: #52C41A;
 }

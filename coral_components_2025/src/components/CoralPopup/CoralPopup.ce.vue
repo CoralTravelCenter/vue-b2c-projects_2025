@@ -9,9 +9,7 @@ type Props = {
 }
 
 // Пропсы
-const {autoShow, expires, yandexMetrika} = withDefaults(defineProps<Props>(), {
-	autoShow: false,
-})
+const {autoShow, expires, yandexMetrika} = defineProps<Props>();
 
 // Стэйты
 const mounted = ref(false)

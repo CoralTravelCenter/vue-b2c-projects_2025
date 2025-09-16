@@ -65,6 +65,7 @@ function handleTourButton() {
 
 function handleCloseButton() {
 	isActive.value = !isActive.value;
+	document.body.classList.toggle('js-scroll-lock');
 }
 
 // Fetch Hotel Data
@@ -164,7 +165,7 @@ onMounted(fetchHotelData);
 				>
 					Выбрать тур
 				</a>
-				<div class="ligal-container">
+				<div v-if="!notLargeScreen" class="ligal-container">
 					<span v-if="!copied" class="ligal">Реклама</span>
 					<span
 							class="erid"
@@ -174,6 +175,14 @@ onMounted(fetchHotelData);
 						<span>{{ hotelErids[idx] }}</span>
 					</span>
 					<span class="success" v-if="copied">Скопировано!</span>
+				</div>
+				<div v-else class="ligal-container">
+					<span class="success" :style="{ color: copied ? '#52c41a' : '#000000' }" v-if="copied">Скопировано!</span>
+					<span class="ligal" @click="copy(hotelErids[idx])" v-else>Реклама. {{
+							hotelLigals[idx]
+						}}<span> erid: {{
+								hotelErids[idx]
+							}}</span></span>
 				</div>
 			</div>
 		</swiper-slide>
