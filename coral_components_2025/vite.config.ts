@@ -1,24 +1,22 @@
-import {defineConfig} from 'vite';
-import vue from '@vitejs/plugin-vue';
-import monkey from 'vite-plugin-monkey';
-import * as path from 'node:path';
+import {defineConfig} from 'vite'
+import vue from '@vitejs/plugin-vue'
+import monkey from 'vite-plugin-monkey'
+import * as path from 'node:path'
 
 export default defineConfig({
     css: {
         preprocessorOptions: {
-            scss: {
-                api: 'modern-compiler'
-            }
-        }
+            scss: {api: 'modern-compiler'},
+        },
     },
     plugins: [
         vue({
             customElement: true,
             template: {
                 compilerOptions: {
-                    isCustomElement: (tag) => tag.includes('-')
-                }
-            }
+                    isCustomElement: tag => tag.includes('-'),
+                },
+            },
         }),
         monkey({
             entry: 'src/main.ts',
@@ -33,9 +31,7 @@ export default defineConfig({
         }),
     ],
     resolve: {
-        alias: {
-            '@': path.resolve(__dirname, './src'),
-        },
+        alias: {'@': path.resolve(__dirname, './src')},
     },
     build: {
         target: 'esnext',
@@ -43,24 +39,19 @@ export default defineConfig({
             entry: 'src/main.ts',
             name: 'CoralComponents',
             fileName: () => 'coral-components.js',
-            formats: ['iife'],
+            formats: ['iife'], // сразу IIFE
         },
         rollupOptions: {
+            // Vue не выносим наружу, иначе userscript не будет самодостаточным
+            external: () => false,
             output: {
-                globals: {
-                    vue: 'Vue',
-                },
+                globals: {}, // пусто, так как внешних глобалей нет
             },
         },
         minify: 'terser',
         terserOptions: {
-            compress: {
-                drop_console: true,
-                drop_debugger: true
-            },
-            format: {
-                comments: false
-            }
-        }
+            compress: {drop_console: true, drop_debugger: true},
+            format: {comments: false},
+        },
     },
-});
+})
