@@ -1,0 +1,8 @@
+@use 'tokens';
+@use 'overlay';
+@use 'dialog';
+@use 'slots';
+
+body.js-scroll-lock {
+  overflow: hidden;
+}

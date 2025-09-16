@@ -53,7 +53,6 @@ const isActive: ShallowRef<boolean> = shallowRef(false);
 
 // Functions
 function handleTrigger(e: MouseEvent) {
-	console.log(e.type)
 	isActive.value = !isActive.value;
 	document.body.classList.toggle('js-scroll-lock');
 	// ym(96674199, 'reachGoal', 'joint_popup_show')

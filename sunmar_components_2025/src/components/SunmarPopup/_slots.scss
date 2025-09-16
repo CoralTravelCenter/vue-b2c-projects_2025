@@ -1,0 +1,87 @@
+@use 'tokens' as *;
+
+/* Визуал */
+::slotted([slot='visual']) {
+  display: block;
+  width: 100%;
+  height: 262px;
+  margin: 0;
+  object-fit: cover;
+  border-top-left-radius: $radius-xl;
+  border-top-right-radius: $radius-xl;
+}
+
+/* Юридический текст */
+::slotted([slot='ligal']) {
+  position: absolute;
+  right: 0;
+  width: 100%;
+  bottom: 8px;
+  margin: 0;
+  text-align: center;
+  font-size: 8px;
+  color: $color-white;
+}
+
+/* Заголовок */
+::slotted([slot='title']) {
+  margin: 0 0 16px 0;
+  font-size: 1.75em;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Подзаголовок */
+::slotted([slot='subtitle']) {
+  margin: 0 0 24px 0;
+  font-size: 1.25em;
+  text-align: center;
+}
+
+/* Кнопка */
+::slotted([slot='button']) {
+  display: block;
+  width: 100%;
+  margin: 0 0 24px 0;
+  padding: 13px;
+
+  background-color: $color-primary;
+  color: $color-white;
+  font-size: 1em;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: background-color $dur-quick $ease;
+}
+
+/* Список */
+::slotted([slot='list']) {
+  margin: 0 0 16px 0;
+  font-size: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Сноска */
+::slotted([slot='footnote']) {
+  margin: 0 0 16px 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Дисклеймеры */
+::slotted([slot='disclaimers']) {
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  color: $color-muted;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
