@@ -9,7 +9,7 @@ type Props = {
 }
 
 // Пропсы
-const {autoShow, expires, yandexMetrika} = defineProps<Props>();
+const props = defineProps<Props>();
 
 // Стэйты
 const mounted = ref(false)
@@ -17,9 +17,9 @@ const visible = ref(false)
 
 // Сверяем дату
 function shouldShowPopup(): boolean {
-	if (!autoShow) return false
-	if (!expires) return true
-	const t = new Date(expires).getTime()
+	if (!props.autoShow) return false
+	if (!props.expires) return true
+	const t = new Date(props.expires).getTime()
 	return Number.isFinite(t) ? Date.now() < t : false
 }
 
@@ -31,8 +31,8 @@ async function show() {
 	visible.value = true
 	scrollLock()
 	// Вешаем метрику
-	if (yandexMetrika) {
-		ym(96674199, 'reachGoal', 'pop_up', {'promocode': yandexMetrika})
+	if (props.yandexMetrika) {
+		ym(96674199, 'reachGoal', 'pop_up', {'promocode': props.yandexMetrika})
 	}
 }
 

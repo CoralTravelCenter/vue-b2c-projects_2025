@@ -6,7 +6,7 @@ import {Hotel} from "@/types";
 import {useClipboard, useMediaQuery} from "@vueuse/core";
 
 // Props
-const {countries, hotels, lookupDays, lookupNights} = defineProps<{
+const props = defineProps<{
 	countries: string;
 	hotels: string;
 	lookupDays: string;
@@ -25,7 +25,7 @@ const hotelData = shallowRef<Array<{
 	meal: string[];
 }>>([]);
 
-const hotelsArr: Hotel[] = JSON.parse(hotels);
+const hotelsArr: Hotel[] = JSON.parse(props.hotels);
 
 // VueUse
 const {copy, copied} = useClipboard();
@@ -52,14 +52,14 @@ const dynamicEvent: ComputedRef<string> = computed(() => {
 const isActive: ShallowRef<boolean> = shallowRef(false);
 
 // Functions
-function handleTrigger(e: MouseEvent) {
+function handleTrigger() {
 	isActive.value = !isActive.value;
 	document.body.classList.toggle('js-scroll-lock');
-	// ym(96674199, 'reachGoal', 'joint_popup_show')
+	ym(96674199, 'reachGoal', 'joint_popup_show')
 }
 
 function handleTourButton() {
-	// ym(96674199, 'reachGoal', 'joint_popup_click')
+	ym(96674199, 'reachGoal', 'joint_popup_click')
 }
 
 function handleCloseButton() {
@@ -70,7 +70,7 @@ function handleCloseButton() {
 // Fetch Hotel Data
 async function fetchHotelData() {
 	try {
-		hotelData.value = await useHotelData(requestedHotelNames, lookupDays, lookupNights);
+		hotelData.value = await useHotelData(requestedHotelNames, props.lookupDays, props.lookupNights);
 	} catch (error) {
 		console.error('Ошибка при загрузке данных об отелях:', error);
 	}

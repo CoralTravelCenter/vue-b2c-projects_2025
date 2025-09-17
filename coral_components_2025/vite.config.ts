@@ -39,14 +39,6 @@ export default defineConfig({
             entry: 'src/main.ts',
             name: 'CoralComponents',
             fileName: () => 'coral-components.js',
-            formats: ['iife'], // сразу IIFE
-        },
-        rollupOptions: {
-            // Vue не выносим наружу, иначе userscript не будет самодостаточным
-            external: () => false,
-            output: {
-                globals: {}, // пусто, так как внешних глобалей нет
-            },
         },
         minify: 'terser',
         terserOptions: {

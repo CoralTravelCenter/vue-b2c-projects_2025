@@ -6,7 +6,7 @@ type Props = {
 }
 
 // Пропсы
-const {redirectTo} = defineProps<Props>()
+defineProps<Props>()
 </script>
 
 <template>
@@ -14,7 +14,7 @@ const {redirectTo} = defineProps<Props>()
 		<slot name="icon"></slot>
 		<slot name="text"></slot>
 	</a>
-	<button v-else class="coral-popup-trigger" @click="show">
+	<button v-else class="coral-popup-trigger">
 		<slot name="icon"></slot>
 		<slot name="text"></slot>
 	</button>
