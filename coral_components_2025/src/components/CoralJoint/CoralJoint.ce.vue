@@ -13,6 +13,7 @@ const {countries, hotels, lookupDays, lookupNights} = defineProps<{
 	lookupNights: string;
 }>();
 
+
 // Reactive Data
 const hotelData = shallowRef<Array<{
 	formattedPrice: string;

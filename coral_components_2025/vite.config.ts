@@ -25,7 +25,7 @@ export default defineConfig({
                 match: ['https://www.coral.ru/*'],
                 icon: 'https://vitejs.dev/logo.svg',
                 name: 'coral_components_2025',
-                version: '1.0.0',
+                version: '1.0.1',
                 description: 'Reusable Components',
             },
         }),
@@ -39,14 +39,6 @@ export default defineConfig({
             entry: 'src/main.ts',
             name: 'CoralComponents',
             fileName: () => 'coral-components.js',
-            formats: ['iife'], // сразу IIFE
-        },
-        rollupOptions: {
-            // Vue не выносим наружу, иначе userscript не будет самодостаточным
-            external: () => false,
-            output: {
-                globals: {}, // пусто, так как внешних глобалей нет
-            },
         },
         minify: 'terser',
         terserOptions: {
