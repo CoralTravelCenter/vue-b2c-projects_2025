@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ComputedRef, onMounted, ShallowRef, shallowRef} from 'vue';
+import {computed, ComputedRef, onMounted, ref, ShallowRef, shallowRef} from 'vue';
 import useHotelData from '@/composibles/useHotelData';
 import {formattedDates, pluralizeNights} from "@/utils";
 import {Hotel} from "@/types";
@@ -13,7 +13,6 @@ const props = defineProps<{
 	lookupNights: string;
 }>();
 
-
 // Reactive Data
 const hotelData = shallowRef<Array<{
 	formattedPrice: string;
@@ -26,8 +25,9 @@ const hotelData = shallowRef<Array<{
 	meal: string[];
 }>>([]);
 
-const hotelsArr: Hotel[] = JSON.parse(props.hotels);
+const ctxRef = ref<HTMLLinkElement | null>(null);
 
+const hotelsArr: Hotel[] = JSON.parse(props.hotels);
 // VueUse
 const {copy, copied} = useClipboard();
 const notLargeScreen = useMediaQuery('(max-width: 993px)');
@@ -35,6 +35,9 @@ const notLargeScreen = useMediaQuery('(max-width: 993px)');
 // Computed Properties
 const requestedHotelNames: ComputedRef<string[]> = computed(() => {
 	return hotelsArr.map(({name}) => name);
+});
+const requestedHotelLocations: ComputedRef<string[]> = computed(() => {
+	return hotelsArr.map(({location}) => location);
 });
 const requestedBenefits: ComputedRef<string[][]> = computed(() => {
 	return hotelsArr.map(({benefits}) => benefits);
@@ -71,14 +74,27 @@ function handleCloseButton() {
 // Fetch Hotel Data
 async function fetchHotelData() {
 	try {
-		hotelData.value = await useHotelData(requestedHotelNames, props.lookupDays, props.lookupNights);
+		hotelData.value = await useHotelData(requestedHotelNames, props.lookupDays, props.lookupNights)
 	} catch (error) {
 		console.error('Ошибка при загрузке данных об отелях:', error);
 	}
 }
 
 // Lifecycle Hooks
-onMounted(fetchHotelData);
+onMounted(() => {
+	fetchHotelData()
+	const link = ctxRef.value;
+	link?.addEventListener('click', () => {
+		link.dispatchEvent(new CustomEvent('cta-click', {
+			bubbles: true,
+			composed: true,
+			cancelable: true,
+			detail: {
+				source: link,
+			}
+		}));
+	});
+});
 </script>
 
 
@@ -131,7 +147,7 @@ onMounted(fetchHotelData);
 							stroke="#535353" stroke-width="0.7" stroke-linejoin="round"/>
 					<ellipse cx="5" cy="5.66675" rx="2" ry="2" stroke="#535353" stroke-width="0.7" stroke-linejoin="round"/>
 				</svg>
-				<span>{{ hotel.location }}</span>
+				<span>{{ requestedHotelLocations[idx] }}</span>
 			</div>
 			<h3>{{ hotel.hotelName }}</h3>
 			<ul class="rating" v-if="typeof hotel.rating === 'number'">
@@ -158,10 +174,11 @@ onMounted(fetchHotelData);
 				{{ lookupNights }}&nbsp;{{ pluralizeNights(Number(lookupNights)) }} на&nbsp;двоихх</span>
 			<div class="actions">
 				<a href="#" class="prime-btn"
+					 ref="ctxRef"
 					 :data-onlyhotel-lookup-destination="countries"
 					 :data-onlyhotel-lookup-regions="hotel.hotelName"
 					 :data-onlyhotel-lookup-depth-days="lookupDays"
-					 @click="handleTourButton"
+					 @click.stop="handleTourButton"
 				>
 					Выбрать тур
 				</a>

@@ -11,7 +11,7 @@ window._promotion_settings = [
     app_erid: "09987",
     promo_end_text: "до 13 апреля 2028 г.",
     promo_end: "2028-07-13",
-    entry_point: "novy-gog"
+    entry_point: "5_onlyhotel"
   },
   {
     toggle: "",

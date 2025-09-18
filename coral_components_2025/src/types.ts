@@ -21,6 +21,7 @@ export interface Category {
 
 export interface Hotel {
     name: string;
+    location: string;
     benefits: string[];
     erid: string;
     ligal: string

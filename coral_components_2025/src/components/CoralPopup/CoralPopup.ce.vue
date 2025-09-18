@@ -1,76 +1,88 @@
 <script setup lang="ts">
-import {nextTick, onMounted, onUnmounted, ref} from 'vue'
+import {computed, ComputedRef, nextTick, onBeforeMount, onMounted, onUnmounted, ref} from 'vue'
 
 // Типы пропсов
 type Props = {
+	/** Если проп не передан — попап сам НЕ запускается */
 	autoShow?: boolean
+	/** Дата/время в формате, понятном Date (ISO предпочтительно). Если задана — автопоказ только до этой даты */
+	expires?: string
+	/** ID счётчика Я.Метрики. Если задан — отправляем goal при открытии */
 	yandexMetrika?: string
-	expires: string
 }
 
 // Пропсы
-const props = defineProps<Props>();
+const {autoShow, expires, yandexMetrika} = defineProps<Props>()
 
-// Стэйты
+// Состояния
 const mounted = ref(false)
 const visible = ref(false)
+const allowed = ref(true)
 
-// Сверяем дату
-function shouldShowPopup(): boolean {
-	if (!props.autoShow) return false
-	if (!props.expires) return true
-	const t = new Date(props.expires).getTime()
+const ymData: ComputedRef<string> = computed(() => {
+	return (yandexMetrika?.startsWith('{')) ? JSON.parse(yandexMetrika) : yandexMetrika
+})
+
+function isWithinExpire(): boolean {
+	if (!expires) return true
+	const t = new Date(expires).getTime()
 	return Number.isFinite(t) ? Date.now() < t : false
 }
 
-// Метод показа
+// --- Метрика ---
+function notifyOpened() {
+	if (ymData && (window as any).ym) {
+		ym(96674199, 'reachGoal', ymData.value)
+	}
+}
+
+// --- Управление показом ---
 async function show() {
+	if (!allowed.value) return
 	if (visible.value) return
 	mounted.value = true
 	await nextTick()
 	visible.value = true
 	scrollLock()
-	// Вешаем метрику
-	if (props.yandexMetrika) {
-		ym(96674199, 'reachGoal', 'pop_up', {'promocode': props.yandexMetrika})
-	}
+	notifyOpened()
 }
 
-// Метод скрытия
 function hide() {
 	if (!visible.value) return
 	visible.value = false
 	scrollBack()
 }
 
-// Переключение атрибута overlay
 function toggle() {
 	visible.value ? hide() : show()
 }
 
-// Убираем скролл
+// --- Работа со скроллом ---
 function scrollLock() {
 	document.body.classList.add('js-scroll-lock')
 }
 
-// Возвращаем скролл
 function scrollBack() {
 	document.body.classList.remove('js-scroll-lock')
 }
 
-// Закрытие по Esc
+// --- Закрытие по Esc ---
 function onKeydown(e: KeyboardEvent) {
 	if (e.key === 'Escape' && visible.value) hide()
 }
 
-// Инициализация
+// --- Инициализация ---
 function init() {
-	if (!shouldShowPopup()) return
-	setTimeout(show, 2000)
+	if (!allowed.value) return
+	autoShow && setTimeout(show, 2000)
 }
 
-// Хуки
+// --- Хуки ---
+onBeforeMount(() => {
+	allowed.value = isWithinExpire()
+})
 onMounted(() => {
+	if (!allowed.value) return
 	document.addEventListener('keydown', onKeydown, true)
 	init()
 })
@@ -78,7 +90,7 @@ onUnmounted(() => {
 	document.removeEventListener('keydown', onKeydown, true)
 })
 
-// Методы наружу
+// --- Методы наружу ---
 defineExpose({show, hide, toggle})
 </script>
 
@@ -88,11 +100,11 @@ defineExpose({show, hide, toggle})
 			class="popup-overlay"
 			:data-state="visible ? 'open' : 'closed'"
 			@click.self="hide"
+			part="overlay"
 	>
-		<div class="popup-backdrop" aria-hidden="true"/>
-
+		<div class="popup-backdrop" aria-hidden="true" part="overlay"/>
 		<transition name="dialog-fade" @after-leave="mounted = false">
-			<div v-if="visible" class="popup-dialog" role="dialog" aria-modal="true">
+			<div v-if="visible" class="popup-dialog" part="dialog" role="dialog" aria-modal="true">
 				<button class="popup-close" type="button" @click="hide" aria-label="Закрыть">
 					<svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path d="M14.6666 1.3335L1.33331 14.6668" stroke="#535353"/>

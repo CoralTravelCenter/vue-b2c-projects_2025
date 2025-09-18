@@ -4,6 +4,7 @@ import {useMediaQuery} from '@vueuse/core'
 import {onBeforeUnmount, ref} from 'vue'
 
 const {
+	toggle,
 	visual,
 	name,
 	description,
@@ -13,6 +14,7 @@ const {
 	entry_point,
 	ligal,
 } = defineProps({
+	toggle: String,
 	visual: String,
 	name: String,
 	description: String,
@@ -38,17 +40,25 @@ function onCopySuccess() {
 	}, COPY_RESET_MS)
 }
 
+function handleButtonClick() {
+	if (toggle) {
+		const popup = document?.querySelector('coral-popup', 'sunmar-popup')
+		if (popup && typeof popup.show === 'function') popup.show()
+	} else {
+		window.open(url, '_blank')
+	}
+}
+
+function handleLinkClick() {
+
+}
+
 onBeforeUnmount(() => {
 	if (copiedTimer) {
 		clearTimeout(copiedTimer)
 		copiedTimer = null
 	}
 })
-
-function handleButtonClick() {
-	const popup = document?.querySelector('coral-popup', 'sunmar-popup')
-	if (popup && typeof popup.show === 'function') popup.show()
-}
 </script>
 
 
@@ -106,7 +116,7 @@ function handleButtonClick() {
 						<span class="time-text">{{ promo_end_text }}</span>
 					</div>
 					<a
-							v-if="!entry_point"
+							v-if="!toggle && !entry_point"
 							class="promo-card__link prime-btn"
 							:href="url"
 							target="_blank"
