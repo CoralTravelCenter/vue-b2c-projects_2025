@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ComputedRef, onMounted, ref, ShallowRef, shallowRef} from 'vue';
+import {computed, ComputedRef, onMounted, ShallowRef, shallowRef} from 'vue';
 import useHotelData from '@/composibles/useHotelData';
 import {formattedDates, pluralizeNights} from "@/utils";
 import {Hotel} from "@/types";
@@ -25,7 +25,6 @@ const hotelData = shallowRef<Array<{
 	meal: string[];
 }>>([]);
 
-const ctxRef = ref<HTMLLinkElement | null>(null);
 
 const hotelsArr: Hotel[] = JSON.parse(props.hotels);
 // VueUse
@@ -62,10 +61,6 @@ function handleTrigger() {
 	ym(96674199, 'reachGoal', 'joint_popup_show')
 }
 
-function handleTourButton() {
-	ym(96674199, 'reachGoal', 'joint_popup_click')
-}
-
 function handleCloseButton() {
 	isActive.value = !isActive.value;
 	document.body.classList.toggle('js-scroll-lock');
@@ -80,21 +75,24 @@ async function fetchHotelData() {
 	}
 }
 
+function customHandler(e: MouseEvent) {
+	const el = e.currentTarget as HTMLAnchorElement;
+
+	el.dispatchEvent(new CustomEvent('cta-click', {
+		bubbles: true,
+		composed: true,
+		cancelable: true,
+		detail: {
+			source: el
+		}
+	}));
+
+	ym(96674199, 'reachGoal', 'joint_popup_click');
+}
+
+
 // Lifecycle Hooks
-onMounted(() => {
-	fetchHotelData()
-	const link = ctxRef.value;
-	link?.addEventListener('click', () => {
-		link.dispatchEvent(new CustomEvent('cta-click', {
-			bubbles: true,
-			composed: true,
-			cancelable: true,
-			detail: {
-				source: link,
-			}
-		}));
-	});
-});
+onMounted(() => fetchHotelData())
 </script>
 
 
@@ -171,14 +169,14 @@ onMounted(() => {
 				{{ formattedDates(hotel.dates) }}
 			</span>
 			<span class="nights">
-				{{ lookupNights }}&nbsp;{{ pluralizeNights(Number(lookupNights)) }} на&nbsp;двоихх</span>
+				{{ lookupNights }}&nbsp;{{ pluralizeNights(Number(lookupNights)) }} на&nbsp;двоих</span>
 			<div class="actions">
 				<a href="#" class="prime-btn"
 					 ref="ctxRef"
 					 :data-onlyhotel-lookup-destination="countries"
 					 :data-onlyhotel-lookup-regions="hotel.hotelName"
 					 :data-onlyhotel-lookup-depth-days="lookupDays"
-					 @click.stop="handleTourButton"
+					 @click.prevent="customHandler"
 				>
 					Выбрать тур
 				</a>
