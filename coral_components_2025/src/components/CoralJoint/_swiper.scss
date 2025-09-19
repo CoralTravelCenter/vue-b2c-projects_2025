@@ -7,10 +7,6 @@ swiper-container {
   transition: transform $transition;
   pointer-events: all;
 
-  @media (max-width: $bp-mobile) {
-    max-width: 300px;
-  }
-
   /* Swiper parts */
   &::part(pagination) {
     position: relative;
@@ -50,7 +46,7 @@ swiper-container.out-of-view {
 
 @media (max-width: $bp-mobile) {
   .joint-trigger.out-of-view {
-    transform: translateX(-150%);
+    transform: translate(-150%, 0);
   }
 }
 

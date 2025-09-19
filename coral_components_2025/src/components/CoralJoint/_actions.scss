@@ -93,7 +93,7 @@
   align-items: center;
   gap: 6px;
   pointer-events: all;
-  transform: translateY(-50%);
+  transform: translate(0, -50%);
   max-width: 50px;
   padding: 8px;
 
@@ -111,6 +111,7 @@
     bottom: 16px;
     left: 16px;
     border-radius: $radius-lg;
+    transform: translate(0, 0);
   }
 
   .icon {
