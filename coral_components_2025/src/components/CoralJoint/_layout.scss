@@ -18,15 +18,12 @@
   }
 }
 
-:host:has(swiper-container:not(.out-of-view)) {
-  @media (max-width: $bp-mobile) {
-    &::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: $backdrop;
-      opacity: .7;
-      pointer-events: none;
-    }
-  }
+.backdrop {
+  width: 100%;
+  height: 100%;
+  background: #0000006e;
+  z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0;
 }

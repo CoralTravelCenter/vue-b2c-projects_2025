@@ -11,6 +11,7 @@ const props = defineProps<{
 	hotels: string;
 	lookupDays: string;
 	lookupNights: string;
+	mode: string;
 }>();
 
 // Reactive Data
@@ -50,20 +51,29 @@ const hotelLigals: ComputedRef<string[]> = computed(() => {
 const dynamicEvent: ComputedRef<string> = computed(() => {
 	return notLargeScreen.value ? 'click' : 'mouseover'
 })
+const currentMode = computed(() => {
+	return props.mode === 'package';
+})
 
 // Стэйт
-const isActive: ShallowRef<boolean> = shallowRef(false);
+const activeRef: ShallowRef<boolean> = shallowRef(true);
+const activeState: ComputedRef<string> = computed(() => {
+	return activeRef.value ? 'closed' : 'opened';
+})
 
 // Functions
-function handleTrigger() {
-	isActive.value = !isActive.value;
-	document.body.classList.toggle('js-scroll-lock');
+function handleTrigger(e: MouseEvent) {
+	activeRef.value = !activeRef.value;
+
+	if (e.type === 'click') {
+		document.body.classList.add('js-scroll-lock');
+	}
 	ym(96674199, 'reachGoal', 'joint_popup_show')
 }
 
 function handleCloseButton() {
-	isActive.value = !isActive.value;
-	document.body.classList.toggle('js-scroll-lock');
+	activeRef.value = !activeRef.value;
+	document.body.classList.remove('js-scroll-lock');
 }
 
 // Fetch Hotel Data
@@ -99,7 +109,7 @@ onMounted(() => fetchHotelData())
 <template>
 	<button
 			class="joint-trigger"
-			:class="{'out-of-view': isActive}"
+			:class="{'out-of-view': !activeRef}"
 			v-on:[dynamicEvent]="handleTrigger"
 	>
 				<span class="icon wobble-hor-bottom-loop">
@@ -119,12 +129,14 @@ onMounted(() => fetchHotelData())
 				</span>
 		Надо брать
 	</button>
+	<div class="backdrop" v-show="!activeRef && notLargeScreen" aria-hidden="true" part="overlay"/>
 	<swiper-container
-			:class="{'out-of-view': !isActive}"
+			:class="{'out-of-view': activeRef}"
 			:slides-per-view="1"
 			v-on="!notLargeScreen && { mouseleave: handleTrigger }"
 			pagination="true"
 			space-between="8"
+			:data-state="activeState"
 	>
 		<div v-if="notLargeScreen" slot="container-start">
 			<button class="popup-close" @click="handleCloseButton">
@@ -171,14 +183,25 @@ onMounted(() => fetchHotelData())
 			<span class="nights">
 				{{ lookupNights }}&nbsp;{{ pluralizeNights(Number(lookupNights)) }} на&nbsp;двоих</span>
 			<div class="actions">
-				<a href="#" class="prime-btn"
+				<a v-if="currentMode" href="#" class="prime-btn"
+					 ref="ctxRef"
+					 :data-lookup-destination="countries"
+					 :data-lookup-regions="hotel.hotelName"
+					 :data-lookup-depth-days="lookupDays"
+					 :data-lookup-nights="lookupNights"
+					 @click.prevent="customHandler"
+				>
+					Выбрать тур
+				</a>
+				<a v-else href="#" class="prime-btn"
 					 ref="ctxRef"
 					 :data-onlyhotel-lookup-destination="countries"
 					 :data-onlyhotel-lookup-regions="hotel.hotelName"
 					 :data-onlyhotel-lookup-depth-days="lookupDays"
+					 :data-onlyhotel-lookup-nights="lookupNights"
 					 @click.prevent="customHandler"
 				>
-					Выбрать тур
+					Выбрать отель
 				</a>
 				<div v-if="!notLargeScreen" class="ligal-container">
 					<span v-if="!copied" class="ligal">Реклама</span>

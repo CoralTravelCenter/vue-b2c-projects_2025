@@ -1,4 +1,4 @@
-import useArrivalLocation from '@/composibles/useArrivalLocation'
+import {useArrivalLocation} from '@/composibles/useArrivalLocation'
 import {useFilteredData} from '@/composibles/useFilteredData'
 import usePriceSearchEncrypt from '@/composibles/usePriceSearchEncrypt'
 import {ComputedRef} from "vue";
@@ -22,8 +22,8 @@ export default async function useHotelData(
     }>
 > {
     // 1) Подтянули значения и привели типы
-    const d: number = Number.parseInt(days, 10)
-    const n: number = Number.parseInt(nights, 10)
+    const d: number = Number(days)
+    const n: number = Number(nights)
 
     // 2) Достаём arrivalLocations
     const arrivalLocations = await useArrivalLocation(names)

@@ -24,12 +24,10 @@ function formatDate(date: Date): string {
 
 export function calculateDates(depth: number, nights: number): [string, string] {
     const today = new Date();
-    const startDate = new Date(today);
+    const startDate = new Date(today.getTime());
     startDate.setDate(today.getDate() + depth);
-
-    const endDate = new Date(startDate);
+    const endDate = new Date(startDate.getTime());
     endDate.setDate(startDate.getDate() + nights);
-
     return [formatDate(startDate), formatDate(endDate)];
 }
 

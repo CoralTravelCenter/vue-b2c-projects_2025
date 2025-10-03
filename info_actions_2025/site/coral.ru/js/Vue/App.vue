@@ -13,7 +13,7 @@ const promotionsArr = ref(window._promotion_settings ?? []);
 const freshOffers = computed(() =>
 		promotionsArr.value.filter(o => filterFreshOffers(o))
 );
-
+console.log(freshOffers.value)
 
 const offersNormalized = computed(() =>
 		freshOffers.value.map(p => {
