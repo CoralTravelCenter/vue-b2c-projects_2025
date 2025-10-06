@@ -1,0 +1,26 @@
+@use "mixins";
+
+.coral-main-btn {
+  border-radius: 64px;
+  background: #0093d0;
+  color: #fff !important;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.3;
+  padding: 13px 24px;
+  flex-shrink: 0;
+  transition: all var(--transtion);
+  border: 1px solid #0093d0;
+  text-decoration: none !important;
+}
+
+.coral-main-btn:hover {
+  background: #33c2ff;
+  border: 1px solid #33c2ff;
+}
+
+.coral-main-btn:active {
+  background: #077dad;
+  border: 1px solid #077dad;
+}
