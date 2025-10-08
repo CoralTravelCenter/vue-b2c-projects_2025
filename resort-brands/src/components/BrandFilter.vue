@@ -21,7 +21,7 @@ function setCurrentBrand(newBrand) {
 </script>
 
 <template>
-	<ul class="brand-list">
+	<ul class="brand-list js-scroll">
 		<li
 				v-for="brand in props.brands"
 				:key="brand"
@@ -56,10 +56,9 @@ function setCurrentBrand(newBrand) {
 }
 
 .brand-list.js-scroll {
-	width: 100vw;
+	width: 100%;
 	overflow-x: scroll;
 	scroll-snap-type: x mandatory;
-	padding-inline: 16px;
 	justify-content: start;
 
 	-ms-overflow-style: none; /* Для старых версий IE и Edge */
@@ -71,7 +70,6 @@ function setCurrentBrand(newBrand) {
 
 	@include mixins.respond-up(lg) {
 		justify-content: center;
-		width: 100%;
 	}
 
 

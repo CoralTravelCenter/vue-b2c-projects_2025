@@ -1,101 +1,101 @@
 <script setup>
 import {computed, ref, watch} from "vue";
 import {StorageSerializers, useSessionStorage} from "@vueuse/core";
-import {getArrivalLocation} from "./helpers/getArrivalLocations.js";
-import {getHotelData} from "./helpers/getHotelsData.js";
-import Navigation from "./components/Navigation.vue";
+import {readBrand, readCountry, writeBrand, writeCountry} from "./helpers/setCache.js";
 import BrandFilter from "./components/BrandFilter.vue";
+import Navigation from "./components/Navigation.vue";
+import {fetchData} from "./helpers/fetchData.js";
 import HotlesSlider from "./components/HotlesSlider.vue";
 
-// Реактивные данные
-const currentBrand = ref(_resortBrands.defaults.currentBrand);
-const currentCountry = ref(_resortBrands.defaults.defaultCountry);
+/** UI state + результат */
+const isLoading = ref(false);
+const isError = ref(null);
+const data = ref([]);
 
-// Вычисления
+/** Хранилища */
+const filters = useSessionStorage("rb-filters", {}, {serializer: StorageSerializers.object});
+const dataCache = useSessionStorage("rb-data", {}, {serializer: StorageSerializers.object});
+
+/** Инициализация */
+const defaultCountry = _resortBrands.countries[0]?.name || "";
+
+/** Список стран */
 const countries = computed(() => _resortBrands.countries.map(c => c.name));
 
+/** Текущая страна */
+const currentCountry = computed({
+	get: () => readCountry(filters, defaultCountry),
+	set: v => writeCountry(filters, v),
+});
+
+/** Бренды выбранной страны */
 const brandsOfCurrentCountry = computed(() => {
-	const country = _resortBrands.countries.find(c => c.name === currentCountry.value);
-	return country ? Array.from(new Set(country.brands.map(b => b.name))) : [];
+	const c = _resortBrands.countries.find(x => x.name === currentCountry.value);
+	return c ? Array.from(new Set(c.brands.map(b => b.name))) : [];
 });
 
-const brandHotelsOfCountry = computed(() => {
-	const country = _resortBrands.countries.find(c => c.name === currentCountry.value);
-	if (!country) return [];
-	const brand = country.brands.find(b => b.name === currentBrand.value);
-	return brand ? brand.hotels : [];
+/** Текущий бренд */
+const currentBrand = computed({
+	get() {
+		const saved = readBrand(filters, "");
+		const list = brandsOfCurrentCountry.value;
+		if (saved && list.includes(saved)) return saved;
+		const fallback = list[0] || "";
+		if (fallback && fallback !== saved) writeBrand(filters, fallback);
+		return fallback;
+	},
+	set: v => writeBrand(filters, v),
 });
 
+/** --- Узлы бренда  --- */
+const brandNodeInCountry = computed(() => {
+	const country = _resortBrands.countries.find(c => c.name === currentCountry.value);
+	return country?.brands.find(b => b.name === currentBrand.value) || null;
+});
+const globalBrandNode = computed(() =>
+		_resortBrands.brands.find(b => b.name === currentBrand.value) || null
+);
+
+/** --- Вся информация по текущему бренду --- */
 const brandInfo = computed(() => {
-	const b = _resortBrands.brands.find(x => x.name === currentBrand.value);
-	return b ?? {
-		name: currentBrand.value,
-		slogan: "",
-		page: "",
-		settings: {dateRange: null, nights: null}
+	const node = brandNodeInCountry.value;
+	const global = globalBrandNode.value;
+
+	const settings = node?.settings || global?.settings || {};
+	const dateRange = settings?.dateRange;
+	const nights = settings?.nights;
+	const hotels = node?.hotels || [];
+
+	return {
+		name: node?.name ?? global?.name ?? currentBrand.value,
+		slogan: node?.slogan ?? global?.slogan ?? "",
+		page: node?.page ?? global?.page ?? "",
+		dateRange: Array.isArray(dateRange) && dateRange.length === 2 ? dateRange : null,
+		nights: (Number.isFinite(nights) && nights > 0) ? nights : null,
+		hotels: Array.isArray(hotels) ? hotels : [],
 	};
 });
 
-const brandDatesRange = computed(() => brandInfo.value.settings?.dateRange ?? null);
-const brandNightsQuantity = computed(() => brandInfo.value.settings?.nights ?? null);
+/** Производные поля из brandInfo */
+const brandDatesRange = computed(() => brandInfo.value.dateRange);
+const brandNightsQuantity = computed(() => brandInfo.value.nights);
+const brandHotelsOfCountry = computed(() => brandInfo.value.hotels);
+const landingLink = computed(() => brandInfo.value.page || null);
 
-// ---- КЭШ: словарь в sessionStorage ----
-const CACHE_KEY = "rb-cache";
-const cacheDict = useSessionStorage(CACHE_KEY, {}, {serializer: StorageSerializers.object});
-
-// Ключ пары (brand::country)
-const dictKey = computed(() => `${currentBrand.value}::${currentCountry.value}`.trim().toLowerCase());
-
-// Слайдер работает только с кэшом
-const sliderItems = computed(() => {
-	const items = cacheDict.value[dictKey.value];
-	return Array.isArray(items) ? items : [];
-});
-
-// UI state
-const loading = ref(false);
-const error = ref(null);
-const data = ref(null);
-
-// Загрузка данных и запись в кэш
-async function fetchData() {
-	error.value = null;
-
-	if (!brandHotelsOfCountry.value?.length) return;
-	if (!brandDatesRange.value || brandDatesRange.value.length !== 2) return;
-	if (!brandNightsQuantity.value) return;
-
-	// cache hit
-	if (cacheDict.value[dictKey.value]) {
-		data.value = cacheDict.value[dictKey.value];
-		return;
-	}
-
-	try {
-		loading.value = true;
-		const arvLoc = await getArrivalLocation(brandHotelsOfCountry);
-		const res = await getHotelData(
-				arvLoc,
-				brandDatesRange,
-				brandNightsQuantity
-		);
-		data.value = res;
-		cacheDict.value[dictKey.value] = res; // сохраняем
-	} catch (e) {
-		error.value = e?.message || "Не удалось загрузить данные";
-	} finally {
-		loading.value = false;
-	}
-}
-
-// Следим за изменением пары (brand, country)
+/** Реагируем на СТРАНУ и БРЕНД */
 watch(
-		() => [currentBrand.value, currentCountry.value],
-		() => fetchData(),
+		[currentCountry, currentBrand],
+		async () => {
+			const key = `${currentBrand.value}::${currentCountry.value}`.trim().toLowerCase();
+			const hotels = brandHotelsOfCountry.value;
+			const range = brandDatesRange.value;
+			const nights = brandNightsQuantity.value;
+			data.value = await fetchData(isError, isLoading, dataCache, key, hotels, range, nights);
+		},
 		{immediate: true}
 );
-</script>
 
+</script>
 
 <template>
 	<div class="app-container">
@@ -111,10 +111,37 @@ watch(
 		<div class="main-view">
 			<div class="main-view-action">
 				<h3>{{ currentBrand }}</h3>
-				<span>{{ brandInfo.slogan }}</span>
-				<a href="" class="coral-main-btn">Подробнее</a>
+				<span v-if="brandInfo?.slogan">{{ brandInfo.slogan }}</span>
+				<a
+						v-if="landingLink"
+						:href="landingLink"
+						class="coral-main-btn"
+						target="_blank"
+						rel="noopener noreferrer"
+				>
+					Подробнее о сети
+				</a>
 			</div>
-			<HotlesSlider class="hotels-slider" :items="sliderItems"/>
+
+			<div class="main-view-slider">
+				<div v-if="isLoading" class="skeletors-container">
+					<Skeletor width="33%" height="377" as="div"/>
+					<Skeletor width="33%" height="377" as="div"/>
+					<Skeletor width="33%" height="377" as="div"/>
+				</div>
+
+				<div v-else>
+					<div v-if="isError" class="error">
+						{{ isError }}
+					</div>
+					<HotlesSlider
+							v-else
+							class="hotels-slider"
+							:sliderItems="data"
+							:currentCountry="currentCountry"
+					/>
+				</div>
+			</div>
 		</div>
 
 		<BrandFilter
@@ -125,9 +152,17 @@ watch(
 	</div>
 </template>
 
-
 <style lang="scss" scoped>
 @use './styles/mixins';
+
+.skeletors-container {
+	display: flex;
+	gap: 16px;
+
+	.vue-skeletor--rect {
+		border-radius: 8px;
+	}
+}
 
 .app-container {
 	width: 100%;
@@ -201,7 +236,6 @@ h2 {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding-right: 16px;
 	gap: 16px;
 	color: #FFFFFF;
 
@@ -209,6 +243,7 @@ h2 {
 		color: #FFF;
 		font-size: 36px;
 		font-style: normal;
+		text-align: center;
 		margin: 0;
 		font-weight: 600;
 		text-transform: uppercase;
@@ -219,7 +254,7 @@ h2 {
 	}
 }
 
-.hotels-slider {
+.main-view-slider {
 	width: 100%;
 	@include mixins.respond-up(lg) {
 		width: 60%;

@@ -2,8 +2,12 @@
 import priceCalculation from "../helpers/priceCalculation.js";
 
 const props = defineProps({
-	items: {
+	sliderItems: {
 		type: Array,
+		required: true,
+	},
+	currentCountry: {
+		type: String,
 		required: true,
 	}
 })
@@ -13,16 +17,18 @@ const props = defineProps({
 	<swiper-container
 			:slides-per-view="1.2"
 			:space-between="24"
-			:scrollbar="true"
 			:slides-offset-after="100"
 			:center-slides="true"
+			:scrollbar="{
+      	hide: true,
+    	}"
 			:navigation="{
 				prevEl: '.resort-brands-prev',
 				nextEl: '.resort-brands-next',
 			}"
 			:breakpoints="{
 				1024: {
-					slidesPerView: 2.4,
+					slidesPerView: 2.3,
 				}
 			}"
 	>
@@ -40,7 +46,7 @@ const props = defineProps({
 				</svg>
 			</button>
 		</div>
-		<swiper-slide v-for="slide in items">
+		<swiper-slide v-for="slide in sliderItems" :key="slide.name">
 			<div class="visual">
 				<img :alt="slide.name" :src="slide.img"/>
 			</div>
@@ -65,15 +71,14 @@ const props = defineProps({
 			<p v-else class="category">{{ slide.rating }}</p>
 			<div style="margin-top: auto;">
 				<div class="hotel-price">
-					<span>от {{ priceCalculation(slide.price) }}</span>
-					<!--					<a href="#" class="prime-btn custom"-->
-					<!--						 :data-onlyhotel-lookup-destination="currentCountry"-->
-					<!--						 :data-onlyhotel-lookup-regions="slide.name"-->
-					<!--						 :data-onlyhotel-lookup-depth-days="SEARCH_DEPTH"-->
-					<!--						 @click="handleClick(slide.name)"-->
-					<!--					>-->
-					<!--						Забронировать-->
-					<!--					</a>-->
+					<span>от {{ priceCalculation(slide.price) }} <small>/ ночь</small></span>
+					<a href="#" class="coral-main-btn custom"
+						 :data-onlyhotel-lookup-destination="currentCountry"
+						 :data-onlyhotel-lookup-regions="slide.name"
+						 :data-onlyhotel-lookup-depth-days="14"
+					>
+						Забронировать
+					</a>
 				</div>
 				<span
 						class="attention">* Цена указана из расчета проживания не менее 7 ночей, за одного туриста, без перелета</span>
@@ -238,6 +243,7 @@ swiper-slide {
 	transform: translateY(-50%);
 	z-index: 10;
 	cursor: pointer;
+	box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
 }
 
 .resort-brands-prev {
@@ -254,5 +260,16 @@ swiper-slide {
 
 .resort-brands-nav-btn.resort-brands-next.swiper-button-disabled {
 	display: none;
+}
+
+.coral-main-btn.custom {
+	padding: 10px;
+	height: unset;
+	font-size: 14px;
+	font-weight: 400;
+}
+
+.category {
+	color: #f7db14;
 }
 </style>

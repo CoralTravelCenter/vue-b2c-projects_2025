@@ -5,8 +5,8 @@ export async function getHotelData(arvLoc, brandDatesRange, brandNightsQuantity)
   const payload = {
     searchCriterias: {
       reservationType: 2,
-      beginDates: brandDatesRange.value,
-      nights: [{value: brandNightsQuantity.value}],
+      beginDates: brandDatesRange,
+      nights: [{value: brandNightsQuantity}],
       imageSizes: [4],
       roomCriterias: [
         {
