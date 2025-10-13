@@ -1,5 +1,7 @@
 <script setup>
 import priceCalculation from "../helpers/priceCalculation.js";
+import {useMediaQuery} from '@vueuse/core'
+import {computed} from "vue";
 
 const props = defineProps({
 	sliderItems: {
@@ -11,46 +13,44 @@ const props = defineProps({
 		required: true,
 	}
 })
+
+const moreThanTwo = computed(() => {
+	return props.sliderItems.length > 2
+})
+const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 </script>
 
 <template>
-	<swiper-container
-			:slides-per-view="1.2"
-			:space-between="24"
-			:slides-offset-after="100"
-			:center-slides="true"
-			:scrollbar="{
-      	hide: true,
-    	}"
-			:navigation="{
-				prevEl: '.resort-brands-prev',
-				nextEl: '.resort-brands-next',
-			}"
-			:breakpoints="{
+	<div class="slider-container">
+		<button v-show="moreThanTwo" class="resort-brands-nav-btn resort-brands-prev">
+			<svg fill="none" height="9" viewBox="0 0 5 9" width="5" xmlns="http://www.w3.org/2000/svg">
+				<path d="M4.58325 1.16504L1.24992 4.49837L4.58325 7.83171" stroke="#535353" stroke-linejoin="round"></path>
+			</svg>
+		</button>
+		<swiper-container
+				:slides-per-view="1.2"
+				:space-between="24"
+				:slides-offset-after="100"
+				:center-slides="true"
+				:scrollbar="{
+      		hide: false,
+    		}"
+				:navigation="{
+					prevEl: '.resort-brands-prev',
+					nextEl: '.resort-brands-next',
+				}"
+				:allow-touch-move="!isLargeScreen"
+				:breakpoints="{
 				1024: {
 					slidesPerView: 2.3,
 				}
 			}"
-	>
-		<div slot="container-start">
-			<button class="resort-brands-nav-btn resort-brands-prev">
-				<svg fill="none" height="9" viewBox="0 0 5 9" width="5" xmlns="http://www.w3.org/2000/svg">
-					<path d="M4.58325 1.16504L1.24992 4.49837L4.58325 7.83171" stroke="#535353" stroke-linejoin="round"></path>
-				</svg>
-			</button>
-		</div>
-		<div slot="container-end">
-			<button class="resort-brands-nav-btn resort-brands-next">
-				<svg fill="none" height="9" viewBox="0 0 6 9" width="6" xmlns="http://www.w3.org/2000/svg">
-					<path d="M1.25 1.16504L4.58333 4.49837L1.25 7.83171" stroke="#535353" stroke-linejoin="round"></path>
-				</svg>
-			</button>
-		</div>
-		<swiper-slide v-for="slide in sliderItems" :key="slide.name">
-			<div class="visual">
-				<img :alt="slide.name" :src="slide.img"/>
-			</div>
-			<span class="location">
+		>
+			<swiper-slide v-for="slide in sliderItems" :key="slide.name">
+				<div class="visual">
+					<img :alt="slide.name" :src="slide.img"/>
+				</div>
+				<span class="location">
 				<svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
   <path
 			d="M12.8337 5.66683C12.8337 9.72673 8.50032 14.6668 8.50032 14.6668C8.50032 14.6668 4.16699 9.72673 4.16699 5.66683C4.16699 3.2736 6.10709 1.3335 8.50032 1.3335C10.8936 1.3335 12.8337 3.2736 12.8337 5.66683Z"
@@ -61,30 +61,36 @@ const props = defineProps({
 </svg>
 				{{ slide.location_name }}
 			</span>
-			<span class="hotel-name">
+				<span class="hotel-name">
 				{{ slide.name }}
 			</span>
-			<div v-if="typeof slide.rating === 'number'" class="hotel-rating">
-				<img v-for="n in slide.rating" :key="n" alt="Rating Star"
-						 src="//b2ccdn.coral.ru/content/landing-pages/vue_map_slider/rating-icon.svg"/>
-			</div>
-			<p v-else class="category">{{ slide.rating }}</p>
-			<div style="margin-top: auto;">
-				<div class="hotel-price">
-					<span>от {{ priceCalculation(slide.price) }} <small>/ ночь</small></span>
-					<a href="#" class="coral-main-btn custom"
-						 :data-onlyhotel-lookup-destination="currentCountry"
-						 :data-onlyhotel-lookup-regions="slide.name"
-						 :data-onlyhotel-lookup-depth-days="14"
-					>
-						Забронировать
-					</a>
+				<div v-if="typeof slide.rating === 'number'" class="hotel-rating">
+					<img v-for="n in slide.rating" :key="n" alt="Rating Star"
+							 src="//b2ccdn.coral.ru/content/landing-pages/vue_map_slider/rating-icon.svg"/>
 				</div>
-				<span
-						class="attention">* Цена указана из расчета проживания не менее 7 ночей, за одного туриста, без перелета</span>
-			</div>
-		</swiper-slide>
-	</swiper-container>
+				<p v-else class="category">{{ slide.rating }}</p>
+				<div style="margin-top: auto;">
+					<div class="hotel-price">
+						<span>от {{ priceCalculation(slide.price) }} <small>/ ночь</small></span>
+						<a href="#" class="coral-main-btn custom"
+							 :data-onlyhotel-lookup-destination="currentCountry"
+							 :data-onlyhotel-lookup-regions="slide.name"
+							 :data-onlyhotel-lookup-depth-days="14"
+						>
+							Забронировать
+						</a>
+					</div>
+					<span
+							class="attention">* Цена указана из расчета проживания не менее 7 ночей, за одного туриста, без перелета</span>
+				</div>
+			</swiper-slide>
+		</swiper-container>
+		<button v-show="moreThanTwo" class="resort-brands-nav-btn resort-brands-next">
+			<svg fill="none" height="9" viewBox="0 0 6 9" width="6" xmlns="http://www.w3.org/2000/svg">
+				<path d="M1.25 1.16504L4.58333 4.49837L1.25 7.83171" stroke="#535353" stroke-linejoin="round"></path>
+			</svg>
+		</button>
+	</div>
 </template>
 
 <style scoped lang="scss">
@@ -125,13 +131,8 @@ const props = defineProps({
 	height: 170px;
 }
 
-.carousel-wrapper {
-	height: 100%;
+.slider-container {
 	position: relative;
-
-	@include mixins.respond-up(lg) {
-		width: 60%;
-	}
 }
 
 swiper-container {
@@ -144,16 +145,23 @@ swiper-container {
 		right: 0;
 		z-index: 3;
 		pointer-events: none;
+		border-bottom-right-radius: 16px;
+		border-top-right-radius: 16px;
 		background: linear-gradient(90deg, rgba(38, 38, 38, 0.00) 0%, #262626 250%);
 	}
 
 	&::part(scrollbar) {
-		bottom: -11px;
+		bottom: 11px;
 		top: unset;
 		border-radius: 16px;
 		background: rgba(217, 217, 217, 0.20);
 	}
+
+	&::part(container) {
+		padding-bottom: 24px;
+	}
 }
+
 
 swiper-slide {
 	border-radius: 20px;
@@ -243,11 +251,23 @@ swiper-slide {
 	transform: translateY(-50%);
 	z-index: 10;
 	cursor: pointer;
-	box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+	transition: stroke 0.3s stroke ease;
+
+	svg path {
+		transition: 0.3s stroke ease;
+	}
+
+	&:hover {
+		border-color: #66d1ff;
+
+		svg path {
+			stroke: #66d1ff;
+		}
+	}
 }
 
 .resort-brands-prev {
-	left: 16px;
+	left: -64px;
 }
 
 .resort-brands-next {
@@ -271,5 +291,6 @@ swiper-slide {
 
 .category {
 	color: #f7db14;
+	margin-top: 0;
 }
 </style>

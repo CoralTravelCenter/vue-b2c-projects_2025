@@ -12,7 +12,7 @@ window._resortBrands = {
       name: "FAIRMONT HOTELS & RESORTS",
       slogan: "Сделаем особенное возможным",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -20,7 +20,7 @@ window._resortBrands = {
       name: "VINPEARL HOTELS & RESORTS",
       slogan: "Квинтэссенция Вьетнама",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -28,7 +28,7 @@ window._resortBrands = {
       name: "GLORIA HOTELS",
       slogan: "Искусство идеального отдыха",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -36,7 +36,7 @@ window._resortBrands = {
       name: "MAXX ROYAL",
       slogan: "Мир безграничного отдыха",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -44,7 +44,7 @@ window._resortBrands = {
       name: "VOYAGE HOTELS",
       slogan: "Отпуск, который превзойдёт ваши ожидания",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -52,7 +52,7 @@ window._resortBrands = {
       name: "LIBERTY HOTELS",
       slogan: "Предвосхищаем и превосходим ожидания",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -60,7 +60,7 @@ window._resortBrands = {
       name: "PICKALBATROS HOTELS & RESORTS",
       slogan: "Добро пожаловать домой",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -68,7 +68,7 @@ window._resortBrands = {
       name: "SUNRISE HOTELS & RESORTS",
       slogan: "Незабываемые каникулы",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -76,7 +76,7 @@ window._resortBrands = {
       name: "TITANIC HOTELS & RESORTS",
       slogan: "Комфорт вашего дома",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -84,7 +84,7 @@ window._resortBrands = {
       name: "Radisson Hotel Group",
       slogan: "Почувствуйте себя знаменитостью",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -92,7 +92,7 @@ window._resortBrands = {
       name: "MOVENPICK",
       slogan: "Где каждое мгновение создано для того, чтобы им наслаждались",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -100,7 +100,7 @@ window._resortBrands = {
       name: "Mirage Hotel Group",
       slogan: "Откройте для себя уникальный опыт путешествия",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -108,7 +108,7 @@ window._resortBrands = {
       name: "ROTANA",
       slogan: "Когда детали имеют значение",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -116,7 +116,7 @@ window._resortBrands = {
       name: "BM Hotels",
       slogan: "Отдых, продуманный до мгновений",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -124,7 +124,7 @@ window._resortBrands = {
       name: "Hmhhotelgroup",
       slogan: "Лакшери отдых у Персидского залива",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -132,7 +132,7 @@ window._resortBrands = {
       name: "Hilton",
       slogan: "Насладитесь знаменитым сервисом Hilton Hotels & Resorts",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -140,7 +140,7 @@ window._resortBrands = {
       name: "InterContinental Hotels & Resorts",
       slogan: "Отели, где отдых продуман до мгновений",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -148,7 +148,7 @@ window._resortBrands = {
       name: "Barcelo Hotel Group",
       slogan: "Отели для незабываемых впечатлений",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -156,7 +156,7 @@ window._resortBrands = {
       name: "WYNDHAM",
       slogan: "Исключительный пляжный отдых на Персидском заливе",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -164,7 +164,7 @@ window._resortBrands = {
       name: "Coral group hotels",
       slogan: "Отдых, проверенный временем",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -172,7 +172,7 @@ window._resortBrands = {
       name: "Royal Star",
       slogan: "Релакс-отдых на Красном море",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -180,7 +180,7 @@ window._resortBrands = {
       name: "MP Hotels",
       slogan: "Где каждая деталь создана для вас",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -188,7 +188,7 @@ window._resortBrands = {
       name: "Jaz Group",
       slogan: "Отдыхайте и ни о чем не думайте",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -196,7 +196,7 @@ window._resortBrands = {
       name: "THE ANAM",
       slogan: "Уникальный отдых во Вьетнаме",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -204,7 +204,7 @@ window._resortBrands = {
       name: "Marriott",
       slogan: "Отели, которые вдохновляют на отдых",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -212,7 +212,7 @@ window._resortBrands = {
       name: "Best Western Hotels & Resort",
       slogan: "Испытайте гостеприимство мирового уровня ",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -220,7 +220,7 @@ window._resortBrands = {
       name: "HotelLinkSolution",
       slogan: "Отдыхайте с удовольствием",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -228,7 +228,7 @@ window._resortBrands = {
       name: "AKKA HOTELS",
       slogan: "Уникальный отдых ждет вас",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -236,7 +236,7 @@ window._resortBrands = {
       name: "DOBEDAN HOTELS",
       slogan: "Уникальный эксклюзивный",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -244,7 +244,7 @@ window._resortBrands = {
       name: "TUI",
       slogan: "Бюджетный отдых высокого класса",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -252,7 +252,7 @@ window._resortBrands = {
       name: "GREEN NATURE HOTELS ",
       slogan: "Отдохните в объятиях природы Мармариса",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -260,7 +260,7 @@ window._resortBrands = {
       name: "CORAL TRAVEL GROUP",
       slogan: "",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -268,7 +268,7 @@ window._resortBrands = {
       name: "ARMAS HOTELS",
       slogan: "",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -276,7 +276,7 @@ window._resortBrands = {
       name: "CRYSTAL HOTELS",
       slogan: "",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -284,7 +284,7 @@ window._resortBrands = {
       name: "PALOMA HOTELS",
       slogan: "",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     },
@@ -292,7 +292,7 @@ window._resortBrands = {
       name: "Accor",
       slogan: "",
       settings: {
-        dateRange: ["2025-10-13", "2025-10-31"],
+        dateRange: ["2025-11-17", "2025-11-30"],
         nights: 7
       }
     }

@@ -1,16 +1,18 @@
 <script setup>
 import {computed, ref, watch} from "vue";
-import {StorageSerializers, useSessionStorage} from "@vueuse/core";
+import {StorageSerializers, useMediaQuery, useSessionStorage} from "@vueuse/core";
 import {readBrand, readCountry, writeBrand, writeCountry} from "./helpers/setCache.js";
 import BrandFilter from "./components/BrandFilter.vue";
 import Navigation from "./components/Navigation.vue";
 import {fetchData} from "./helpers/fetchData.js";
 import HotlesSlider from "./components/HotlesSlider.vue";
+import SelectNavigation from "./components/SelectNavigation.vue";
 
 /** UI state + результат */
 const isLoading = ref(false);
 const isError = ref(null);
 const data = ref([]);
+const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
 /** Хранилища */
 const filters = useSessionStorage("rb-filters", {}, {serializer: StorageSerializers.object});
@@ -103,6 +105,12 @@ watch(
 			<h2>Бренды, которые создают отдых</h2>
 			<Navigation
 					class="country-tabs"
+					v-if="isLargeScreen"
+					:countries="countries"
+					v-model:currentCountry="currentCountry"
+			/>
+			<SelectNavigation
+					v-else
 					:countries="countries"
 					v-model:currentCountry="currentCountry"
 			/>
@@ -220,7 +228,7 @@ h2 {
 	flex-direction: column;
 	background: #262626;
 	border-radius: 12px;
-	padding: 24px 0 24px 16px;
+	padding: 24px 0 0 16px;
 	flex-shrink: 0;
 	min-height: 560px;
 	justify-content: space-between;
@@ -239,9 +247,13 @@ h2 {
 	gap: 16px;
 	color: #FFFFFF;
 
+	@include mixins.respond-up(lg) {
+		padding-inline: 100px;
+	}
+
 	h3 {
 		color: #FFF;
-		font-size: 36px;
+		font-size: 30px;
 		font-style: normal;
 		text-align: center;
 		margin: 0;

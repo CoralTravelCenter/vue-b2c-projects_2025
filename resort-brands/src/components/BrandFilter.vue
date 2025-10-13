@@ -95,7 +95,12 @@ li {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 100px;
+	min-width: 70px;
+
+	@include mixins.respond-up(md) {
+		max-width: 100px;
+	}
+
 	@include mixins.respond-up(lg) {
 		min-width: unset;
 		flex: unset;

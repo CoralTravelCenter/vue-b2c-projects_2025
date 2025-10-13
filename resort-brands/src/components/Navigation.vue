@@ -1,6 +1,5 @@
 <script setup>
 const props = defineProps({
-	currentCountry: {type: String, required: true},
 	countries: {type: Array, required: true},
 })
 
