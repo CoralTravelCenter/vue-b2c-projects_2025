@@ -138,17 +138,12 @@ watch(
 					<Skeletor width="33%" height="377" as="div"/>
 				</div>
 
-				<div v-else>
-					<div v-if="isError" class="error">
-						{{ isError }}
-					</div>
-					<HotlesSlider
-							v-else
-							class="hotels-slider"
-							:sliderItems="data"
-							:currentCountry="currentCountry"
-					/>
-				</div>
+				<HotlesSlider
+						v-else
+						class="hotels-slider"
+						:sliderItems="data"
+						:currentCountry="currentCountry"
+				/>
 			</div>
 		</div>
 
@@ -232,6 +227,7 @@ h2 {
 	flex-shrink: 0;
 	min-height: 560px;
 	justify-content: space-between;
+	overflow: clip;
 
 	@include mixins.respond-up(lg) {
 		flex-direction: row;
@@ -244,8 +240,10 @@ h2 {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	text-align: center;
 	gap: 16px;
 	color: #FFFFFF;
+	padding-bottom: 24px;
 
 	@include mixins.respond-up(lg) {
 		padding-inline: 100px;

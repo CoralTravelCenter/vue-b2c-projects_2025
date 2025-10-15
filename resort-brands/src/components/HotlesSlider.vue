@@ -7,6 +7,11 @@ const props = defineProps({
 	sliderItems: {
 		type: Array,
 		required: true,
+		default: () => [],
+		validator: (arr) => Array.isArray(arr) && arr.every(item =>
+				item && typeof item === 'object' &&
+				'name' in item && 'img' in item && 'location_name' in item && 'rating' in item && 'price' in item
+		)
 	},
 	currentCountry: {
 		type: String,
@@ -22,33 +27,29 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
 <template>
 	<div class="slider-container">
-		<button v-show="moreThanTwo" class="resort-brands-nav-btn resort-brands-prev">
+		<button v-show="moreThanTwo && isLargeScreen" class="resort-brands-nav-btn resort-brands-prev" type="button"
+						aria-label="Предыдущие отели">
 			<svg fill="none" height="9" viewBox="0 0 5 9" width="5" xmlns="http://www.w3.org/2000/svg">
 				<path d="M4.58325 1.16504L1.24992 4.49837L4.58325 7.83171" stroke="#535353" stroke-linejoin="round"></path>
 			</svg>
 		</button>
 		<swiper-container
-				:slides-per-view="1.2"
 				:space-between="24"
-				:slides-offset-after="100"
-				:center-slides="true"
-				:scrollbar="{
-      		hide: false,
-    		}"
+				:slides-per-veiw="3"
+				:allow-touch-move="true"
 				:navigation="{
 					prevEl: '.resort-brands-prev',
 					nextEl: '.resort-brands-next',
 				}"
-				:allow-touch-move="!isLargeScreen"
 				:breakpoints="{
-				1024: {
-					slidesPerView: 2.3,
-				}
-			}"
+          1024: {
+            allowTouchMove: false,
+          }
+        }"
 		>
-			<swiper-slide v-for="slide in sliderItems" :key="slide.name">
+			<swiper-slide v-for="slide in sliderItems" :key="`${slide.name}-${slide.location_name}`">
 				<div class="visual">
-					<img :alt="slide.name" :src="slide.img"/>
+					<img :alt="slide.name" :src="slide.img" loading="lazy" decoding="async"/>
 				</div>
 				<span class="location">
 				<svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" fill="none">
@@ -65,11 +66,11 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 				{{ slide.name }}
 			</span>
 				<div v-if="typeof slide.rating === 'number'" class="hotel-rating">
-					<img v-for="n in slide.rating" :key="n" alt="Rating Star"
+					<img v-for="i in Number(slide.rating)" :key="i" alt="Rating Star"
 							 src="//b2ccdn.coral.ru/content/landing-pages/vue_map_slider/rating-icon.svg"/>
 				</div>
 				<p v-else class="category">{{ slide.rating }}</p>
-				<div style="margin-top: auto;">
+				<div class="push-bottom">
 					<div class="hotel-price">
 						<span>от {{ priceCalculation(slide.price) }} <small>/ ночь</small></span>
 						<a href="#" class="coral-main-btn custom"
@@ -85,7 +86,8 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 				</div>
 			</swiper-slide>
 		</swiper-container>
-		<button v-show="moreThanTwo" class="resort-brands-nav-btn resort-brands-next">
+		<button v-show="moreThanTwo && isLargeScreen" class="resort-brands-nav-btn resort-brands-next" type="button"
+						aria-label="Следующие отели">
 			<svg fill="none" height="9" viewBox="0 0 6 9" width="6" xmlns="http://www.w3.org/2000/svg">
 				<path d="M1.25 1.16504L4.58333 4.49837L1.25 7.83171" stroke="#535353" stroke-linejoin="round"></path>
 			</svg>
@@ -131,6 +133,10 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 	height: 170px;
 }
 
+.push-bottom {
+	margin-top: auto;
+}
+
 .slider-container {
 	position: relative;
 }
@@ -145,8 +151,6 @@ swiper-container {
 		right: 0;
 		z-index: 3;
 		pointer-events: none;
-		border-bottom-right-radius: 16px;
-		border-top-right-radius: 16px;
 		background: linear-gradient(90deg, rgba(38, 38, 38, 0.00) 0%, #262626 250%);
 	}
 
@@ -170,6 +174,7 @@ swiper-slide {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+	height: auto;
 }
 
 .visual img {
@@ -226,9 +231,6 @@ swiper-slide {
 	display: inline-block;
 }
 
-swiper-slide {
-	height: auto;
-}
 
 .prime-btn.custom {
 	padding: 10px !important;
@@ -251,7 +253,7 @@ swiper-slide {
 	transform: translateY(-50%);
 	z-index: 10;
 	cursor: pointer;
-	transition: stroke 0.3s stroke ease;
+	transition: stroke 0.3s ease;
 
 	svg path {
 		transition: 0.3s stroke ease;
