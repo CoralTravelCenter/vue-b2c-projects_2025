@@ -1,125 +1,131 @@
 <script setup>
-import {computed, ref, watch} from "vue";
-import {StorageSerializers, useMediaQuery, useSessionStorage} from "@vueuse/core";
-import {readBrand, readCountry, writeBrand, writeCountry} from "./helpers/setCache.js";
-import BrandFilter from "./components/BrandFilter.vue";
-import Navigation from "./components/Navigation.vue";
-import {fetchData} from "./helpers/fetchData.js";
-import HotlesSlider from "./components/HotlesSlider.vue";
-import SelectNavigation from "./components/SelectNavigation.vue";
+import {computed, ref, watch} from 'vue'
+import {StorageSerializers, useMediaQuery, useSessionStorage} from '@vueuse/core'
+import {readBrand, readCountry, writeBrand, writeCountry} from './helpers/setCache.js'
+import BrandList from './components/BrandList.vue'
+import CountryTabs from './components/CountryTabs.vue'
+import {fetchData} from './helpers/fetchData.js'
+import HotlesSlider from './components/HotlesSlider.vue' // ✅ загружаем сразу, без Suspense
+import CountrySelect from './components/CountrySelect.vue'
 
-/** UI state + результат */
-const isLoading = ref(false);
-const isError = ref(null);
-const data = ref([]);
+/* =============================================
+ *  UI-состояние и результаты
+ * ============================================= */
+const isLoading = ref(false)
+const isError = ref(null)
+const data = ref([])
 const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
-/** Хранилища */
-const filters = useSessionStorage("rb-filters", {}, {serializer: StorageSerializers.object});
-const dataCache = useSessionStorage("rb-data", {}, {serializer: StorageSerializers.object});
+/* =============================================
+ *  Хранилища
+ * ============================================= */
+const filters = useSessionStorage('rb-filters', {}, {serializer: StorageSerializers.object})
+const dataCache = useSessionStorage('rb-data', {}, {serializer: StorageSerializers.object})
 
-/** Инициализация */
-const defaultCountry = _resortBrands.countries[0]?.name || "";
+/* =============================================
+ *  Исходные данные
+ * ============================================= */
+const defaultCountry = _resortBrands.countries[0]?.name || ''
 
-/** Список стран */
-const countries = computed(() => _resortBrands.countries.map(c => c.name));
+/* Страны */
+const countries = computed(() => _resortBrands.countries.map((c) => c.name))
 
-/** Текущая страна */
+/* Текущая страна: хранение/чтение из sessionStorage */
 const currentCountry = computed({
 	get: () => readCountry(filters, defaultCountry),
-	set: v => writeCountry(filters, v),
-});
+	set: (v) => writeCountry(filters, v),
+})
 
-/** Бренды выбранной страны */
+/* Список брендов выбранной страны */
 const brandsOfCurrentCountry = computed(() => {
-	const c = _resortBrands.countries.find(x => x.name === currentCountry.value);
-	return c ? Array.from(new Set(c.brands.map(b => b.name))) : [];
-});
+	const c = _resortBrands.countries.find((x) => x.name === currentCountry.value)
+	return c ? Array.from(new Set(c.brands.map((b) => b.name))) : []
+})
 
-/** Текущий бренд */
+/* Текущий бренд: безопасный выбор + запись в кэш */
 const currentBrand = computed({
 	get() {
-		const saved = readBrand(filters, "");
-		const list = brandsOfCurrentCountry.value;
-		if (saved && list.includes(saved)) return saved;
-		const fallback = list[0] || "";
-		if (fallback && fallback !== saved) writeBrand(filters, fallback);
-		return fallback;
+		const saved = readBrand(filters, '')
+		const list = brandsOfCurrentCountry.value
+		if (saved && list.includes(saved)) return saved
+		const fallback = list[0] || ''
+		if (fallback && fallback !== saved) writeBrand(filters, fallback)
+		return fallback
 	},
-	set: v => writeBrand(filters, v),
-});
+	set: (v) => writeBrand(filters, v),
+})
 
-/** --- Узлы бренда  --- */
+/* Узлы бренда */
 const brandNodeInCountry = computed(() => {
-	const country = _resortBrands.countries.find(c => c.name === currentCountry.value);
-	return country?.brands.find(b => b.name === currentBrand.value) || null;
-});
-const globalBrandNode = computed(() =>
-		_resortBrands.brands.find(b => b.name === currentBrand.value) || null
-);
+	const country = _resortBrands.countries.find((c) => c.name === currentCountry.value)
+	return country?.brands.find((b) => b.name === currentBrand.value) || null
+})
+const globalBrandNode = computed(() => _resortBrands.brands.find((b) => b.name === currentBrand.value) || null)
 
-/** --- Вся информация по текущему бренду --- */
+/* Сводная информация о бренде */
 const brandInfo = computed(() => {
-	const node = brandNodeInCountry.value;
-	const global = globalBrandNode.value;
+	const node = brandNodeInCountry.value
+	const global = globalBrandNode.value
 
-	const settings = node?.settings || global?.settings || {};
-	const dateRange = settings?.dateRange;
-	const nights = settings?.nights;
-	const hotels = node?.hotels || [];
+	const settings = node?.settings || global?.settings || {}
+	const dateRange = settings?.dateRange
+	const nights = settings?.nights
+	const hotels = node?.hotels || []
 
 	return {
 		name: node?.name ?? global?.name ?? currentBrand.value,
-		slogan: node?.slogan ?? global?.slogan ?? "",
-		page: node?.page ?? global?.page ?? "",
+		slogan: node?.slogan ?? global?.slogan ?? '',
+		page: node?.page ?? global?.page ?? '',
 		dateRange: Array.isArray(dateRange) && dateRange.length === 2 ? dateRange : null,
-		nights: (Number.isFinite(nights) && nights > 0) ? nights : null,
+		nights: Number.isFinite(nights) && nights > 0 ? nights : null,
 		hotels: Array.isArray(hotels) ? hotels : [],
-	};
-});
+	}
+})
 
-/** Производные поля из brandInfo */
-const brandDatesRange = computed(() => brandInfo.value.dateRange);
-const brandNightsQuantity = computed(() => brandInfo.value.nights);
-const brandHotelsOfCountry = computed(() => brandInfo.value.hotels);
-const landingLink = computed(() => brandInfo.value.page || null);
+/* Производные поля */
+const brandDatesRange = computed(() => brandInfo.value.dateRange)
+const brandNightsQuantity = computed(() => brandInfo.value.nights)
+const brandHotelsOfCountry = computed(() => brandInfo.value.hotels)
+const landingLink = computed(() => brandInfo.value.page || null)
 
-/** Реагируем на СТРАНУ и БРЕНД */
-watch(
-		[currentCountry, currentBrand],
-		async () => {
-			const key = `${currentBrand.value}::${currentCountry.value}`.trim().toLowerCase();
-			const hotels = brandHotelsOfCountry.value;
-			const range = brandDatesRange.value;
-			const nights = brandNightsQuantity.value;
-			data.value = await fetchData(isError, isLoading, dataCache, key, hotels, range, nights);
-		},
-		{immediate: true}
-);
-
+/* =============================================
+ *  Загрузка данных (реакция на страну/бренд)
+ *  Примечание: компонент слайдера уже загружен, мы только меняем его пропсы
+ * ============================================= */
+watch([currentCountry, currentBrand], async () => {
+	const key = `${currentBrand.value}::${currentCountry.value}`.trim().toLowerCase()
+	const hotels = brandHotelsOfCountry.value
+	const range = brandDatesRange.value
+	const nights = brandNightsQuantity.value
+	data.value = await fetchData(isError, isLoading, dataCache, key, hotels, range, nights)
+}, {immediate: true})
 </script>
 
 <template>
 	<div class="app-container">
+		<!-- Заголовок и фильтры -->
 		<div class="headline-wrapper">
 			<h2>Бренды, которые создают отдых</h2>
-			<Navigation
-					class="country-tabs"
+
+			<CountryTabs
 					v-if="isLargeScreen"
+					class="country-tabs"
 					:countries="countries"
 					v-model:currentCountry="currentCountry"
 			/>
-			<SelectNavigation
+
+			<CountrySelect
 					v-else
 					:countries="countries"
 					v-model:currentCountry="currentCountry"
 			/>
 		</div>
 
+		<!-- Основной контент: инфоблок + слайдер (скелетоны по флагу isLoading) -->
 		<div class="main-view">
 			<div class="main-view-action">
 				<h3>{{ currentBrand }}</h3>
-				<span v-if="brandInfo?.slogan">{{ brandInfo.slogan }}</span>
+				<span v-if="brandInfo.slogan">{{ brandInfo.slogan }}</span>
 				<a
 						v-if="landingLink"
 						:href="landingLink"
@@ -137,7 +143,6 @@ watch(
 					<Skeletor width="33%" height="377" as="div"/>
 					<Skeletor width="33%" height="377" as="div"/>
 				</div>
-
 				<HotlesSlider
 						v-else
 						class="hotels-slider"
@@ -147,17 +152,17 @@ watch(
 			</div>
 		</div>
 
-		<BrandFilter
-				class="brands-nav"
-				:brands="brandsOfCurrentCountry"
-				v-model:currentBrand="currentBrand"
-		/>
+		<!-- Навигация по брендам -->
+		<BrandList class="brands-nav" :brands="brandsOfCurrentCountry" v-model:currentBrand="currentBrand"/>
 	</div>
 </template>
 
 <style lang="scss" scoped>
 @use './styles/mixins';
 
+/* =============================================
+ *  Скелетоны (показываются пока isLoading === true)
+ * ============================================= */
 .skeletors-container {
 	display: flex;
 	gap: 16px;
@@ -167,6 +172,9 @@ watch(
 	}
 }
 
+/* =============================================
+ *  Контейнер приложения
+ * ============================================= */
 .app-container {
 	width: 100%;
 	overflow: hidden;
@@ -181,43 +189,44 @@ h2 {
 	}
 }
 
+/* Селект стран (см. компонент CountrySelect) */
 .country-select {
-	align-self: start;
+	align-self: flex-start;
 	order: 2;
-
 	@include mixins.respond-up(md) {
 		align-self: center;
 	}
 }
 
+/* Навигация брендов */
 .brands-nav {
 	order: 3;
-
 	@include mixins.respond-up(lg) {
 		order: 4;
 	}
 }
 
+/* Порядок слайдера для мобильных/десктопа */
 .slider {
 	order: 4;
-
 	@include mixins.respond-up(lg) {
 		order: 3;
 	}
 }
 
+/* Шапка с фильтрами */
 .headline-wrapper {
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
 	align-items: center;
 	gap: 16px;
-
 	@include mixins.respond-up(md) {
 		flex-direction: row;
 	}
 }
 
+/* Основной блок: описание + слайдер */
 .main-view {
 	display: flex;
 	flex-direction: column;
@@ -242,25 +251,24 @@ h2 {
 	justify-content: center;
 	text-align: center;
 	gap: 16px;
-	color: #FFFFFF;
+	color: #ffffff;
 	padding-bottom: 24px;
 
 	@include mixins.respond-up(lg) {
 		padding-inline: 100px;
 	}
+	@include mixins.respond-up(lg) {
+		width: 40%;
+	}
 
 	h3 {
-		color: #FFF;
+		color: #fff;
 		font-size: 30px;
 		font-style: normal;
 		text-align: center;
 		margin: 0;
 		font-weight: 600;
 		text-transform: uppercase;
-	}
-
-	@include mixins.respond-up(lg) {
-		width: 40%;
 	}
 }
 
