@@ -1,9 +1,15 @@
-@use "mixins";
-
 :root {
   --swiper-scrollbar-drag-bg-color: rgba(217, 217, 217, 0.50);
 }
 
+#resort-hotels {
+  width: 100%;
+  padding-inline: 16px;
+
+  @media (min-width: 768px) {
+    padding-inline: 0;
+  }
+}
 
 .coral-main-btn {
   border-radius: 64px;

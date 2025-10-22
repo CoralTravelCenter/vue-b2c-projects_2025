@@ -52,13 +52,15 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 		<swiper-container
 				v-if="hasMany"
 				:space-between="24"
-				:slides-per-view="3"
 				:slides-offset-after="24"
 				:allow-touch-move="true"
 				:scrollbar-hide="false"
+				:slides-per-view="1"
+				:centered-slide="true"
 				:navigation="{ prevEl: '.hotel-slider__nav-btn--prev', nextEl: '.hotel-slider__nav-btn--next' }"
 				:breakpoints="{
-        1024: { slidesPerView: 2.5, allowTouchMove: false }
+					630: {slidesPerView: 2},
+        	1024: { slidesPerView: 2.5, allowTouchMove: false }
       }"
 		>
 			<swiper-slide v-for="slide in sliderItems" :key="slide.name">
@@ -159,16 +161,18 @@ swiper-container {
 }
 
 /* Псевдоэлемент поверх правого края контейнера */
-swiper-container::after {
-	content: "";
-	position: absolute;
-	width: 20%;
-	height: 100%;
-	top: 0;
-	right: 0;
-	z-index: 3;
-	pointer-events: none;
-	background: linear-gradient(90deg, rgba(38, 38, 38, 0) 0%, #262626 250%);
+@media (min-width: 1024px) {
+	swiper-container::after {
+		content: "";
+		position: absolute;
+		width: 20%;
+		height: 100%;
+		top: 0;
+		right: 0;
+		z-index: 3;
+		pointer-events: none;
+		background: linear-gradient(90deg, rgba(38, 38, 38, 0) 0%, #262626 250%);
+	}
 }
 
 /* Низкий скроллбар и внутренние отступы (через ::part) */

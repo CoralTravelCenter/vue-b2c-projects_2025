@@ -79,7 +79,7 @@ function handleClick(country) {
 	background: transparent;
 	border: none;
 	font: inherit;
-	color: inherit;
+	color: #000000;
 }
 
 .country-tabs__btn:hover {

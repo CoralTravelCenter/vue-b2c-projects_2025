@@ -71,6 +71,10 @@ const model = defineModel('currentCountry')
 	appearance: none;
 	-webkit-appearance: none;
 	-moz-appearance: none;
+
+	option {
+		color: #000000;
+	}
 }
 
 /* Состояния наведения/фокуса/disabled */

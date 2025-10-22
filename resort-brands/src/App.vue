@@ -2,52 +2,48 @@
 import {computed, ref, watch} from 'vue'
 import {StorageSerializers, useMediaQuery, useSessionStorage} from '@vueuse/core'
 import {readBrand, readCountry, writeBrand, writeCountry} from './helpers/setCache.js'
-import BrandList from './components/BrandList.vue'
-import CountryTabs from './components/CountryTabs.vue'
 import {fetchData} from './helpers/fetchData.js'
-import HotlesSlider from './components/HotlesSlider.vue' // ✅ загружаем сразу, без Suspense
-import CountrySelect from './components/CountrySelect.vue'
+import HotelsSlider from './components/HotelsSlider.vue'
+import BrandList from "./components/BrandList.vue";
+import CountryTabs from "./components/CountryTabs.vue";
+import CountrySelect from "./components/CountrySelect.vue";
 
-/* =============================================
- *  UI-состояние и результаты
- * ============================================= */
+// UI-состояние и результаты
 const isLoading = ref(false)
 const isError = ref(null)
 const data = ref([])
 const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
-/* =============================================
- *  Хранилища
- * ============================================= */
+// Хранилища
 const filters = useSessionStorage('rb-filters', {}, {serializer: StorageSerializers.object})
 const dataCache = useSessionStorage('rb-data', {}, {serializer: StorageSerializers.object})
 
-/* =============================================
- *  Исходные данные
- * ============================================= */
+// Исходные данные
 const defaultCountry = _resortBrands.countries[0]?.name || ''
 
-/* Страны */
+// Страны
 const countries = computed(() => _resortBrands.countries.map((c) => c.name))
 
-/* Текущая страна: хранение/чтение из sessionStorage */
+// Текущая страна: хранение/чтение из sessionStorage
 const currentCountry = computed({
 	get: () => readCountry(filters, defaultCountry),
 	set: (v) => writeCountry(filters, v),
 })
 
-/* Список брендов выбранной страны */
+// Список брендов выбранной страны (фильтруем отключённые)
 const brandsOfCurrentCountry = computed(() => {
 	const c = _resortBrands.countries.find((x) => x.name === currentCountry.value)
 	return c ? Array.from(new Set(c.brands.map((b) => b.name))) : []
 })
 
-/* Текущий бренд: безопасный выбор + запись в кэш */
+// Текущий бренд: учитываем отключённые + записываем в кэш
 const currentBrand = computed({
 	get() {
 		const saved = readBrand(filters, '')
 		const list = brandsOfCurrentCountry.value
+		// saved валиден и не отключён
 		if (saved && list.includes(saved)) return saved
+		// иначе берём первый доступный
 		const fallback = list[0] || ''
 		if (fallback && fallback !== saved) writeBrand(filters, fallback)
 		return fallback
@@ -55,14 +51,14 @@ const currentBrand = computed({
 	set: (v) => writeBrand(filters, v),
 })
 
-/* Узлы бренда */
+// Узлы бренда
 const brandNodeInCountry = computed(() => {
 	const country = _resortBrands.countries.find((c) => c.name === currentCountry.value)
 	return country?.brands.find((b) => b.name === currentBrand.value) || null
 })
 const globalBrandNode = computed(() => _resortBrands.brands.find((b) => b.name === currentBrand.value) || null)
 
-/* Сводная информация о бренде */
+// Сводная информация о бренде
 const brandInfo = computed(() => {
 	const node = brandNodeInCountry.value
 	const global = globalBrandNode.value
@@ -82,30 +78,42 @@ const brandInfo = computed(() => {
 	}
 })
 
-/* Производные поля */
+// Производные поля
 const brandDatesRange = computed(() => brandInfo.value.dateRange)
 const brandNightsQuantity = computed(() => brandInfo.value.nights)
 const brandHotelsOfCountry = computed(() => brandInfo.value.hotels)
 const landingLink = computed(() => brandInfo.value.page || null)
 
-/* =============================================
- *  Загрузка данных (реакция на страну/бренд)
- *  Примечание: компонент слайдера уже загружен, мы только меняем его пропсы
- * ============================================= */
+// Проверяем - есть ли данные об отеле перед отображением
+const hasHotels = computed(() => Array.isArray(data.value) && data.value.length > 0)
+
+// Загрузка данных (реакция на страну/бренд)
 watch([currentCountry, currentBrand], async () => {
 	const key = `${currentBrand.value}::${currentCountry.value}`.trim().toLowerCase()
 	const hotels = brandHotelsOfCountry.value
 	const range = brandDatesRange.value
 	const nights = brandNightsQuantity.value
-	data.value = await fetchData(isError, isLoading, dataCache, key, hotels, range, nights)
+
+	// перед загрузкой убираем старые карточки, чтобы не мигали
+	data.value = []
+
+	const result = await fetchData(isError, isLoading, dataCache, key, hotels, range, nights)
+
+	if (Array.isArray(result) && result.length > 0) {
+		data.value = result
+	} else {
+		// пусто — оставляем пустой массив (ничего не рендерим)
+		data.value = []
+		// при желании можно логнуть/показать тост
+		// console.warn(`Нет данных для ${key}`)
+	}
 }, {immediate: true})
 </script>
 
 <template>
 	<div class="app-container">
-		<!-- Заголовок и фильтры -->
 		<div class="headline-wrapper">
-			<h2>Бренды, которые создают отдых</h2>
+			<h3>Бренды, которые создают отдых</h3>
 
 			<CountryTabs
 					v-if="isLargeScreen"
@@ -120,8 +128,6 @@ watch([currentCountry, currentBrand], async () => {
 					v-model:currentCountry="currentCountry"
 			/>
 		</div>
-
-		<!-- Основной контент: инфоблок + слайдер (скелетоны по флагу isLoading) -->
 		<div class="main-view">
 			<div class="main-view-action">
 				<h3>{{ currentBrand }}</h3>
@@ -136,23 +142,28 @@ watch([currentCountry, currentBrand], async () => {
 					Подробнее о сети
 				</a>
 			</div>
-
 			<div class="main-view-slider">
+				<!-- 1) загрузка -> скелеты -->
 				<div v-if="isLoading" class="skeletors-container">
 					<Skeletor width="33%" height="377" as="div"/>
 					<Skeletor width="33%" height="377" as="div"/>
 					<Skeletor width="33%" height="377" as="div"/>
 				</div>
-				<HotlesSlider
-						v-else
+
+				<!-- 2) есть данные -> слайдер -->
+				<HotelsSlider
+						v-else-if="hasHotels"
 						class="hotels-slider"
 						:sliderItems="data"
 						:currentCountry="currentCountry"
 				/>
+
+				<!-- 3) нет данных -> заглушка -->
+				<div v-else class="no-data-message" aria-live="polite">
+					<p>Для выбранной сети нет доступных предложений.</p>
+				</div>
 			</div>
 		</div>
-
-		<!-- Навигация по брендам -->
 		<BrandList class="brands-nav" :brands="brandsOfCurrentCountry" v-model:currentBrand="currentBrand"/>
 	</div>
 </template>
@@ -160,12 +171,33 @@ watch([currentCountry, currentBrand], async () => {
 <style lang="scss" scoped>
 @use './styles/mixins';
 
+.no-data-message {
+	background: #FFFFFF;
+	width: auto;
+	margin: 0;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 20px !important;
+	color: #000000 !important;
+	min-height: 430px;
+	text-align: center !important;
+
+	@include mixins.respond-up(lg) {
+		margin-right: 24px;
+		margin-bottom: 24px;
+	}
+}
+
 /* =============================================
  *  Скелетоны (показываются пока isLoading === true)
  * ============================================= */
 .skeletors-container {
 	display: flex;
 	gap: 16px;
+	margin-bottom: 24px;
+	margin-right: 24px;
 
 	.vue-skeletor--rect {
 		border-radius: 8px;
@@ -232,7 +264,7 @@ h2 {
 	flex-direction: column;
 	background: #262626;
 	border-radius: 12px;
-	padding: 24px 0 0 16px;
+	padding: 16px;
 	flex-shrink: 0;
 	min-height: 560px;
 	justify-content: space-between;
@@ -241,6 +273,7 @@ h2 {
 	@include mixins.respond-up(lg) {
 		flex-direction: row;
 		min-height: unset;
+		padding: 24px 0 0 16px;
 	}
 }
 
@@ -269,6 +302,10 @@ h2 {
 		margin: 0;
 		font-weight: 600;
 		text-transform: uppercase;
+	}
+
+	.coral-main-btn {
+		margin: 0;
 	}
 }
 

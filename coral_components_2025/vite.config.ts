@@ -22,7 +22,7 @@ export default defineConfig({
             entry: 'src/main.ts',
             userscript: {
                 namespace: 'npm/vite-plugin-monkey',
-                match: ['https://www.coral.ru/*'],
+                match: ['https://www.coral.ru/monkey/'],
                 icon: 'https://vitejs.dev/logo.svg',
                 name: 'coral_components_2025',
                 version: '1.0.1',

@@ -52,7 +52,7 @@ const LocationIcon = {
 		</div>
 
 		<span class="card__location" aria-label="Локация">
-      <LocationIcon aria-hidden="true"/>
+      <LocationIcon aria-hidden="true" current-country=""/>
       {{ slide.location_name }}
     </span>
 
@@ -98,6 +98,8 @@ const LocationIcon = {
 </template>
 
 <style scoped lang="scss">
+@use '../styles/mixins';
+
 .card {
 	background: #fff;
 	border-radius: 12px;
@@ -105,6 +107,11 @@ const LocationIcon = {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+	width: 100%;
+
+	@include mixins.respond-up(lg) {
+		max-width: 300px;
+	}
 }
 
 .card__visual {
