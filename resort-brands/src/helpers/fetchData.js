@@ -1,4 +1,3 @@
-// helpers/fetchData.js
 import {getHotelData} from "./getHotelsData.js";
 import {getArrivalLocation} from "./getArrivalLocations.js";
 

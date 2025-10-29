@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref, watch} from 'vue'
+import {computed, provide, ref, watch} from 'vue'
 import {StorageSerializers, useMediaQuery, useSessionStorage} from '@vueuse/core'
 import {readBrand, readCountry, writeBrand, writeCountry} from './helpers/setCache.js'
 import {fetchData} from './helpers/fetchData.js'
@@ -12,6 +12,7 @@ import CountrySelect from "./components/CountrySelect.vue";
 const isLoading = ref(false)
 const isError = ref(null)
 const data = ref([])
+const redirectURL = ref('')
 const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
 // Хранилища
@@ -87,6 +88,9 @@ const landingLink = computed(() => brandInfo.value.page || null)
 // Проверяем - есть ли данные об отеле перед отображением
 const hasHotels = computed(() => Array.isArray(data.value) && data.value.length > 0)
 
+provide('brandDatesRange', brandDatesRange)
+provide('brandNightsQuantity', brandNightsQuantity)
+
 // Загрузка данных (реакция на страну/бренд)
 watch([currentCountry, currentBrand], async () => {
 	const key = `${currentBrand.value}::${currentCountry.value}`.trim().toLowerCase()
@@ -102,10 +106,7 @@ watch([currentCountry, currentBrand], async () => {
 	if (Array.isArray(result) && result.length > 0) {
 		data.value = result
 	} else {
-		// пусто — оставляем пустой массив (ничего не рендерим)
 		data.value = []
-		// при желании можно логнуть/показать тост
-		// console.warn(`Нет данных для ${key}`)
 	}
 }, {immediate: true})
 </script>
@@ -135,7 +136,7 @@ watch([currentCountry, currentBrand], async () => {
 				<a
 						v-if="landingLink"
 						:href="landingLink"
-						class="coral-main-btn"
+						class="coral-main-btn coral-main-btn-custom"
 						target="_blank"
 						rel="noopener noreferrer"
 				>
@@ -188,6 +189,10 @@ watch([currentCountry, currentBrand], async () => {
 		margin-right: 24px;
 		margin-bottom: 24px;
 	}
+}
+
+.coral-main-btn-custom {
+	margin-top: 0 !important;
 }
 
 /* =============================================

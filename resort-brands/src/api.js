@@ -1,5 +1,6 @@
 export const ARRIVAL_LOCATIONS_API = '/endpoints/OnlyHotelProduct/ListArrivalLocations'
 export const HOTEL_PRICE_API = '/endpoints/OnlyHotelProduct/PriceSearchList'
+export const REDIRECT_URL_API = '/endpoints/OnlyHotelProduct/PriceSearchEncrypt'
 
 export async function doRequestToServer(url, data) {
   try {

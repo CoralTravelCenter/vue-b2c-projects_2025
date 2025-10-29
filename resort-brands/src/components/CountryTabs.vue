@@ -82,7 +82,7 @@ function handleClick(country) {
 	color: #000000;
 }
 
-.country-tabs__btn:hover {
+.country-tabs__btn:not(.country-tabs__btn--active):hover {
 	color: #0093d0;
 }
 

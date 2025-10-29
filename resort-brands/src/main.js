@@ -9,5 +9,5 @@ import './styles/main.scss';
 register();
 
 const app = createApp(App);
-app.mount('#resort-hotels')
+app.mount('#resort-hotels');
 app.component(Skeletor.name, Skeletor);
