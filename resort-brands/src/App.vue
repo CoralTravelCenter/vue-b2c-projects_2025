@@ -310,7 +310,7 @@ h2 {
 	}
 
 	.coral-main-btn {
-		margin: 0;
+		margin: 0 !important;
 	}
 }
 

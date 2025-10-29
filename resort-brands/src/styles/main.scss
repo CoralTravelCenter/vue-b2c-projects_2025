@@ -5,8 +5,10 @@
 #resort-hotels {
   width: 100%;
   padding-inline: 16px;
+}
 
-  @media (min-width: 768px) {
+@media (min-width: 768px) {
+  #resort-hotels {
     padding-inline: 0;
   }
 }
