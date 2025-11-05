@@ -1,4 +1,4 @@
-import {ONLY_HOTEL_ENDPOINTS} from '@/api'
+import {PACKAGE_ENDPOINTS} from '@/api'
 import useFetch from "@/composibles/useFetch";
 import {ComputedRef} from "vue";
 import {hostReactAppReady} from "@/utils";
@@ -17,7 +17,7 @@ let DEPARTURE: any;
 
 async function useArrivalLocation(hotels: ComputedRef<string[]>) {
     const requests = hotels.value.map(async (hotel: string): Promise<any> => {
-        return await useFetch(ONLY_HOTEL_ENDPOINTS.LIST_ARRIVAL_LOCATIONS, {
+        return await useFetch(PACKAGE_ENDPOINTS.LIST_ARRIVAL_LOCATIONS, {
             text: hotel
         })
     })
@@ -26,7 +26,7 @@ async function useArrivalLocation(hotels: ComputedRef<string[]>) {
 
 async function usePackageArrivalLocation(hotels: ComputedRef<string[]>) {
     const requests = hotels.value.map(async (hotel: string): Promise<any> => {
-        return await useFetch(ONLY_HOTEL_ENDPOINTS.LIST_ARRIVAL_LOCATIONS, {
+        return await useFetch(PACKAGE_ENDPOINTS.LIST_ARRIVAL_LOCATIONS, {
             departureLocations: [{
                 id: DEPARTURE.id || DEFAULT_DEPARTURE_ID,
                 name: DEPARTURE.name || DEFAULT_DEPARTURE,

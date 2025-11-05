@@ -9,9 +9,8 @@ import {useClipboard, useMediaQuery} from "@vueuse/core";
 const props = defineProps<{
 	countries: string;
 	hotels: string;
-	lookupDays: string;
-	lookupNights: string;
-	mode: string;
+	period: string;
+	nights: string;
 }>();
 
 // Reactive Data
@@ -51,8 +50,9 @@ const hotelLigals: ComputedRef<string[]> = computed(() => {
 const dynamicEvent: ComputedRef<string> = computed(() => {
 	return notLargeScreen.value ? 'click' : 'mouseover'
 })
-const currentMode = computed(() => {
-	return props.mode === 'package';
+
+const dateRange: ComputedRef<string[][]> = computed(() => {
+	return JSON.parse(props.period.replace(/'/g, '"'));
 })
 
 // Стэйт
@@ -79,7 +79,7 @@ function handleCloseButton() {
 // Fetch Hotel Data
 async function fetchHotelData() {
 	try {
-		hotelData.value = await useHotelData(requestedHotelNames, props.lookupDays, props.lookupNights)
+		hotelData.value = await useHotelData(requestedHotelNames, dateRange, props.nights)
 	} catch (error) {
 		console.error('Ошибка при загрузке данных об отелях:', error);
 	}
@@ -181,28 +181,11 @@ onMounted(() => fetchHotelData())
 				{{ formattedDates(hotel.dates) }}
 			</span>
 			<span class="nights">
-				{{ lookupNights }}&nbsp;{{ pluralizeNights(Number(lookupNights)) }} на&nbsp;двоих</span>
+				{{ nights }}&nbsp;{{ pluralizeNights(Number(nights)) }} на&nbsp;двоих</span>
 			<div class="actions">
-				<a v-if="currentMode" href="#" class="prime-btn"
-					 ref="ctxRef"
-					 :data-lookup-destination="countries"
-					 :data-lookup-regions="hotel.hotelName"
-					 :data-lookup-depth-days="lookupDays"
-					 :data-lookup-nights="lookupNights"
-					 @click.prevent="customHandler"
-				>
+				<button class="prime-btn" @click="customHandler">
 					Выбрать тур
-				</a>
-				<a v-else href="#" class="prime-btn"
-					 ref="ctxRef"
-					 :data-onlyhotel-lookup-destination="countries"
-					 :data-onlyhotel-lookup-regions="hotel.hotelName"
-					 :data-onlyhotel-lookup-depth-days="lookupDays"
-					 :data-onlyhotel-lookup-nights="lookupNights"
-					 @click.prevent="customHandler"
-				>
-					Выбрать отель
-				</a>
+				</button>
 				<div v-if="!notLargeScreen" class="ligal-container">
 					<span v-if="!copied" class="ligal">Реклама</span>
 					<span

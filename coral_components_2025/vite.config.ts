@@ -22,10 +22,10 @@ export default defineConfig({
             entry: 'src/main.ts',
             userscript: {
                 namespace: 'npm/vite-plugin-monkey',
-                match: ['https://www.coral.ru/monkey/'],
+                match: ['https://www.coral.ru/'],
                 icon: 'https://vitejs.dev/logo.svg',
                 name: 'coral_components_2025',
-                version: '1.0.1',
+                version: '1.0.2',
                 description: 'Reusable Components',
             },
         }),
@@ -40,10 +40,6 @@ export default defineConfig({
             name: 'CoralComponents',
             fileName: () => 'coral-components.js',
         },
-        minify: 'terser',
-        terserOptions: {
-            compress: {drop_console: true, drop_debugger: true},
-            format: {comments: false},
-        },
+        minify: true,
     },
 })

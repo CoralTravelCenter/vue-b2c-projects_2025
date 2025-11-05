@@ -1,35 +1,32 @@
-import {ONLY_HOTEL_ENDPOINTS} from "@/api";
+import {PACKAGE_ENDPOINTS} from "@/api";
 import useFetch from "@/composibles/useFetch";
-import {calculateDates} from "@/utils";
 import {ArrivalLocation} from "@/types";
+import {ComputedRef} from "vue";
 
 
-export default async function usePriceSearchEncrypt(locations: ArrivalLocation[], days: number, nights: number): Promise<any> {
-    const beginDates = calculateDates(days, nights);
+export default async function usePriceSearchEncrypt(locations: ArrivalLocation[], days: ComputedRef<string[][]>, nights: string): Promise<any> {
     const payload = {
         searchCriterias: {
-            beginDates,
-            arrivalLocations: locations,
+            reservationType: 2,
+            beginDates: days.value,
             nights: [{value: nights}],
+            imageSizes: [],
             roomCriterias: [
                 {
                     passengers: [
-                        {age: 20, passengerType: 0},
-                        {age: 20, passengerType: 0},
+                        {passengerType: 0, age: 20},
+                        {passengerType: 0, age: 20},
                     ],
                 },
             ],
-            reservationType: 2,
+            arrivalLocations: locations,
             paging: {
                 pageNumber: 1,
-                pageSize: 20,
+                pageSize: locations.length,
                 sortType: 0,
             },
-            additionalFilters: [],
-            imageSizes: [3],
-            categories: [],
-        }
+        },
     }
-    const data = await useFetch(ONLY_HOTEL_ENDPOINTS.PRICE_SEARCH_LIST, payload)
-    return {data, beginDates}
+    console.log(payload);
+    return await useFetch(PACKAGE_ENDPOINTS.PRICE_SEARCH_LIST, payload)
 }

@@ -3,11 +3,8 @@ import {computed, ComputedRef, nextTick, onBeforeMount, onMounted, onUnmounted, 
 
 // Типы пропсов
 type Props = {
-	/** Если проп не передан — попап сам НЕ запускается */
 	autoShow?: boolean
-	/** Дата/время в формате, понятном Date (ISO предпочтительно). Если задана — автопоказ только до этой даты */
 	expires?: string
-	/** ID счётчика Я.Метрики. Если задан — отправляем goal при открытии */
 	yandexMetrika?: string
 }
 

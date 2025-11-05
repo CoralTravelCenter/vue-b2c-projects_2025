@@ -1,4 +1,4 @@
-import {useArrivalLocation} from '@/composibles/useArrivalLocation'
+import {usePackageArrivalLocation} from '@/composibles/useArrivalLocation'
 import {useFilteredData} from '@/composibles/useFilteredData'
 import usePriceSearchEncrypt from '@/composibles/usePriceSearchEncrypt'
 import {ComputedRef} from "vue";
@@ -7,7 +7,7 @@ import {findObjectByKey} from "@/utils";
 
 export default async function useHotelData(
     names: ComputedRef<string[]>,
-    days: string,
+    days: ComputedRef<string[][]>,
     nights: string
 ): Promise<
     Array<{
@@ -21,23 +21,17 @@ export default async function useHotelData(
         meal: string[]
     }>
 > {
-    // 1) Подтянули значения и привели типы
-    const d: number = Number(days)
-    const n: number = Number(nights)
 
-    // 2) Достаём arrivalLocations
-    const arrivalLocations = await useArrivalLocation(names)
+    const arrivalLocations = await usePackageArrivalLocation(names);
 
-    // 3) Безопасный flatMap + защита от пустых locations
     const filteredArrivalLocations = (arrivalLocations ?? [])
         .flatMap(item => useFilteredData(names.value, item?.result?.locations ?? []))
         .filter(Boolean)
 
-    // 4) Поиск цен/шифрования
-    const {data, beginDates} = await usePriceSearchEncrypt(
+    const data = await usePriceSearchEncrypt(
         filteredArrivalLocations,
-        Number.isFinite(d) ? d : 0,
-        Number.isFinite(n) ? n : 0
+        days,
+        nights
     )
 
     const result = data?.result
@@ -70,7 +64,7 @@ export default async function useHotelData(
         const formattedPrice = rub.format(serverPrice)
         const isElite = Boolean(prod?.hotel?.eliteHotel)
         const rating = ratingFormatter(findObjectByKey(prod.hotel.categoryKey, result?.hotelCategories))
-        const dates = beginDates
+        const dates = days
         const meal = prod.roomAlternatives.mealNames
         return {formattedPrice, isElite, hotelName, location, visual, rating, dates, meal}
     })
