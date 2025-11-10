@@ -37,3 +37,13 @@
   background: #077dad;
   border: 1px solid #077dad;
 }
+
+.tabs-navigation__list {
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.tabs-navigation__list::-webkit-scrollbar {
+  display: none;
+}

@@ -1,5 +1,5 @@
 <script setup>
-import {filterFreshOffers} from "../../../common/js/usefuls";
+import {filterFreshOffers} from "../../../../../usefuls";
 import Tabs from "./components/Tabs/Tabs.vue";
 import Card from "./components/Card/Card.vue";
 import {computed, ref} from "vue";
