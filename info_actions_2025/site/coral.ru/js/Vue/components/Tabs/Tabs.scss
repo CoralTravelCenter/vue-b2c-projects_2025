@@ -28,6 +28,9 @@
     background: #fff;
     line-height: 24px;
     transition: all 300ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     @media (min-width: 1280px) {
       flex-grow: 1;
@@ -72,4 +75,15 @@
   .tabs-navigation__item.js-active {
     background: #061A3E;
   }
+}
+
+.no-scrollbar {
+  overflow: auto; /* или scroll, если нужно всегда */
+  -ms-overflow-style: none; /* IE и старый Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Chrome, Safari, новый Edge (WebKit / Blink) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

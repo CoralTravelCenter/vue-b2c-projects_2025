@@ -55,6 +55,7 @@ onBeforeUnmount(() => {
 	<li class="promo-card">
 		<article>
 			<a-tooltip
+					v-if="erid"
 					placement="bottomRight"
 					:overlay-inner-style="{ display: 'flex', alignItems: 'center', padding: 0 }"
 					:trigger="isMobile ? 'click' : 'hover'"
@@ -87,7 +88,7 @@ onBeforeUnmount(() => {
 				<h5 class="promo-card__title" v-html="name"></h5>
 				<p class="promo-card__description" v-html="description"></p>
 				<div class="promo-card__footer">
-					<div class="promo-card__time">
+					<div v-if="promo_end_text" class="promo-card__time">
           <span class="icon">
             <!-- твои иконки -->
             <svg class="coral-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"
