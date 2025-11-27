@@ -50,6 +50,7 @@ window.POPULAR_TOURS = [
 
 new SimpleReactDomObserver('#quick-search-tab-area .ant-tabs-tabpane', {
     onAppear: (el: HTMLElement) => {
+        console.log(el)
         const searchApp: HTMLDivElement = document?.createElement('div');
         searchApp.id = 'quick-search-app';
         el?.parentElement.append(searchApp);
