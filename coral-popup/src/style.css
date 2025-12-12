@@ -1,0 +1,113 @@
+body.js-scroll-lock {
+    overflow: hidden !important;
+}
+
+/*div[class*="PhotoGalleryMainCarousel_mainSwiperContainer__"] {*/
+/*    position: relative;*/
+/*}*/
+
+/*#promo-trigger {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 234px;*/
+/*    height: 64px;*/
+/*    z-index: 100;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*@media (min-width: 994px) {*/
+/*    ::part(popup-body) {*/
+/*        align-items: center;*/
+/*    }*/
+/*}*/
+
+/*::part(popup-dialog) {*/
+/*    max-width: 696px;*/
+/*}*/
+
+/*::part(popup-content) {*/
+/*    padding: 16px;*/
+/*}*/
+
+/*coral-popup .img-text {*/
+/*    display: grid;*/
+/*    grid-template-columns: min-content auto;*/
+/*    width: 100%;*/
+/*    gap: 24px;*/
+/*}*/
+
+/*coral-popup .img-text img {*/
+/*    max-width: 93px;*/
+/*    object-fit: contain;*/
+/*    grid-column: 1/2;*/
+/*    grid-row: 1/2;*/
+/*}*/
+
+/*coral-popup .img-text .text {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    gap: 8px;*/
+/*    grid-column: 2/3;*/
+/*    grid-row: 1/2;*/
+/*}*/
+
+/*coral-popup .img-text .text > * {*/
+/*    margin: 0;*/
+/*}*/
+
+/*coral-popup .img-text .text h3 {*/
+/*    font-size: 24px;*/
+/*}*/
+
+/*coral-popup .img-text .text p {*/
+/*    font-size: 20px;*/
+/*}*/
+
+/*@media (max-width: 993px) {*/
+/*    coral-popup .img-text {*/
+/*        gap: 16px;*/
+/*    }*/
+
+/*    coral-popup .img-text .text {*/
+/*        justify-content: center;*/
+/*        width: 75%;*/
+/*    }*/
+
+/*    coral-popup .img-text .text p {*/
+/*        display: none;*/
+/*    }*/
+
+/*    coral-popup .img-text .text h3 {*/
+/*        font-size: 16px;*/
+/*    }*/
+/*}*/
+
+/*coral-popup .condition-cards {*/
+/*    display: flex;*/
+/*    gap: 8px;*/
+/*    grid-column: span 2;*/
+/*    grid-row: 2/3;*/
+/*}*/
+
+/*@media (max-width: 993px) {*/
+/*    coral-popup .condition-cards {*/
+/*        flex-direction: column;*/
+/*    }*/
+/*}*/
+
+/*coral-popup .condition-cards .card {*/
+/*    border-radius: 8px;*/
+/*    background: linear-gradient(0deg, var(--Base-color_Base_Item_Bg_1, #C2E4F6) 0%, var(--Base-color_Base_Item_Bg_1, #C2E4F6) 100%), var(--header-footer-color-header-bg-selected, #E6F4FF);*/
+/*    box-shadow: 10px 10px 32px 0 rgba(0, 0, 0, 0.03);*/
+/*    font-size: 14px;*/
+/*    padding: 6px 8px;*/
+/*    line-height: 24px;*/
+/*    flex: 1;*/
+/*}*/
+
+
+/*coral-popup .attention {*/
+/*    grid-column: span 2;*/
+/*    margin: 0;*/
+/*}*/

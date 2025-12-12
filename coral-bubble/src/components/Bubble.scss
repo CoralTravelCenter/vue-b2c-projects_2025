@@ -1,0 +1,50 @@
+.coral-popup-trigger {
+  box-sizing: border-box;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: transparent;
+  padding: 7px 16px 7px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 40px;
+  width: fit-content;
+  cursor: pointer;
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: border-color 0.3s ease;
+
+  &:hover {
+    border-color: #66d1ff;
+  }
+
+  @media (max-width: 993px) {
+    padding: 0;
+    border: none;
+  }
+}
+
+::slotted([slot="icon"]) {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #E84F0E;
+  border-radius: 100%;
+  color: #ffffff;
+}
+
+::slotted([slot="text"]) {
+  margin: 0;
+  line-height: 1.1;
+  font-weight: 600;
+  font-size: 12px;
+  color: #000;
+  text-align: left;
+
+  @media (max-width: 993px) {
+    display: none;
+  }
+}

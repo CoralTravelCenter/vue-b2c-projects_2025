@@ -1,0 +1,10 @@
+@use 'tokens' as *;
+
+::slotted([slot='headline']) {
+  color: $text-color;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 32px;
+  margin: 0;
+}

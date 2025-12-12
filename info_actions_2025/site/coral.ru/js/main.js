@@ -1,4 +1,4 @@
-import {hostReactAppReady} from "../../../../usefuls.js";
+import {hostReactAppReady} from "../../../../usefuls.ts";
 import {Button, Tooltip} from 'ant-design-vue';
 import {createApp} from "vue";
 import App from "./Vue/App.vue";

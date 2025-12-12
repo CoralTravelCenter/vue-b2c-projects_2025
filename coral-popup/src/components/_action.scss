@@ -1,0 +1,14 @@
+@use 'tokens' as *;
+
+
+::slotted([slot='action']) {
+  border-radius: 40px;
+  background: var(--gradient, linear-gradient(225deg, #E7317D 0%, #D8242A 100%));
+  border: none;
+  padding: 13px 56px;
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  cursor: pointer;
+}

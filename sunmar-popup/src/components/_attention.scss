@@ -1,0 +1,6 @@
+@use 'tokens' as *;
+
+
+::slotted([slot='attention']) {
+  font-size: 12px;
+}
