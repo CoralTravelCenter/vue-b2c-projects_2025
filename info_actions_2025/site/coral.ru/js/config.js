@@ -1,171 +1,330 @@
+/**
+ * Конфигурация промо-кампании (баннер/акция).
+ *
+ * @typedef {Object} PromoConfig
+ *
+ * @property {string} filter
+ *   Текст фильтра в интерфейсе (чип/селектор акций).
+ *   Пример: "По направлениям".
+ *
+ * @property {string} name
+ *   Название промо-кампании для отображения в UI.
+ *   Пример: "Черная пятница".
+ *
+ * @property {string} visual
+ *   URL промо-изображения (баннер). Допускается абсолютная ссылка.
+ *   Пример: "https://b2ccdn.coral.ru/content/img/actions/....png".
+ *
+ * @property {string} url
+ *   Относительный URL посадочной страницы промо.
+ *   Допускается наличие UTM/служебных параметров.
+ *   Пример: "/hot-offers/black-friday/?banner_on_site=offers-black-friday-2025/".
+ *
+ * @property {string} description
+ *   Краткий маркетинговый текст/слоган промо, показывается пользователю.
+ *   Пример: "Дотянитесь до путешествия мечты с выгодой до 35% и супер-кешбэком*".
+ *
+ * @property {string} ligal
+ *   Юридический блок / наименование юрлица, указываемое мелким шрифтом.
+ *   Пример: "ООО «Центрбронь»".
+ *
+ * @property {string} erid
+ *   ERID-идентификатор рекламного материала для веб-версии сайта.
+ *   Используется для выполнения требований по маркировке рекламы.
+ *
+ * @property {string} app_erid
+ *   ERID-идентификатор промо для мобильного приложения.
+ *   Может совпадать с `erid` или быть отдельным значением.
+ *
+ * @property {string} promo_start
+ *   Техническая дата и время старта промо в формате "YYYY-MM-DD HH:mm".
+ *   Используется для показа/скрытия промо в интерфейсе.
+ *   Пример: "2025-11-28 00:00".
+ *
+ * @property {string} promo_end_text
+ *   Человекочитаемое описание даты окончания промо для UI.
+ *   Пример: "до 01.12.2025".
+ *
+ * @property {string} promo_end
+ *   Техническая дата и время окончания промо в формате "YYYY-MM-DD HH:mm".
+ *   Используется логикой показа/скрытия (таймеры, фильтрация).
+ *   Пример: "2025-12-01 23:59".
+ *
+ * @property {string} entry_point
+ *   Служебный идентификатор точки входа для аналитики/трекера.
+ *   Может быть пустой строкой, если отдельный entry point не нужен.
+ */
+
 window._promotion_settings = [
   {
-    "filter": "По направлениям",
-    "name": "От праздничной магии к магии отдыха ",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/New_Promo_page_Sunmar_432x250_ny.jpg",
-    "url": "https://www.sunmar.ru/info-actions/december-january/?banner_on_site=offers-december-january/",
-    "description": "Выбирайте путешествия до и после Нового года со скидкой до 15 000 ₽ на туры и отели",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFHArqmJ",
-    "app_erid": "2W5zFHArqmJ",
-    "promo_end_text": "до 14.11.2025",
-    "promo_end": "2025-11-14 23:59",
-    "entry_point": "ng_dec_jan"
+    filter: "По направлениям",
+    name: "Черная пятница: все начнется 28 ноября",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/New_Promo_Coral_324x180_BlackFriday.jpg",
+    url: "/hot-offers/black-friday/?banner_on_site=offers-teaser-black-friday/",
+    promo_end: "2025-11-28 23:59",
+    entry_point: "teaser_bf25"
   },
   {
-    "filter": "По направлениям",
-    "name": "Только отпуск – только отель",
-    "visual": "https://b2ccdn.sunmar.ru/content/New_Promo_page_Sunmar_432x250_Hotel3%.jpg",
-    "url": "/bookinghotel/?banner_on_site=offers-onlyhotel/",
-    "description": "Скидка 3% при бронировании проживания в отеле",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFHXNCnU",
-    "app_erid": "2W5zFHXNCnU",
-    "promo_end_text": "до 26.10.2025",
-    "promo_end": "2025-10-26 23:59"
+    filter: "По направлениям",
+    name: "Черная пятница",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/New_Promo_Coral_324x180_BlackFriday%2025.png",
+    url: "/hot-offers/black-friday/?banner_on_site=offers-black-friday-2025/",
+    description: "Дотянитесь до путешествия мечты с выгодой до 35% и супер-кешбэком*",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFGDsawr",
+    app_erid: "2W5zFGDsawr",
+    promo_start: "2025-11-28 00:00",
+    promo_end_text: "до 01.12.2025",
+    promo_end: "2025-12-01 23:59"
   },
   {
-    "filter": "По направлениям",
-    "name": "Домашка на каникулы – отдохнуть!",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/New_Promo_page_Sunmar_432x250_holidays.png",
-    "url": "/idei-otdykha/kuda-poekhat-na-kanikuly-osen/?banner_on_site=offers-kanikuly-osen/",
-    "description": "Берите детей и отправляйтесь к морю",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFJ1okrC",
-    "app_erid": "2W5zFJ1okrC",
-    "promo_end_text": "до 22.09.2025",
-    "promo_end": "2025-09-22 23:59"
+    filter: "По направлениям",
+    name: "Билеты подождут, а вот отель - нет",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/New_Promo_Coral_324x180_hotel4%.png",
+    url: "/hotel/?banner_on_site=offers-hotel-5/",
+    description: "Забронируйте проживание со скидкой 4%",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFJVKZQU",
+    app_erid: "2W5zFJVKZQU",
+    promo_end_text: "до 28.11.2025",
+    promo_end: "2025-11-28 23:59",
+    entry_point: "5_onlyhotel"
   },
   {
-    "filter": "По направлениям",
-    "name": "Раннее бронирование на зиму-весну 2025/2026",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/New_Promo_page_Sunmar_432x250_eb5%.webp",
-    "url": "/info-actions/rb-autumn/?banner_on_site=offers-rb-autumn/",
-    "description": "Специальное предложение: предоплата 5% — не упусти шанс до 5 сентября!",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFJ3MmTE",
-    "app_erid": "2W5zFJ3MmTE",
-    "promo_end_text": "до 30.09.2025",
-    "promo_end": "2025-09-30 23:59"
+    filter: "По направлениям",
+    name: "Календарь путешествий на 2026 год",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/New_Promo_Coral_324x180_Конкурс.jpg",
+    url: "/hot-offers/kalendar-puteshestvii/contest/?banner_on_site=offers-kalendar-puteshestvii-contest/",
+    description: "Запланируйте отдых заранее – выиграйте 250 000 ₽ на путешествие",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFJoC8yW",
+    app_erid: "2W5zFJoC8yW",
+    promo_end_text: "до 23.11.2025",
+    entry_point: "smm_250k_27102025"
   },
   {
-    "filter": "По направлениям",
-    "name": "Раннее бронирование на зиму-весну 2025/2026",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/New_Promo_page_Sunmar_432x250_eb10%.png",
-    "url": "/info-actions/rb-autumn/?banner_on_site=offers-rb-autumn/",
-    "description": "Предоплата от 20%",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFGZLALQ",
-    "app_erid": "2W5zFGZLALQ",
-    "promo_end_text": "до 30.11.2025",
-    "promo_end": "2025-11-30 23:59"
+    filter: "По направлениям",
+    name: "Отдых ближе, чем кажется...",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/New_Promo_Coral_324x180_eb_20%.png",
+    url: "/hot-offers/rannee-bronirovanie-osen/?banner_on_site=offers-rannee-bronirovanie-osen/",
+    description: "Предоплата от 20%",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFJnJ5Qc",
+    app_erid: "2W5zFJnJ5Qc",
+    promo_start: "2025-10-01 06:01",
+    promo_end_text: "до 30.11.2025",
+    promo_end: "2025-11-30 23:30"
   },
   {
-    "filter": "По направлениям",
-    "name": "Раннее бронирование на лето 2026",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/New_Promo_page_Sunmar_432x250_eb2026.png",
-    "url": "/rb-summer/?banner_on_site=offers-rb-summer/",
-    "description": "Заберите лучшую цену на будущий отдых",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFJ7jhX6",
-    "app_erid": "2W5zFJ7jhX6",
-    "promo_end_text": "до 31.12.2025",
-    "promo_end": "2025-12-31 23:59"
+    filter: "По направлениям",
+    name: "Соберите свое идеальное лето 2026",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/New_Promo_Coral_324x180_calendar.jpg",
+    url: "/hot-offers/kalendar-puteshestvii/?banner_on_site=offers-kalendar-puteshestvii/",
+    description: "Только до Нового года – максимальные скидки на туры",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFHrxXzx",
+    app_erid: "2W5zFHrxXzx",
+    promo_end_text: "до 31.12.2025",
+    entry_point: "calendar"
   },
   {
-    "filter": "Акции отелей,По направлениям",
-    "name": "Дети отдыхают БЕСПЛАТНО",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/2+2action.jpg",
-    "url": "/directclient/info-actions/besplatnyj-otdyh-dlya-detej-v-egipte/?banner_on_site=offers-2+2action/",
-    "description": "Выберите лучший семейный отель",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFGt9SCp",
-    "app_erid": "2W5zFGt9SCp",
-    "promo_end_text": "Бессрочно",
-    "promo_end": "2025-10-27 23:59"
+    filter: "По направлениям",
+    name: "Черная пятница – все по-настоящему!",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/New_Promo_Coral_324x180_BlackFriday.png",
+    url: "/hot-offers/black-friday/?banner_on_site=offers-black-friday25/",
+    description: "Летите туда, где настоящие скидки на известные бренды",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFGWQXXv",
+    app_erid: "2W5zFGWQXXv",
+    promo_start: "2025-10-13 13:00",
+    promo_end_text: "до 17.11.2025",
+    promo_end: "2025-11-17 23:30",
+    entry_point: "black_friday"
   },
   {
-    "filter": "По направлениям",
-    "name": "Новый год наоборот",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/New_Promo_page_Sunmar_432x250_ny.png",
-    "url": "/newyeartours/?banner_on_site=offers-newyeartours/",
-    "description": "Улетайте в лето, пока остальные в суете",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFJT5Zxk",
-    "app_erid": "2W5zFJT5Zxk",
-    "promo_end_text": "Бессрочно",
-    "promo_end": ""
+    filter: "CoralBonus",
+    name: "CoralBonus.Сокровища Востока!",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/cb/cb_aktsiya_sokrovischa_vostoka.jpg",
+    url: "/poleznaya-informatsiya/offers/aktsiya-sokrovischa-vostoka/?banner_on_site = offers-cb-sokrovischa-vostoka",
+    description: "Дарим 4000 бонусов при бронировании тура в Египет или ОАЭ!",
+    ligal: "ООО «КОРТРЕВЕЛ МАРКЕТ»",
+    erid: "2W5zFHaLYCY",
+    app_erid: "2W5zFHhkUcG",
+    promo_end_text: "до 31.12.2025",
+    promo_end: "2025-12-31 23:59"
   },
   {
-    "filter": "SunmarBonus",
-    "name": "SunmarBonus «Мы вам рады!»",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/sunmarbonus.jpg",
-    "url": "/info-actions/programma-loyalynosti-sunmarbonus/?banner_on_site=offers-sunmarbonus/",
-    "description": "Активируйте бонусную карту и получите 10 000 приветственных бонусов на счет",
-    "ligal": "ООО «КОРТРЕВЕЛ МАРКЕТ»",
-    "erid": "2W5zFJYWdXE",
-    "app_erid": "2W5zFJYWdXE",
-    "promo_end_text": "Бессрочно",
-    "promo_end": ""
+    filter: "По направлениям",
+    name: "Все путешествия исполнятся!",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/offer page-upd_eb_leto.png",
+    url: "/hot-offers/rannee-bronirovanie-leto/?banner_on_site=offers-rannee-bronirovanie-leto/",
+    description: "Бронируйте лето 2026 со скидкой до 50%",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFHVybb6",
+    app_erid: "2W5zFHVybb6",
+    promo_end_text: "до 31.12.2025",
+    promo_end: "2025-12-31 23:30"
   },
   {
-    "filter": "По направлениям",
-    "name": "Sunmar ФОРТУНА",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/fortuna.jpg",
-    "url": "/action-fortuna/?banner_on_site=offers-fortuna/",
-    "description": "Отдых по очень выгодным ценам!",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFG9A8Wk",
-    "app_erid": "2W5zFG9A8Wk",
-    "promo_end_text": "Бессрочно",
-    "promo_end": ""
+    filter: "По направлениям",
+    name: "Отдых ближе, чем кажется...",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/New_Promo_Coral_324x180_eb_5%.png",
+    url: "/hot-offers/rannee-bronirovanie-osen/?banner_on_site=offers-rannee-bronirovanie-osen/",
+    description: "Предоплата снижена до 5% только до 5 сентября!",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFHvhqCt",
+    app_erid: "2W5zFHvhqCt",
+    promo_end_text: "до 05.09.2025",
+    promo_end: "2025-09-05 23:30"
   },
   {
-    "filter": "По направлениям",
-    "name": "Горящие предложения",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/hot_tours.jpg",
-    "url": "/info-actions/goryashie-tury/?banner_on_site=offers-goryashie-tury/",
-    "description": "Для туристов, которые хотят улететь в ближайшее время",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFGXPwjv",
-    "app_erid": "2W5zFGXPwjv",
-    "promo_end_text": "Бессрочно",
-    "promo_end": ""
+    filter: "По направлениям",
+    name: "Новый год – повод для путешествия!",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/NEW_Inner_page_Coral_684x364_NY_25_offers.webp",
+    url: "/main/newyear/?banner_on_site=offers-newyear26/",
+    description: "Бронируйте отдых на все праздники",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFGJXd4c",
+    app_erid: "2W5zFGJXd4c",
+    promo_end_text: "до 31.12.2025"
   },
   {
-    "filter": "Акции отелей",
-    "name": "Бесплатный отдых для детей",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/Children.jpg",
-    "url": "/kak-vygodno-otdohnuty-s-detymi-v-rossii/?banner_on_site=offers-otdohnuty-s-detymi-v-rossii/",
-    "description": "Отели России с бесплатным проживанием для детей",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFGrfnQQ",
-    "app_erid": "2W5zFGrfnQQ",
-    "promo_end_text": "Бессрочно",
-    "promo_end": ""
+    filter: "Акции отелей,По направлениям",
+    name: "Дети отдыхают в Турции и Египте бесплатно",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/action2+2.png",
+    url: "/poleznaya-informatsiya/offers/hot-offers/aktsiya-deti-otdyhayut-v-egipte-besplatno/?banner_on_site=offers-action2+2_2025/",
+    description: "Вы платите только за перелет",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFJXGkTz",
+    app_erid: "2W5zFJXGkTz",
+    promo_end_text: "Бессрочно",
+    promo_end: "2025-10-27 23:30"
   },
   {
-    "filter": "По направлениям",
-    "name": "Не ищите способы сэкономить на роскоши, мы уже подумали за вас",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/elite.jpg",
-    "url": "/chotel-turkey-premium/?banner_on_site=offers-chotel-turkey-premium/",
-    "description": "Подборка премиальных отелей в Турции",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFHHsaCG",
-    "app_erid": "2W5zFHHsaCG",
-    "promo_end_text": "Бессрочно",
-    "promo_end": ""
+    filter: "CoralBonus",
+    name: "CoralBonus. Первым рейсом!",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/cb/one-flight_cb_offers_324х180.png",
+    url: "/poleznaya-informatsiya/offers/aktsiya-pervym-rejsom/?banner_on_site=offers-pervym-rejsom/",
+    description: "Дарим до 5000 бонусов за бронирование",
+    ligal: "ООО «КОРТРЕВЕЛ МАРКЕТ»",
+    erid: "2W5zFHyyxPA",
+    app_erid: "2W5zFJpuYgY",
+    promo_end_text: "до 31.01.2026",
+    promo_end: "2026-01-31 23:30"
   },
   {
-    "filter": "Акции отелей",
-    "name": "Пакеты услуг в отелях ОАЭ",
-    "visual": "https://b2ccdn.sunmar.ru/content/img/actions/service-packages.jpg",
-    "url": "/hotels-service-packages/?banner_on_site=offers-service-packages/",
-    "description": "Выбирайте и заранее оплачивайте пакет дополнительных услуг в отеле ОАЭ",
-    "ligal": "ООО «МирТурСервис»",
-    "erid": "2W5zFHVjUT2",
-    "app_erid": "2W5zFHVjUT2",
-    "promo_end_text": "Бессрочно",
-    "promo_end": ""
+    filter: "CoralBonus",
+    name: "CoralBonus. На волне доверия!",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/cb/on-wave-trust_offers_324x180.png",
+    url: "/poleznaya-informatsiya/offers/aktsiya-na-volne-doveriya/?banner_on_site=offers-volne-doveriya/",
+    description: "Дарим 6 000 бонусов за второе путешествие с картой",
+    ligal: "ООО «КОРТРЕВЕЛ МАРКЕТ»",
+    erid: "2W5zFJX7hJQ",
+    app_erid: "2W5zFKABPM2",
+    promo_end_text: "Бессрочно"
+  },
+  {
+    filter: "CoralBonus",
+    name: "CoralBonus. Добро пожаловать!",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/cb-dobro-pozhalovat.png",
+    url: "/poleznaya-informatsiya/offers/hot-offers/akcia-dobro-pozhalovat/?banner_on_site=offers-dobro-pozhalovat/",
+    description: "Активируйте карту и получите 3 000 приветственных бонусов на счёт!",
+    ligal: "ООО «КОРТРЕВЕЛ МАРКЕТ»",
+    erid: "2W5zFGRi6qe",
+    app_erid: "2W5zFGac2Xi",
+    promo_end_text: "до 31.01.2026",
+    promo_end: "2026-01-31 23:30"
+  },
+  {
+    filter: "CoralBonus",
+    name: "CoralBonus.<br> Ранние пташки!",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/cb-rannie-ptashk.png",
+    url: "/poleznaya-informatsiya/offers/akciya-rannie-ptashki/?banner_on_site=offers-cb-rannie-ptashki/",
+    description: "Дарим 2 000 бонусов на раннее бронирование!",
+    ligal: "ООО «КОРТРЕВЕЛ МАРКЕТ»",
+    erid: "2W5zFGkywW8",
+    app_erid: "2W5zFGrutdW",
+    promo_end_text: "до 31.10.2025",
+    promo_end: "2025-10-31 23:30"
+  },
+  {
+    filter: "CoralBonus",
+    name: "CoralBonus. Любимый отель!",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/cb-lyubimiy-hotel.png",
+    url: "/poleznaya-informatsiya/offers/hot-offers/lyubimiy-hotel/?banner_on_site=offers-cb-lyubimiy-hotel/",
+    description: "Дарим 1000 дополнительных бонусов на отдых!",
+    ligal: "ООО «КОРТРЕВЕЛ МАРКЕТ»",
+    erid: "2W5zFHUVbPn",
+    app_erid: "2W5zFHwBNTz",
+    promo_end_text: "до 30.09.2025",
+    promo_end: "2025-09-30 23:30"
+  },
+  {
+    filter: "CoralBonus",
+    name: "CoralBonus. Отель XO Cape Arnna",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/cb-xo-cape-arnnat.png",
+    url: "/poleznaya-informatsiya/offers/xo-cape-arnna/?banner_on_site=offers-cb-xo-cape-arnnat/",
+    description: "12 000 бонусов на отдых в отеле XO Cape Arnna!",
+    ligal: "ООО «КОРТРЕВЕЛ МАРКЕТ»",
+    erid: "2W5zFJKRBhA",
+    app_erid: "2W5zFJNPAFr",
+    promo_end_text: "до 20.10.2025",
+    promo_end: "2025-10-20 23:30"
+  },
+  {
+    filter: "CoralBonus",
+    name: "CoralBonus. Отель Anda Barut Collection",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/Anda_Barut_Collection_ac.png",
+    url: "/poleznaya-informatsiya/offers/anda-barut-collection/?banner_on_site=offers-cb-anda-barut-collection",
+    description: "11 000 бонусов на отдых в отеле Anda Barut Collection!",
+    ligal: "ООО «КОРТРЕВЕЛ МАРКЕТ»",
+    erid: "2W5zFJUK7PE",
+    app_erid: "2W5zFJhezvL",
+    promo_end_text: "до 20.10.2025",
+    promo_end: "2025-10-20 23:30"
+  },
+  {
+    filter: "По направлениям",
+    name: "Не можете найти подходящий тур?",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/tour-guide.png",
+    url: "/tour-guide/?banner_on_site=offers-tour-guide/",
+    description: "Умный подбор туров по вашим предпочтениям",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFFv4ggg",
+    app_erid: "2W5zFFv4ggg",
+    promo_end_text: "Бессрочно"
+  },
+  {
+    filter: "Акции отелей",
+    name: "За детей<br> платить не нужно!",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/detymi-v-rossii.png",
+    url: "/vygodnyy-otdyh-s-detymi-v-rossii/?banner_on_site=offers-detymi-v-rossii/",
+    description: "Отели России с бесплатным проживанием и питанием для детей",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFGf4Krg",
+    app_erid: "2W5zFGf4Krg",
+    promo_end_text: "Бессрочно"
+  },
+  {
+    filter: "Акции отелей",
+    name: "Пакеты услуг в отелях ОАЭ",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/hotels-service-packages.png",
+    url: "/poleznaya-informatsiya/hotels-service-packages/?banner_on_site=offers-hotels-service-packages/",
+    description: "Не беспокойся об ограничениях в работе банковских карт",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFHqFkpY",
+    app_erid: "2W5zFHqFkpY",
+    promo_end_text: "Бессрочно"
+  },
+  {
+    filter: "Акции отелей",
+    name: "Акции отелей",
+    visual: "https://b2ccdn.coral.ru/content/img/actions/actionhotels.png",
+    url: "/poleznaya-informatsiya/offers/hot-offers/actionhotels/?banner_on_site=offers-actionhotels/",
+    description: "Эксклюзивные скидки, бонусы и подарки",
+    ligal: "ООО «Центрбронь»",
+    erid: "2W5zFHz9gWc",
+    app_erid: "2W5zFHz9gWc",
+    promo_end_text: "Бессрочно"
   }
 ];

@@ -1,5 +1,5 @@
 <script setup>
-import {filterFreshOffers} from "../../../../../usefuls";
+import {filterFreshOffers} from "../filterFreshOffers";
 import Tabs from "./components/Tabs/Tabs.vue";
 import Card from "./components/Card/Card.vue";
 import {computed, ref} from "vue";
@@ -13,7 +13,6 @@ const promotionsArr = ref(window._promotion_settings ?? []);
 const freshOffers = computed(() =>
 		promotionsArr.value.filter(o => filterFreshOffers(o))
 );
-console.log(freshOffers.value)
 
 const offersNormalized = computed(() =>
 		freshOffers.value.map(p => {
@@ -52,6 +51,8 @@ const isApplication = computed(() => params.mw === "true");
 
 
 const isBonus = p => p.filtersArr.some(f => /bonus/i.test(f));
+
+
 </script>
 
 <template>

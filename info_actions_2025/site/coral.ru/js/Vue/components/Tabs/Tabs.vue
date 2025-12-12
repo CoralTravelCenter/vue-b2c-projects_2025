@@ -15,7 +15,7 @@ function selectFilter(filter) {
 
 <template>
 	<nav class="tabs-navigation">
-		<ul class="tabs-navigation__list">
+		<ul class="tabs-navigation__list no-scrollbar">
 			<li
 					v-for="filter in filters"
 					:key="filter"

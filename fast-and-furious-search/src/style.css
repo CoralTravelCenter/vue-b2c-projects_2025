@@ -1,0 +1,7 @@
+#quick-search-app {
+    display: grid;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+    overflow: clip;
+}
