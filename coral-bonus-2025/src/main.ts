@@ -2,6 +2,7 @@ import {createApp} from 'vue'
 import App from '@/components/App.vue'
 import './style.css'
 import {hostReactAppReady} from "../../usefuls";
+import markup from '@/markup.html?raw'
 
 function waitForGlobals(keys: string[], timeout = 1000): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -34,7 +35,7 @@ function isHotelWithCashback(): boolean {
     return cashbackIds.includes(insiderHotelId)
 }
 
-window._coralBonusCashback = [
+(window as any)._coralBonusCashback = [
     {
         "name": "AJMAN HOTEL",
         "promotions": [
@@ -88,18 +89,21 @@ window._coralBonusCashback = [
     }
 ];
 
+
 (async () => {
-    await hostReactAppReady();
+    await hostReactAppReady()
     await waitForGlobals(['insider_object', '_coralBonusCashback'])
-    const root = document?.querySelector('.coral-bonus > div');
+    const root = document?.querySelector('.coral-bonus');
     if (!root) return;
 
-    const vueContainer = document.createElement('div');
-    vueContainer.id = 'coral-bonus-cashback-calculator';
-    root.append(vueContainer);
+    root.outerHTML = markup
 
+    const host = document?.querySelector('#coral-bonus-cashback')
+    if (!host) return;
+
+    const calc = host?.querySelector('#coral-bonus-cashback-calculator')
     const isInit = isHotelWithCashback()
-    if (isInit) {
-        createApp(App).mount('#coral-bonus-cashback-calculator')
+    if (isInit && calc) {
+        createApp(App).mount(calc)
     }
 })()

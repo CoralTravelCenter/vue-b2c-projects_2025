@@ -8,9 +8,16 @@ export class DataLayerWatch {
         this._init();
     }
 
-    onEvent(name, handler) {
+    onEvent(name, handler, {replay = true} = {}) {
         if (!this.eventHandlers.has(name)) this.eventHandlers.set(name, new Set());
         this.eventHandlers.get(name).add(handler);
+
+        if (replay && Array.isArray(this.layer)) {
+            for (const item of this.layer) {
+                if (item?.event === name) handler(item);
+            }
+        }
+
         return () => this.eventHandlers.get(name).delete(handler);
     }
 
