@@ -4,21 +4,15 @@ import './style.css'
 import {hostReactAppReady} from "../../usefuls";
 import markup from '@/markup.html?raw'
 
-function waitForGlobals(keys: string[], timeout = 1000): Promise<void> {
-    return new Promise((resolve, reject) => {
-        const start = Date.now()
-
+function waitForGlobals(keys: string[], timeout = 300): Promise<void> {
+    return new Promise((resolve) => {
         const timer = setInterval(() => {
             const ready = keys.every(k => (window as any)[k])
             if (ready) {
                 clearInterval(timer)
                 resolve()
             }
-            if (Date.now() - start > timeout) {
-                clearInterval(timer)
-                reject()
-            }
-        }, 100)
+        }, timeout)
     })
 }
 
@@ -92,7 +86,7 @@ function isHotelWithCashback(): boolean {
 
 (async () => {
     await hostReactAppReady()
-    await waitForGlobals(['insider_object', '_coralBonusCashback'])
+    await waitForGlobals(['insider_object'])
     const root = document?.querySelector('.coral-bonus');
     if (!root) return;
 
