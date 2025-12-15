@@ -50,6 +50,7 @@ function calc(value: number, arr: number[]): number {
 onMounted(() => {
 	const DL = new DataLayerWatch();
 	DL.onEvent("view_item", (data: any) => {
+		console.log(data)
 		const cashbackSum: HTMLElement | null = document?.querySelector('#coral-bonus-cashback-result');
 		if (cashbackSum) {
 			cashbackSum.textContent = `Кешбэк до ${calc(data?.ecommerce?.value, currentPromoValues.value)}`

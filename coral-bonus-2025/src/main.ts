@@ -86,7 +86,7 @@ function isHotelWithCashback(): boolean {
 
 (async () => {
     await hostReactAppReady()
-    await waitForGlobals(['insider_object'])
+    await waitForGlobals(['insider_object', '_coralBonusCashback'])
     const root = document?.querySelector('.coral-bonus');
     if (!root) return;
 
