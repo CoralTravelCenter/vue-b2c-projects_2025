@@ -202,6 +202,14 @@
     --shadow-2xl: var(--shadow-2xl);
 }
 
-div[class*='CoralBonusInformation_coralBonusInformation__'] {
+.coral-bonus > div:not([data-coral-bonus-target]) {
+    display: none;
+}
+
+div[class*="CoralBonusInformation_coralBonusInformation__"] {
     padding: 0;
+}
+
+div[class*="CoralBonusInformation_coralBonusInformation__"] > *:not([data-coral-bonus-target]) {
+    display: none;
 }

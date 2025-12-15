@@ -1,10 +1,17 @@
-interface Promo {
-    name: string,
-    value: number
+export interface ICashbackPromotion {
+    name: string;
+    value: number;
 }
 
-interface CashbackData {
-    name: string;
-    promotions: Promo[];
+export interface ICashbackData {
     id: number;
+    name: string;
+    promotions: ICashbackPromotion[];
+}
+
+export interface IWindow {
+    _coralBonusCashback?: ICashbackData[];
+    insider_object?: {
+        product?: { id?: number | string };
+    };
 }

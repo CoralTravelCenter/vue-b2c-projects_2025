@@ -1,7 +1,8 @@
+import "./style.css";
+import {hostReactAppReady, ReactDomObserver,} from "../../usefuls";
 import {createApp} from "vue";
 import App from "@/components/App.vue";
-import "./style.css";
-import {hostReactAppReady, mediaMatcherMaxWidth, ReactDomObserver,} from "../../usefuls";
+import {upsertTarget} from "./targets";
 
 function waitForGlobals(keys: string[], timeout = 300): Promise<void> {
     return new Promise((resolve) => {
@@ -26,6 +27,17 @@ function isHotelWithCashback(): boolean {
     const insiderHotelId = Number(insider?.product?.id);
     const cashbackIds = getCashbackHotelIds();
     return cashbackIds.includes(insiderHotelId);
+}
+
+function registerCards(container: HTMLElement) {
+    const cbCards = container?.querySelectorAll<HTMLElement>(
+        'div[class*="CoralBonusInformation_coralBonusInformation__"]'
+    );
+    if (cbCards && cbCards.length > 0) {
+        cbCards.forEach((card) => {
+            upsertTarget(card, {}, "append");
+        })
+    }
 }
 
 (window as any)._coralBonusCashback = [
@@ -89,15 +101,24 @@ function isHotelWithCashback(): boolean {
     const isInit = isHotelWithCashback();
     if (!isInit) return;
 
-    mediaMatcherMaxWidth(993, (isMobile: boolean) => {
-        if (isMobile) {
-            return;
-        } else {
-            new ReactDomObserver(".coral-bonus", {
-                onAppear: (el: HTMLElement) => {
-                    createApp(App).mount(el);
-                },
-            }).start();
-        }
-    });
+
+    const root = document.createElement("div");
+    root.id = "coral-bonus-v-app";
+    document.body.append(root);
+
+    createApp(App).mount(root);
+
+// 1) обычные места
+    new ReactDomObserver(".coral-bonus", {
+        onAppear: (card: HTMLElement) => {
+            upsertTarget(card, {}, "append");
+        },
+    }).start();
+
+// 2) карточки в списке номеров
+    new ReactDomObserver(".select-room-list-container", {
+        watchChild: true,
+        onAppear: (el: HTMLElement) => registerCards(el),
+        onChildMutate: (el: HTMLElement) => registerCards(el),
+    }).start();
 })();

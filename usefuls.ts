@@ -1469,3 +1469,34 @@ export function formatPriceRub(
         maximumFractionDigits: 0,
     }).format(num);
 }
+
+export function observeElement(
+    selector: string,
+    onFound: (el: Element) => void,
+    {
+        root = document,
+        once = true,
+        subtree = true,
+    }: { root?: ParentNode; once?: boolean; subtree?: boolean } = {}
+) {
+    const find = () => root.querySelector?.(selector);
+
+    // сразу, если уже есть
+    const el = find();
+    if (el) {
+        onFound(el);
+        if (once) return () => {
+        };
+    }
+
+    const observer = new MutationObserver(() => {
+        const el = find();
+        if (!el) return;
+        onFound(el);
+        if (once) observer.disconnect();
+    });
+
+    observer.observe(root as Node, {childList: true, subtree});
+
+    return () => observer.disconnect();
+}
