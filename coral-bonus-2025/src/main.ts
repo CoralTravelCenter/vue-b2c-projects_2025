@@ -2,7 +2,7 @@ import {createApp} from 'vue'
 import App from '@/components/App.vue'
 import './style.css'
 import {hostReactAppReady} from "../../usefuls";
-import markup from '@/markup.html?raw'
+import {ReactDomObserver} from "../../utils.js"
 
 function waitForGlobals(keys: string[], timeout = 300): Promise<void> {
     return new Promise((resolve) => {
@@ -28,6 +28,7 @@ function isHotelWithCashback(): boolean {
     const cashbackIds = getCashbackHotelIds()
     return cashbackIds.includes(insiderHotelId)
 }
+
 
 (window as any)._coralBonusCashback = [
     {
@@ -87,17 +88,14 @@ function isHotelWithCashback(): boolean {
 (async () => {
     await hostReactAppReady()
     await waitForGlobals(['insider_object', '_coralBonusCashback'])
-    const root = document?.querySelector('.coral-bonus');
-    if (!root) return;
-
-    root.outerHTML = markup
-
-    const host = document?.querySelector('#coral-bonus-cashback')
-    if (!host) return;
-
-    const calc = host?.querySelector('#coral-bonus-cashback-calculator')
     const isInit = isHotelWithCashback()
-    if (isInit && calc) {
-        createApp(App).mount(calc)
-    }
+
+    new ReactDomObserver(".coral-bonus", {
+        onAppear: el => {
+            console.log(el)
+            if (isInit) {
+                createApp(App).mount(el)
+            }
+        }
+    }).start()
 })()
