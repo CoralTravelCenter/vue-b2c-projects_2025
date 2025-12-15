@@ -1,8 +1,0 @@
-{
-  "devDependencies": {
-    "@vue/devtools": "^8.0.2"
-  },
-  "dependencies": {
-    "vue-skeletor": "^1.0.6"
-  }
-}
