@@ -369,7 +369,8 @@ export async function vimeoAutoPlay(
                                 muted: 1,
                             },
                         );
-                        target["vimeo-player"].on("play", function () {
+                        target["vimeo-player"].on("play", () => {
+                            // @ts-ignore
                             (this as any).element?.parentElement?.classList.add(
                                 "playback",
                             );

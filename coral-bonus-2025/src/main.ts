@@ -1,106 +1,29 @@
 import "./style.css";
-import {hostReactAppReady, ReactDomObserver,} from "../../usefuls";
+import {hostReactAppReady, ReactDomObserver} from "../../usefuls";
 import {createApp} from "vue";
 import App from "@/components/App.vue";
-import {upsertTarget} from "./targets";
+import {upsertTarget} from "./helpers/coralBonus/targets";
+import type {ICashbackData, IOverlayDetail} from "@/types";
+import {
+    isHotelWithCashback,
+    readCashbackFromScript,
+    registerCards,
+    registerHotelListCards,
+    type UpsertFn,
+    waitForGlobals
+} from "@/helpers/dom-helpers";
 
-function waitForGlobals(keys: string[], timeout = 300): Promise<void> {
-    return new Promise((resolve) => {
-        const timer = setInterval(() => {
-            const ready = keys.every((k) => (window as any)[k]);
-            if (ready) {
-                clearInterval(timer);
-                resolve();
-            }
-        }, timeout);
-    });
-}
+const CASHBACK_SCRIPT_ID = "coral-bonus-cashback-json";
+const HOTEL_CARD_ID_PREFIX = "hotelListCard";
+const HOTEL_CARD_SEL = `[id^="${HOTEL_CARD_ID_PREFIX}"]`;
 
-function getCashbackHotelIds(): number[] {
-    return (window as any)._coralBonusCashback.map((h: any) => h.id);
-}
-
-function isHotelWithCashback(): boolean {
-    const insider = (window as any).insider_object;
-    if (!insider?.product?.id) return false;
-
-    const insiderHotelId = Number(insider?.product?.id);
-    const cashbackIds = getCashbackHotelIds();
-    return cashbackIds.includes(insiderHotelId);
-}
-
-function registerCards(container: HTMLElement) {
-    const cbCards = container?.querySelectorAll<HTMLElement>(
-        'div[class*="CoralBonusInformation_coralBonusInformation__"]'
-    );
-    if (cbCards && cbCards.length > 0) {
-        cbCards.forEach((card) => {
-            upsertTarget(card, {}, "append");
-        })
-    }
-}
-
-(window as any)._coralBonusCashback = [
-    {
-        name: "AJMAN HOTEL",
-        promotions: [
-            {
-                name: "для новых владельцев карт СoralBonus<br> по акции «Добро пожаловать!»",
-                value: 3000,
-            },
-            {
-                name: "Сокровища Востока",
-                value: 4000,
-            },
-            {
-                name: "по акции «Первым рейсом!»",
-                value: 5000,
-            },
-            {
-                name: "по акции «На волне доверия»",
-                value: 6000,
-            },
-        ],
-        id: 1982,
-    },
-    {
-        name: "BAHI AJMAN PALACE HOTEL",
-        promotions: [
-            {
-                name: "Добро пожаловать",
-                value: 3000,
-            },
-        ],
-        id: 8230,
-    },
-    {
-        name: "ALDEIA SANTA RITA",
-        promotions: [],
-        id: 5780,
-    },
-    {
-        name: "KHAO LAK MARRIOTT BEACH RESORT & SPA",
-        promotions: [
-            {
-                name: "Добро пожаловать",
-                value: 3000,
-            },
-            {
-                name: "Первым рейсом",
-                value: 5000,
-            },
-        ],
-        id: 72544,
-    },
-];
+const upsertAppend: UpsertFn = (el, props) => upsertTarget(el, props ?? {}, "append");
 
 (async () => {
     await hostReactAppReady();
-    await waitForGlobals(["insider_object", "_coralBonusCashback"]);
 
-    const isInit = isHotelWithCashback();
-    if (!isInit) return;
-
+    const cashbackEl = document.getElementById(CASHBACK_SCRIPT_ID) as HTMLScriptElement | null;
+    const parsedCashbackData: ICashbackData[] = cashbackEl ? readCashbackFromScript(cashbackEl) : [];
 
     const root = document.createElement("div");
     root.id = "coral-bonus-v-app";
@@ -108,17 +31,45 @@ function registerCards(container: HTMLElement) {
 
     createApp(App).mount(root);
 
-// 1) обычные места
-    new ReactDomObserver(".coral-bonus", {
-        onAppear: (card: HTMLElement) => {
-            upsertTarget(card, {}, "append");
-        },
-    }).start();
+    if (location.pathname.includes("hotels")) {
+        await waitForGlobals(["insider_object"]);
 
-// 2) карточки в списке номеров
-    new ReactDomObserver(".select-room-list-container", {
-        watchChild: true,
-        onAppear: (el: HTMLElement) => registerCards(el),
-        onChildMutate: (el: HTMLElement) => registerCards(el),
-    }).start();
+        const isInit = isHotelWithCashback(parsedCashbackData);
+        if (!isInit) return;
+
+        new ReactDomObserver(".coral-bonus", {
+            onAppear: (el: HTMLElement) => upsertAppend(el),
+        }).start();
+
+        new ReactDomObserver(".select-room-list-container", {
+            watchChild: true,
+            onAppear: (el: HTMLElement) => registerCards(el, upsertAppend),
+            onChildMutate: (el: HTMLElement) => registerCards(el, upsertAppend),
+        }).start();
+    }
+
+    if (location.pathname.includes("packagetours") || location.pathname.includes("onlyhotel")) {
+        const cashbackIds = new Set(parsedCashbackData.map((h) => h.id));
+
+        new ReactDomObserver(HOTEL_CARD_SEL, {
+            onAppear: (el: HTMLElement) => registerHotelListCards(el, cashbackIds, upsertAppend),
+        }).start();
+
+        new ReactDomObserver(".lazyHotelList", {
+            debug: true,
+            watchChild: true,
+            onAppear: (el: HTMLElement) => registerHotelListCards(el, cashbackIds, upsertAppend),
+            onChildMutate: (el: HTMLElement) => registerHotelListCards(el, cashbackIds, upsertAppend),
+        }).start();
+    }
+
+    document.addEventListener("coral-bonus:overlay", (e) => {
+        const {detail} = e as CustomEvent<IOverlayDetail>;
+        if (detail.action !== "open") return;
+        //@ts-ignore
+        if (typeof ym === "function") {
+            //@ts-ignore
+            ym(96674199, "reachGoal", "cb_cashback", detail);
+        }
+    });
 })();

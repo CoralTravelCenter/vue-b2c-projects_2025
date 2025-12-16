@@ -9,9 +9,11 @@ export interface ICashbackData {
     promotions: ICashbackPromotion[];
 }
 
-export interface IWindow {
-    _coralBonusCashback?: ICashbackData[];
-    insider_object?: {
-        product?: { id?: number | string };
-    };
+export interface IOverlayDetail {
+    action: "open" | "close";
+    targetId: string;
+    label?: string;
+    ui: "tooltip" | "popover";
+    hotelId?: number;
+    promoCount?: number;
 }

@@ -206,10 +206,18 @@
     display: none;
 }
 
-div[class*="CoralBonusInformation_coralBonusInformation__"] {
+#hotel-detail-area div[class*="CoralBonusInformation_coralBonusInformation__"] {
     padding: 0;
 }
 
-div[class*="CoralBonusInformation_coralBonusInformation__"] > *:not([data-coral-bonus-target]) {
+#hotel-detail-area div[class*="CoralBonusInformation_coralBonusInformation__"] > *:not([data-coral-bonus-target]) {
+    display: none;
+}
+
+div[id*="hotelListCard"]:has([data-coral-bonus-target]) div[class*="CoralBonusInformation_coralBonusInformation__"] {
+    padding: 0;
+}
+
+div[id*="hotelListCard"]:has([data-coral-bonus-target]) div[class*="CoralBonusInformation_coralBonusInformation__"] > *:not([data-coral-bonus-target]) {
     display: none;
 }
