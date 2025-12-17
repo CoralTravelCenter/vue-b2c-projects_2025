@@ -1,154 +1,80 @@
 <script setup lang="ts">
-import {getCurrentInstance, nextTick, onMounted, onUnmounted, shallowRef} from 'vue'
-import {useSessionStorage} from '@vueuse/core'
+import {onMounted, shallowRef} from 'vue'
 import waitUntilElementsGone from '../helpers/useElementsGone.ts'
+import {unlockScroll} from "../helpers/scroll.ts";
+import resolveAutoShow from "../helpers/resolveAutoShow.ts";
+import parseGuardSelectors from "../helpers/parseGuardSelectors.ts";
+import publicShow from "../helpers/publicShow.ts";
+import {useStorage} from "@vueuse/core";
 
 type Props = {
-	autoShow?: boolean | string | number
+	id: string
+	autoShow?: string
 	guardSelectors?: string
 	ymMetrika?: string
 }
 
-const {autoShow, guardSelectors, ymMetrika} = defineProps<Props>()
-
-// --- autoShow как delay ---
-function resolveAutoShowDelay(value: Props['autoShow']): number | null {
-	if (value === undefined || value === null) return null
-	if (value === true || value === '') return 0
-	const n = Number(value)
-	return Number.isFinite(n) && n >= 0 ? n : null
-}
-
-
-const autoShowDelay = resolveAutoShowDelay(autoShow)
-const hasAutoShow = autoShowDelay !== null
-
-// --- state ---
+// Стэйты
+const {id, autoShow, guardSelectors, ymMetrika} = defineProps<Props>()
+const autoDelay = resolveAutoShow(autoShow)
 const mounted = shallowRef(false)
 const visible = shallowRef(false)
+const selectors = parseGuardSelectors(guardSelectors)
+const flag = shallowRef(false)
+let autoDelayTimer = null
 
-// Авто-показ ровно один раз за сессию
-
-const instance = getCurrentInstance()
-const popupId = (instance?.vnode.props as any)?.id ?? crypto.randomUUID()
-const wasShownOnce = useSessionStorage<boolean>(
-		`coral-popup-auto-shown-${popupId}`,
-		false
-)
-
-// --- селекторы блокировки ---
-function parseGuardSelectors(): string[] {
-	if (!guardSelectors) return []
-	return guardSelectors
-			.split(',')
-			.map(s => s.trim())
-			.filter(Boolean)
-}
-
-const selectors = parseGuardSelectors()
-const hasGuardSelectors = selectors.length > 0
-
-function fireMetrika() {
-	if (!ymMetrika) return
-	try {
-		const fn = new Function(ymMetrika)
-		fn()
-	} catch (e) {
-		console.warn('Ошибка выполнения ymMetrika:', e)
-	}
-}
-
-// --- scroll ---
-function lockScroll() {
-	document.body.classList.add('js-scroll-lock')
-}
-
-function unlockScroll() {
-	document.body.classList.remove('js-scroll-lock')
-}
-
-// --- ВНУТРЕННИЙ показ (для авто-логики) ---
-async function internalShow() {
-	if (visible.value) return
-	if (wasShownOnce.value) return
-
-	wasShownOnce.value = true
-
-	mounted.value = true
-	await nextTick()
-	visible.value = true
-	lockScroll()
-	fireMetrika()
-}
-
-// --- ПУБЛИЧНЫЙ показ (клик по bubble) ---
-async function publicShow() {
-	if (visible.value) return
-
-	mounted.value = true
-	await nextTick()
-	visible.value = true
-	lockScroll()
-	fireMetrika()
-}
-
+// Метод скрытия
 function hide() {
 	if (!visible.value) return
 	visible.value = false
 }
 
-function afterLeave() {
+// Управление переходом
+function handleAfterLeave() {
 	mounted.value = false
 	unlockScroll()
 }
 
-// --- авто-логика ---
+// Установка автозапуска
 function setupAutoShow() {
-	if (!hasAutoShow) return
-	if (wasShownOnce.value) return
-
-	// нет guard-selectors → просто ждём autoShowDelay
-	if (!hasGuardSelectors) {
-		setTimeout(() => internalShow(), autoShowDelay as number)
+	console.log(autoShow)
+	console.log(flag.value)
+	if (!autoShow || !flag.value) {
+		console.log('Не показываем уже было')
 		return
 	}
-
-	// есть guard-selectors → ждём, пока они полностью исчезнут
-	waitUntilElementsGone(
-			{
-				floating: selectors,     // все guard-селекторы должны исчезнуть
-			},
-			() => {
-				if (wasShownOnce.value) return
-				setTimeout(() => internalShow(), autoShowDelay as number)
-			}
-	)
+	flag.value = useStorage(`coral-popup-auto-shown-${id}`, true)
+	waitUntilElementsGone({floating: selectors}, () => {
+		if (autoDelay) {
+			autoDelayTimer = setTimeout(() => {
+				publicShow(visible, mounted, ymMetrika, id)
+			}, autoDelay)
+		} else {
+			publicShow(visible, mounted, ymMetrika, id)
+		}
+	})
 }
 
-// --- ESC ---
 function onKeydown(e: KeyboardEvent) {
 	if (e.key === 'Escape') hide()
+	document.removeEventListener('keydown', onKeydown)
 }
 
-// --- lifecycle ---
 onMounted(() => {
-	document.addEventListener('keydown', onKeydown, true)
+	document.addEventListener('keydown', onKeydown)
 	setupAutoShow()
 })
 
-onUnmounted(() => {
-	document.removeEventListener('keydown', onKeydown, true)
-	unlockScroll()
-})
+onMounted(() => flag.value = null)
 
-defineExpose({show: publicShow, hide, afterLeave})
+defineExpose({show: publicShow, hide})
 </script>
-
 
 <template>
 	<div v-if="mounted" class="popup-backdroppo"></div>
-	<div v-if="mounted" part="popup-body" class="popup-body" @click.self="hide">
-		<transition name="dialog-fade" @after-leave="afterLeave">
+
+	<div v-if="mounted" part="popup-body" class="popup-body" @click.self="hide()">
+		<transition name="dialog-fade" @after-leave="handleAfterLeave">
 			<div
 					v-show="visible"
 					class="popup-dialog"
@@ -156,7 +82,7 @@ defineExpose({show: publicShow, hide, afterLeave})
 					role="dialog"
 					aria-modal="true"
 			>
-				<button class="popup-close" type="button" @click="hide" aria-label="Закрыть">
+				<button class="popup-close" type="button" @click="hide()" aria-label="Закрыть">
 					<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
 						<path d="M14.6666 1.3335L1.33331 14.6668" stroke="#535353"/>
 						<path d="M1.33329 1.3335L14.6666 14.6668" stroke="#535353"/>
@@ -164,8 +90,8 @@ defineExpose({show: publicShow, hide, afterLeave})
 				</button>
 
 				<div class="popup-visual">
-					<slot name="visual"/>
-					<slot name="erid"/>
+					<slot name="visual" part="visual"/>
+					<slot name="erid" part="erid"/>
 				</div>
 
 				<div class="popup-content" part="popup-content">

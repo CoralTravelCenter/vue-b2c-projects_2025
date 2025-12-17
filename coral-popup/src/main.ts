@@ -1,7 +1,7 @@
 import {defineCustomElement} from "vue";
 import Popup from './components/Popup.ce.vue'
-import markup from './markup.html?raw'
-import trigger from './trigger.html?raw'
+import markup from "./markup.html?raw"
+import trigger from "./trigger.html?raw"
 import './style.css';
 
 const componentName = 'coral-popup';
@@ -13,20 +13,12 @@ if (!customElements.get(componentName)) {
 (async () => {
     await customElements.whenDefined('coral-popup')
     document.body.insertAdjacentHTML('beforeend', markup)
+    document.body.insertAdjacentHTML('afterbegin', trigger)
 
-    const popupElement = document?.querySelector('coral-popup');
+    const tr = document.getElementById('promo-trigger')
+    const p = document.getElementById('only-flight')
 
-    const placeToInsert = document?.querySelector('div[class*="PhotoGalleryMainCarousel_mainSwiperContainer__"]')
-    console.log(placeToInsert);
-    placeToInsert && placeToInsert.insertAdjacentHTML('beforeend', trigger)
-
-    const popupTrigger = document?.querySelector('#promo-trigger');
-
-
-    if (popupTrigger) {
-        popupElement && popupTrigger.addEventListener('click', (e) => {
-            console.log(e.currentTarget)
-            popupElement.show()
-        })
+    if (tr && p) {
+        tr.addEventListener('click', () => p.show())
     }
 })()

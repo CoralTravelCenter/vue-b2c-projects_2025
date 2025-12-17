@@ -1,5 +1,5 @@
 import "./style.css";
-import {hostReactAppReady, ReactDomObserver} from "../../usefuls";
+import {ReactDomObserver} from "../../usefuls";
 import {createApp} from "vue";
 import App from "@/components/App.vue";
 import {upsertTarget} from "./helpers/coralBonus/targets";
@@ -20,20 +20,18 @@ const HOTEL_CARD_SEL = `[id^="${HOTEL_CARD_ID_PREFIX}"]`;
 const upsertAppend: UpsertFn = (el, props) => upsertTarget(el, props ?? {}, "append");
 
 (async () => {
-    await hostReactAppReady();
+    await waitForGlobals(["dataLayer", "insider_object"]);
 
+    const path = location.pathname;
     const cashbackEl = document.getElementById(CASHBACK_SCRIPT_ID) as HTMLScriptElement | null;
     const parsedCashbackData: ICashbackData[] = cashbackEl ? readCashbackFromScript(cashbackEl) : [];
-
     const root = document.createElement("div");
     root.id = "coral-bonus-v-app";
     document.body.append(root);
-
     createApp(App).mount(root);
 
-    if (location.pathname.includes("hotels")) {
-        await waitForGlobals(["insider_object"]);
-
+    const isHotelPage = path.startsWith("/hotels/");
+    if (isHotelPage) {
         const isInit = isHotelWithCashback(parsedCashbackData);
         if (!isInit) return;
 
@@ -48,9 +46,9 @@ const upsertAppend: UpsertFn = (el, props) => upsertTarget(el, props ?? {}, "app
         }).start();
     }
 
-    if (location.pathname.includes("packagetours") || location.pathname.includes("onlyhotel")) {
+    const isListPage = path.startsWith("/packagetours/") || path.startsWith("/onlyhotel/");
+    if (isListPage) {
         const cashbackIds = new Set(parsedCashbackData.map((h) => h.id));
-
         new ReactDomObserver(HOTEL_CARD_SEL, {
             onAppear: (el: HTMLElement) => registerHotelListCards(el, cashbackIds, upsertAppend),
         }).start();

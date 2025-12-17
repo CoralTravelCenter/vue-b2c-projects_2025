@@ -1,34 +1,14 @@
 <coral-popup
-        id="only-4"
+        id="only-flight-gfgdgdf"
         auto-show="1000"
-        guard-selectors=".push-noty, div[class*='CookieAgreement_cookieAgreement__'], div[class*='DepartureCityPopup_departureCityPopup__']"
+        guard-selectors="#welcome-to-app-popup, .push-noty, div[class*='CookieAgreement_cookieAgreement__'], div[class*='DepartureCityPopup_departureCityPopup__']"
 >
-    <div class="img-text">
-        <img src="https://b2ccdn.coral.ru/content/percent-logo.webp">
-        <div class="text">
-            <h3>Билеты подождут, а вот отель – нет</h3>
-            <p>Забронируйте проживание со скидкой</p>
-        </div>
-        <div class="condition-cards">
-            <div class="card">
-                <strong>Даты начала отдыха:</strong><br>
-                сентябрь - ноябрь 2025 г.
-            </div>
-            <div class="card">
-                <strong>Даты начала отдыха:</strong><br>
-                сентябрь - ноябрь 2025 г.
-            </div>
-            <div class="card">
-                <strong>Даты начала отдыха:</strong><br>
-                сентябрь - ноябрь 2025 г.
-            </div>
-        </div>
-        <p class="attention">
-            *Чтобы воспользоваться промокодом, введите его в поле «Примечание к заказу» или сообщите менеджеру во время
-            бронирования на сайте coral.ru.<br>
-            ** Скидка не суммируется с действующими акциями Coral Travel и программой
-            лояльности CoralBonus.<br>
-            ***Скидка по промокоду действует только при самостоятельном бронировании отеля на coral.ru
-        </p>
-    </div>
+    <img style="clip-path:circle(150% at 50% -112%)" src="https://b2ccdn.coral.ru/content/only_flight-popup.webp"
+         slot="visual"/>
+    <h4 slot="headline" style="color: #fff">Добавим к отелю<br>еще и авиабилеты?</h4>
+    <p slot="subline" style="color: #fff">Выбирайте рейсы под ваши даты<br>в любую точку мира</p>
+    <button id="trigger-flight"
+            style="font-weight: 400;color: #000;width:100%;border-radius:8px;background:#fff;box-shadow:0 2px 0 0 rgba(0,0,0,.02);font-size:16px;text-align:center;padding-block:12px"
+            slot="action">Выбрать
+    </button>
 </coral-popup>

@@ -26,6 +26,7 @@ export function randomId(prefix = "id"): string {
 
 /* ========================= Clipboard ========================= */
 
+// @ts-ignore
 export async function copyToClipboard(text: string): Promise<void> {
     try {
         await navigator.clipboard.writeText(text);
@@ -1462,6 +1463,7 @@ export function formatPriceRub(
 ): string {
     const num = Number(value);
 
+    // @ts-ignore
     if (!Number.isFinite(num)) return "";
 
     return new Intl.NumberFormat("ru-RU", {
