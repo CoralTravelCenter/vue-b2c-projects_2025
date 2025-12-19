@@ -1,15 +1,25 @@
-import {nextTick} from "vue";
-import {lockScroll} from "./scroll.ts";
-import fireMetrika from "./fireMetrika.ts";
+// helpers/publicShow.ts
+import {nextTick} from 'vue'
+import {lockScroll} from './scroll'
+import {IPopupCtx} from "../types";
 
-export default async function publicShow(visible, mounted, ymMetrika, id) {
-    if (visible.value) return
+function fireMetrika(ymMetrika?: string) {
+    if (!ymMetrika) return
+    try {
+        new Function(ymMetrika)()
+    } catch (e) {
+        console.warn('Ошибка выполнения ymMetrika:', e)
+    }
+}
 
 
-    mounted.value = true
+export default async function publicShow(ctx: IPopupCtx) {
+    if (ctx.visible.value) return
+
+    ctx.mounted.value = true
     await nextTick()
 
-    visible.value = true
+    ctx.visible.value = true
     lockScroll()
-    fireMetrika(ymMetrika)
+    fireMetrika(ctx.ymMetrika)
 }

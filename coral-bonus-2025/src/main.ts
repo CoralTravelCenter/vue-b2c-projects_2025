@@ -8,21 +8,43 @@ import {
     isHotelWithCashback,
     readCashbackFromScript,
     registerCards,
-    registerHotelListCards,
     type UpsertFn,
     waitForGlobals
 } from "@/helpers/dom-helpers";
 
 const CASHBACK_SCRIPT_ID = "coral-bonus-cashback-json";
-const HOTEL_CARD_ID_PREFIX = "hotelListCard";
-const HOTEL_CARD_SEL = `[id^="${HOTEL_CARD_ID_PREFIX}"]`;
-
+// const HOTEL_CARD_ID_PREFIX = "hotelListCard";
+// const HOTEL_CARD_SEL = `[id^="${HOTEL_CARD_ID_PREFIX}"]`;
 const upsertAppend: UpsertFn = (el, props) => upsertTarget(el, props ?? {}, "append");
 
-(async () => {
-    await waitForGlobals(["dataLayer", "insider_object"]);
+async function catchRedirect(matchList: string[] = [], timeout: number = 0) {
+    return new Promise((resolve) => {
+        let done = false
 
-    const path = location.pathname;
+        const finish = (value: boolean) => {
+            if (done) return
+            done = true
+            window.removeEventListener('urlchange', handler)
+            resolve(value)
+        }
+
+        const handler = (e: any) => {
+            const url = e?.detail?.url
+            if (!url) return finish(false)
+
+            const path = new URL(url).pathname
+            finish(matchList.some((s) => path.startsWith(s)))
+        }
+
+        window.addEventListener('urlchange', handler)
+        setTimeout(() => finish(false), timeout)
+    })
+}
+
+(async () => {
+    await catchRedirect(['/hotels/', '/packagetours/', '/onlyhotel/'])
+    await waitForGlobals(["dataLayer", "insider_object"]);
+    
     const cashbackEl = document.getElementById(CASHBACK_SCRIPT_ID) as HTMLScriptElement | null;
     const parsedCashbackData: ICashbackData[] = cashbackEl ? readCashbackFromScript(cashbackEl) : [];
     const root = document.createElement("div");
@@ -30,36 +52,40 @@ const upsertAppend: UpsertFn = (el, props) => upsertTarget(el, props ?? {}, "app
     document.body.append(root);
     createApp(App).mount(root);
 
-    const isHotelPage = path.startsWith("/hotels/");
-    if (isHotelPage) {
-        const isInit = isHotelWithCashback(parsedCashbackData);
-        if (!isInit) return;
+    const isInit = isHotelWithCashback(parsedCashbackData);
+    if (!isInit) return;
 
-        new ReactDomObserver(".coral-bonus", {
-            onAppear: (el: HTMLElement) => upsertAppend(el),
-        }).start();
+    const obs = new MutationObserver(() => {
+        const el: HTMLElement | null = document.querySelector('.coral-bonus')
+        if (el) {
+            upsertAppend(el)
+            obs.disconnect()
+        }
+    })
 
-        new ReactDomObserver(".select-room-list-container", {
-            watchChild: true,
-            onAppear: (el: HTMLElement) => registerCards(el, upsertAppend),
-            onChildMutate: (el: HTMLElement) => registerCards(el, upsertAppend),
-        }).start();
-    }
+    obs.observe(document.body, {childList: true, subtree: true})
 
-    const isListPage = path.startsWith("/packagetours/") || path.startsWith("/onlyhotel/");
-    if (isListPage) {
-        const cashbackIds = new Set(parsedCashbackData.map((h) => h.id));
-        new ReactDomObserver(HOTEL_CARD_SEL, {
-            onAppear: (el: HTMLElement) => registerHotelListCards(el, cashbackIds, upsertAppend),
-        }).start();
+    new ReactDomObserver(".select-room-list-container", {
+        watchChild: true,
+        onAppear: (el: HTMLElement) => registerCards(el, upsertAppend),
+        onChildMutate: (el: HTMLElement) => registerCards(el, upsertAppend),
+    }).start();
 
-        new ReactDomObserver(".lazyHotelList", {
-            debug: true,
-            watchChild: true,
-            onAppear: (el: HTMLElement) => registerHotelListCards(el, cashbackIds, upsertAppend),
-            onChildMutate: (el: HTMLElement) => registerHotelListCards(el, cashbackIds, upsertAppend),
-        }).start();
-    }
+
+    // const isListPage = path.startsWith("/packagetours/") || path.startsWith("/onlyhotel/");
+    // if (isListPage) {
+    //     const cashbackIds = new Set(parsedCashbackData.map((h) => h.id));
+    //     new ReactDomObserver(HOTEL_CARD_SEL, {
+    //         onAppear: (el: HTMLElement) => registerHotelListCards(el, cashbackIds, upsertAppend),
+    //     }).start();
+    //
+    //     new ReactDomObserver(".lazyHotelList", {
+    //         debug: true,
+    //         watchChild: true,
+    //         onAppear: (el: HTMLElement) => registerHotelListCards(el, cashbackIds, upsertAppend),
+    //         onChildMutate: (el: HTMLElement) => registerHotelListCards(el, cashbackIds, upsertAppend),
+    //     }).start();
+    // }
 
     document.addEventListener("coral-bonus:overlay", (e) => {
         const {detail} = e as CustomEvent<IOverlayDetail>;

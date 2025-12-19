@@ -51,7 +51,7 @@ const data = computed(() => {
 	column-gap: 24px;
 	flex: 1 0 auto;
 	border-radius: 7px;
-	background: #E6F4FF;
+	background: red;
 	padding: 12px;
 	font-size: 12px;
 }

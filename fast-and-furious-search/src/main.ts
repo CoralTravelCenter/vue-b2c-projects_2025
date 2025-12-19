@@ -1,13 +1,9 @@
 import './style.css';
-import {SimpleReactDomObserver} from '../../utils.js';
+import {ReactDomObserver} from "../../usefuls";
 import {createApp} from "vue";
 import App from "./App.vue";
 
-window.POPULAR_TOURS = [
-    {
-        promo: true,
-        html: '<h5>Черная задница</h5><span>Акция такая</span>'
-    },
+(window as any).POPULAR_TOURS = [
     {
         name: 'Турция', // название страны для запроса
         dates: ["2025-10-22", "2025-10-29"], // даты для запроса, формат ТОЛЬКО такой
@@ -36,26 +32,62 @@ window.POPULAR_TOURS = [
         places_to_html: ['Египет, Хургада'],
         label: 'Тур',
     },
-    {
-        name: 'ОАЭ',
-        dates: ["2025-11-17", "2025-11-22"],
-        stars: ["5"],
-        nights: 7,
-        adults: 2,
-        dates_to_html: 'Даты вылета: 17.11 - 22.11',
-        places_to_html: ['ОАЭ'],
-        label: 'Тур',
-    },
 ];
 
-new SimpleReactDomObserver('#quick-search-tab-area .ant-tabs-tabpane', {
-    onAppear: (el: HTMLElement) => {
-        console.log(el)
-        const searchApp: HTMLDivElement = document?.createElement('div');
-        searchApp.id = 'quick-search-app';
-        el?.parentElement.append(searchApp);
 
-        const app = createApp(App);
+let resolveClick!: () => void
+const clickPromise = new Promise<void>((res) => (resolveClick = res))
+
+let appeared = false
+
+const QSRecentlyView = new ReactDomObserver(
+    'div[class*="QSRecentlyView_qsRecentlyViewContainer__"]',
+    {
+        once: true,
+        onAppear: (el) => {
+            appeared = true
+
+            if (!el) return resolveClick()
+
+            const firstCard = el.querySelectorAll(
+                'div[class*="QSRecentlyViewItem_qsRecentlyViewItemContainer__"]',
+            ) as NodeList | null
+
+            // если карточек нет — продолжаем
+            if (!firstCard) return resolveClick()
+
+            firstCard[0].addEventListener(
+                'click',
+                (e) => {
+                    console.log(e.target)
+                    resolveClick()
+                }
+            )
+        },
+    },
+)
+
+QSRecentlyView.start()
+
+// если не появился — не ждём вечно
+setTimeout(() => {
+    if (!appeared) resolveClick()
+}, 150) // время подстрой под сайт
+
+await clickPromise
+console.log('__Resolve')
+
+
+const FastSearchView = new ReactDomObserver('#rc-tabs-1-panel-1', {
+    onAppear: el => {
+        if (!el) return
+        const searchApp = document.createElement('div')
+        searchApp.id = 'quick-search-app'
+        el?.parentElement?.append(searchApp)
+        const app = createApp(App)
         app.mount('#quick-search-app')
-    }
-}).start()
+    },
+})
+FastSearchView.start()
+
+// &p=1 & w = 0 & s = 0 & ws = 10 - пакеты
