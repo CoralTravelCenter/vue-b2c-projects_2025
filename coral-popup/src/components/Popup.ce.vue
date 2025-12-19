@@ -51,54 +51,40 @@ function runAutoShow(args: {
 }) {
 	const {autoShowAttr, autoDelay, wasAutoShown} = args
 
-	// авто-атрибута нет → автологики нет
 	if (autoShowAttr === undefined) return
-
-	// невалидное значение
 	if (autoDelay === false) return
-
-	// один раз за сессию
 	if (wasAutoShown.value) return
 
-	// фиксируем показ сразу
 	wasAutoShown.value = true
 
 	const ctx = {visible, mounted, ymMetrika}
 	const doShow = () => publicShow(ctx)
 
-	// без задержки / с задержкой
 	if (autoDelay === 0) doShow()
 	else autoDelayTimer = setTimeout(doShow, autoDelay)
 }
 
 async function setupAutoShow() {
-	// сбрасываем прошлые ожидания
 	abort?.abort()
 	abort = new AbortController()
 	clearAutoTimer()
 
-	// auto-show отсутствует → выходим
 	if (autoShow === undefined) return
 
 	const autoDelay = resolveAutoShow(autoShow)
 
-	// флаг "уже показали" (на сессию)
 	const wasAutoShown = useStorage<boolean>(
 			`coral-popup-auto-shown-${id}`,
 			false,
 			sessionStorage
 	)
 
-	// парсим guard'ы
 	const guards = parseGuardSelectors(guardSelectors)
 
-	// ждём, пока уйдут блокеры
 	await waitUntilElementsGone({
 		floating: guards,
 	});
-	console.log('+++ Можно')
 
-	// запускаем автопоказ
 	runAutoShow({
 		autoShowAttr: autoShow,
 		autoDelay,
@@ -130,8 +116,8 @@ defineExpose({show, hide, afterLeave})
 <template>
 	<div v-if="mounted" class="popup-backdroppo"></div>
 
-	<div v-if="mounted" part="popup-body" class="popup-body" @click.self="hide(ctx)">
-		<transition name="dialog-fade" @after-leave="afterLeave(ctx)">
+	<div v-if="mounted" part="popup-body" class="popup-body" @click.self="hide()">
+		<transition name="dialog-fade" @after-leave="afterLeave()">
 			<div
 					v-show="visible"
 					class="popup-dialog"
@@ -139,7 +125,7 @@ defineExpose({show, hide, afterLeave})
 					role="dialog"
 					aria-modal="true"
 			>
-				<button class="popup-close" type="button" @click="hide(ctx)" aria-label="Закрыть">
+				<button class="popup-close" type="button" @click="hide()" aria-label="Закрыть">
 					<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
 						<path d="M14.6666 1.3335L1.33331 14.6668" stroke="#535353"/>
 						<path d="M1.33329 1.3335L14.6666 14.6668" stroke="#535353"/>

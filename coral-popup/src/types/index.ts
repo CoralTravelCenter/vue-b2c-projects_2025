@@ -2,12 +2,9 @@ import {ShallowRef} from "vue";
 
 export interface IProps {
     id: string
-    autoShow?: string
-    guardSelectors: {
-        floating: string[],
-        requiredOnce: string[]
-    },
-    ymMetrika?: string
+    autoShow?: string | undefined
+    guardSelectors?: string | undefined
+    ymMetrika?: string | undefined
 }
 
 

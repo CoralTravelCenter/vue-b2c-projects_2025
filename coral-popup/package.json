@@ -10,15 +10,15 @@
   },
   "dependencies": {
     "@vueuse/core": "^14.1.0",
-    "vue": "^3.5.25"
+    "vue": "^3.5.26"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
-    "sass-embedded": "^1.93.3",
-    "typescript": "^5.7.2",
-    "vite": "^6.0.5",
-    "vite-plugin-monkey": "^5.0.3",
+    "@vitejs/plugin-vue": "^6.0.3",
+    "sass-embedded": "^1.97.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0",
+    "vite-plugin-monkey": "^7.1.8",
     "vite-plugin-vue-devtools": "^8.0.5",
-    "vue-tsc": "^2.2.0"
+    "vue-tsc": "^3.1.8"
   }
 }
