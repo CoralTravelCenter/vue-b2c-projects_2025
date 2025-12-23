@@ -17,34 +17,33 @@ const CASHBACK_SCRIPT_ID = "coral-bonus-cashback-json";
 // const HOTEL_CARD_SEL = `[id^="${HOTEL_CARD_ID_PREFIX}"]`;
 const upsertAppend: UpsertFn = (el, props) => upsertTarget(el, props ?? {}, "append");
 
-async function catchRedirect(matchList: string[] = [], timeout: number = 0) {
-    return new Promise((resolve) => {
-        let done = false
-
-        const finish = (value: boolean) => {
-            if (done) return
-            done = true
-            window.removeEventListener('urlchange', handler)
-            resolve(value)
-        }
-
-        const handler = (e: any) => {
-            const url = e?.detail?.url
-            if (!url) return finish(false)
-
-            const path = new URL(url).pathname
-            finish(matchList.some((s) => path.startsWith(s)))
-        }
-
-        window.addEventListener('urlchange', handler)
-        setTimeout(() => finish(false), timeout)
-    })
-}
+// async function catchRedirect(matchList: string[] = [], timeout: number = 0) {
+//     return new Promise((resolve) => {
+//         let done = false
+//
+//         const finish = (value: boolean) => {
+//             if (done) return
+//             done = true
+//             window.removeEventListener('urlchange', handler)
+//             resolve(value)
+//         }
+//
+//         const handler = (e: any) => {
+//             const url = e?.detail?.url
+//             if (!url) return finish(false)
+//
+//             const path = new URL(url).pathname
+//             finish(matchList.some((s) => path.startsWith(s)))
+//         }
+//
+//         window.addEventListener('urlchange', handler)
+//         setTimeout(() => finish(false), timeout)
+//     })
+// }
 
 (async () => {
-    await catchRedirect(['/hotels/', '/packagetours/', '/onlyhotel/'])
     await waitForGlobals(["dataLayer", "insider_object"]);
-    
+
     const cashbackEl = document.getElementById(CASHBACK_SCRIPT_ID) as HTMLScriptElement | null;
     const parsedCashbackData: ICashbackData[] = cashbackEl ? readCashbackFromScript(cashbackEl) : [];
     const root = document.createElement("div");

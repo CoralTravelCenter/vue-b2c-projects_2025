@@ -1,16 +1,17 @@
+// vite.config.ts
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import monkey from 'vite-plugin-monkey'
 
-// https://vitejs.dev/config/
-export default defineConfig(({mode}) => ({
+export default defineConfig({
+    define: {
+        'process.env.NODE_ENV': JSON.stringify('production'),
+        __VUE_OPTIONS_API__: 'false',
+        __VUE_PROD_DEVTOOLS__: 'false',
+    },
     plugins: [
         vue({
-            template: {
-                compilerOptions: {
-                    isCustomElement: (tag) => tag.includes('-')
-                }
-            }
+            template: {compilerOptions: {isCustomElement: (tag) => tag.includes('-')}},
         }),
         monkey({
             entry: 'src/main.ts',
@@ -18,23 +19,22 @@ export default defineConfig(({mode}) => ({
                 icon: 'https://vitejs.dev/logo.svg',
                 namespace: 'npm/vite-plugin-monkey',
                 match: ['https://www.coral.ru/*'],
-            }
+            },
         }),
     ],
-    define: {
-        'process.env.NODE_ENV': '"production"',
-        'process.env': '{}',
-    },
     build: {
-        lib: {
-            entry: 'src/elements.ts',
-            name: 'MyComponentBundle',
-            formats: ['iife'],
-            fileName: () => 'my-component.js',
-        },
-        cssCodeSplit: false,
-        sourcemap: false,
         target: 'esnext',
+        lib: {
+            entry: 'src/main.ts',
+            name: 'CoralComponentsPopup',
+            fileName: () => 'coral-components-popup.js',
+            formats: ['iife'],
+        },
+        rollupOptions: {
+            output: {
+                inlineDynamicImports: true,
+            },
+        },
         minify: true,
     },
-}));
+})
