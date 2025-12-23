@@ -1,12 +1,10 @@
-import {defineConfig} from 'vite';
-import vue from '@vitejs/plugin-vue';
-import monkey from 'vite-plugin-monkey';
-import vueDevTools from 'vite-plugin-vue-devtools'
+import {defineConfig} from 'vite'
+import vue from '@vitejs/plugin-vue'
+import monkey from 'vite-plugin-monkey'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({mode}) => ({
     plugins: [
-        vueDevTools(),
         vue({
             template: {
                 compilerOptions: {
@@ -20,16 +18,23 @@ export default defineConfig({
                 icon: 'https://vitejs.dev/logo.svg',
                 namespace: 'npm/vite-plugin-monkey',
                 match: ['https://www.coral.ru/*'],
-            },
+            }
         }),
     ],
+    define: {
+        'process.env.NODE_ENV': '"production"',
+        'process.env': '{}',
+    },
     build: {
-        target: 'esnext',
         lib: {
-            entry: 'src/main.ts',
-            name: 'CoralComponentsPopup',
-            fileName: () => 'coral-components-popup.js',
+            entry: 'src/elements.ts',
+            name: 'MyComponentBundle',
+            formats: ['iife'],
+            fileName: () => 'my-component.js',
         },
+        cssCodeSplit: false,
+        sourcemap: false,
+        target: 'esnext',
         minify: true,
     },
-});
+}));

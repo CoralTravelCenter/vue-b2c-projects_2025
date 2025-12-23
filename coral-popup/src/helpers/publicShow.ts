@@ -1,7 +1,7 @@
 // helpers/publicShow.ts
 import {nextTick} from 'vue'
-import {lockScroll} from './scroll'
 import {IPopupCtx} from "../types";
+import {enablePageScroll} from "@fluejs/noscroll";
 
 function fireMetrika(ymMetrika?: string) {
     if (!ymMetrika) return
@@ -20,6 +20,6 @@ export default async function publicShow(ctx: IPopupCtx) {
     await nextTick()
 
     ctx.visible.value = true
-    lockScroll()
+    enablePageScroll()
     fireMetrika(ctx.ymMetrika)
 }

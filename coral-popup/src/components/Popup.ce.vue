@@ -1,26 +1,22 @@
 <script setup lang="ts">
-import {onMounted, onUnmounted, shallowRef} from 'vue'
-import {useStorage} from '@vueuse/core'
+import {onMounted, onUnmounted, shallowRef, watchEffect} from 'vue'
+import {type RemovableRef, useStorage} from '@vueuse/core'
 
-import publicShow from '../helpers/publicShow'
-import {unlockScroll} from '../helpers/scroll'
+import publicShow from '../helpers/publicShow.ts'
 import resolveAutoShow from '../helpers/resolveAutoShow'
 import parseGuardSelectors from '../helpers/parseGuardSelectors'
 import waitUntilElementsGone from "../helpers/waitUntilElementGone.ts";
-import {IProps} from "../types";
+import {ICtx, IGuards, IProps} from "../types";
+import {enablePageScroll} from "@fluejs/noscroll";
 
-const {
-	id,
-	autoShow,
-	guardSelectors,
-	ymMetrika,
-} = defineProps<IProps>()
+const {id, autoShow, guardSelectors, ymMetrika} = defineProps<IProps>()
+
 
 const mounted = shallowRef(false)
 const visible = shallowRef(false)
 
-let abort: AbortController | null = null
 let autoDelayTimer: number | null = null
+let wasAutoShown: RemovableRef<boolean> | null = null
 
 function clearAutoTimer() {
 	if (autoDelayTimer !== null) {
@@ -36,7 +32,7 @@ function hide() {
 
 function afterLeave() {
 	mounted.value = false
-	unlockScroll()
+	enablePageScroll()
 	clearAutoTimer()
 }
 
@@ -57,33 +53,23 @@ function runAutoShow(args: {
 
 	wasAutoShown.value = true
 
-	const ctx = {visible, mounted, ymMetrika}
+	const ctx: ICtx = {visible, mounted, ymMetrika}
 	const doShow = () => publicShow(ctx)
 
 	if (autoDelay === 0) doShow()
-	else autoDelayTimer = setTimeout(doShow, autoDelay)
+	else autoDelayTimer = window.setTimeout(doShow, autoDelay)
 }
 
 async function setupAutoShow() {
-	abort?.abort()
-	abort = new AbortController()
 	clearAutoTimer()
 
 	if (autoShow === undefined) return
 
 	const autoDelay = resolveAutoShow(autoShow)
+	wasAutoShown = useStorage<boolean>(`coral-popup-auto-shown-${id}`, false)
 
-	const wasAutoShown = useStorage<boolean>(
-			`coral-popup-auto-shown-${id}`,
-			false,
-			sessionStorage
-	)
-
-	const guards = parseGuardSelectors(guardSelectors)
-
-	await waitUntilElementsGone({
-		floating: guards,
-	});
+	const guards: IGuards = parseGuardSelectors(guardSelectors)
+	await waitUntilElementsGone({floating: guards})
 
 	runAutoShow({
 		autoShowAttr: autoShow,
@@ -98,18 +84,24 @@ function show() {
 }
 
 onMounted(() => {
-	document.addEventListener('keydown', onKeydown, true)
 	void setupAutoShow()
 })
 
-onUnmounted(() => {
-	document.removeEventListener('keydown', onKeydown, true)
-	abort?.abort()
-	clearAutoTimer()
-	unlockScroll()
+watchEffect((onCleanup) => {
+	if (!visible.value) return
+	document.addEventListener('keydown', onKeydown, true)
+	onCleanup(() => {
+		document.removeEventListener('keydown', onKeydown, true)
+	})
 })
 
-defineExpose({show, hide, afterLeave})
+onUnmounted(() => {
+	clearAutoTimer()
+	enablePageScroll()
+	wasAutoShown = null
+})
+
+defineExpose({show, hide})
 </script>
 
 

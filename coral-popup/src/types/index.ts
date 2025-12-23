@@ -1,4 +1,4 @@
-import {ShallowRef} from "vue";
+import type {ShallowRef} from "vue";
 
 export interface IProps {
     id: string
@@ -8,13 +8,10 @@ export interface IProps {
 }
 
 
-export interface IPopupCtx {
+export interface ICtx {
     visible: ShallowRef<boolean>
     mounted: ShallowRef<boolean>
     ymMetrika?: string
 }
 
-export interface IGuards {
-    floating: string[];
-    requiredOnce: string[]
-}
+export type IGuards = string[]
