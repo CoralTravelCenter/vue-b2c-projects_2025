@@ -1,6 +1,6 @@
 // helpers/publicShow.ts
 import {nextTick} from 'vue'
-import {IPopupCtx} from "../types";
+import {ICtx} from "../types";
 import {enablePageScroll} from "@fluejs/noscroll";
 
 function fireMetrika(ymMetrika?: string) {
@@ -13,7 +13,7 @@ function fireMetrika(ymMetrika?: string) {
 }
 
 
-export default async function publicShow(ctx: IPopupCtx) {
+export default async function publicShow(ctx: ICtx) {
     if (ctx.visible.value) return
 
     ctx.mounted.value = true

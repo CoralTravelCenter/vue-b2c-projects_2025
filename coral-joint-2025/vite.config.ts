@@ -6,6 +6,11 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    define: {
+        'process.env.NODE_ENV': JSON.stringify('production'),
+        __VUE_OPTIONS_API__: 'false',
+        __VUE_PROD_DEVTOOLS__: 'false',
+    },
     css: {
         preprocessorOptions: {
             scss: {api: 'modern-compiler'},
@@ -36,9 +41,15 @@ export default defineConfig({
         target: 'esnext',
         lib: {
             entry: 'src/main.ts',
-            name: 'CoralJoint',
-            fileName: () => 'coral-joint.js',
+            name: 'CoralComponentsPopup',
+            fileName: () => 'coral-components-popup.js',
+            formats: ['iife'],
+        },
+        rollupOptions: {
+            output: {
+                inlineDynamicImports: true,
+            },
         },
         minify: true,
-    }
+    },
 });
