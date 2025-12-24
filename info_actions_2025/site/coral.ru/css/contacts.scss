@@ -14,15 +14,15 @@ section.contacts > article .contenu {
 
   .contacts__card {
     display: grid;
-    grid-template-columns: min-content 1fr;
     grid-template-areas:
       "icon phone"
       "icon text"
       "icon button";
-    column-gap: 24px;
-    border-radius: var(--border_Radius_LG);
+    grid-template-columns: min-content 1fr;
     padding: var(--padding_LG);
+    column-gap: 24px;
     background: var(--color_Header_Bg_Elevation_Level_2);
+    border-radius: var(--border_Radius_LG);
 
     @include mixins.respond-up(lg) {
       grid-template-areas:
@@ -36,14 +36,14 @@ section.contacts > article .contenu {
   }
 
   .contacts__icon {
-    width: 48px;
-    height: 48px;
-    grid-area: icon;
-    border-radius: 32px;
     display: flex;
+    grid-area: icon;
     align-items: center;
     justify-content: center;
+    width: 48px;
+    height: 48px;
     background: var(--color_Header_Bg_Accent_Alt);
+    border-radius: 32px;
 
     @include mixins.respond-up(md) {
       align-self: center;
@@ -54,17 +54,17 @@ section.contacts > article .contenu {
     grid-area: phone;
     margin-bottom: 8px;
     color: var(--color_Text_Highlight);
+    font-weight: 600;
     font-size: var(--font_Size_Heading_5);
     font-style: normal;
-    font-weight: 600;
     line-height: var(--font_Line_Height_Heading_5);
     text-decoration: none;
   }
 
   .contacts__title {
     grid-area: text;
-    font-size: var(--font_Size_Body);
     margin-bottom: 16px;
+    font-size: var(--font_Size_Body);
 
     @include mixins.respond-up(md) {
       max-width: 355px;
@@ -86,6 +86,7 @@ section.contacts > article .contenu {
 
   .prime-btn {
     grid-area: button;
+
     @include mixins.respond-up(md) {
       align-self: center;
     }

@@ -24,35 +24,34 @@ const data = computed(() => {
 </template>
 <style scoped>
 .label {
-	font-size: 16px;
+	display: flex;
+	gap: 6px;
+	align-items: center;
 	color: var(--Brand-color_Brand_Logo_Mark_4, #E84E0F);
 	font-weight: 600;
+	font-size: 16px;
 	line-height: 11px;
-	display: flex;
-	align-items: center;
-	gap: 6px;
 }
 
 .cards-list {
 	display: flex;
+	gap: 10px;
 	margin: 0;
 	padding: 0;
-	gap: 10px;
-	list-style: none;
 	overflow-x: scroll;
-
+	list-style: none;
 	scroll-snap-type: x mandatory;
 }
 
 .cards-list-item {
-	scroll-snap-align: start;
 	display: grid;
-	grid-template-columns: auto max-content;
-	column-gap: 24px;
 	flex: 1 0 auto;
-	border-radius: 7px;
-	background: red;
+	grid-template-columns: auto max-content;
 	padding: 12px;
 	font-size: 12px;
+	column-gap: 24px;
+	background: red;
+	border-radius: 7px;
+	scroll-snap-align: start;
 }
 </style>

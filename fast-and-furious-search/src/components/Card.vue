@@ -11,27 +11,26 @@
 
 <style scoped>
 .country {
-	grid-column: 1/2;
 	grid-row: 1/2;
+	grid-column: 1/2;
 }
 
 .dates {
-	grid-column: 1/2;
 	grid-row: 2/3;
+	grid-column: 1/2;
 }
 
 .params {
-	grid-column: 1/2;
 	grid-row: 3/4;
+	grid-column: 1/2;
 }
 
 .price {
-	grid-column: 2/3;
 	grid-row: 3/4;
-
+	grid-column: 2/3;
 	color: var(--Text-color_Text_Highlight, #0092D0);
-	font-size: 14px;
 	font-weight: 700;
+	font-size: 14px;
 	line-height: 15px
 }
 </style>

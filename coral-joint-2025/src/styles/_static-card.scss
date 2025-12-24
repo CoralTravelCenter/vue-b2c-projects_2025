@@ -1,15 +1,15 @@
 /* slide со статикой */
 .joint-slider-vip {
-  background: #1b1b1b;
   padding: 0;
   overflow: clip;
+  background: #1b1b1b;
 }
 
 /* карточка */
 .coral-joint__card {
-  background: #1b1b1b;
   width: 100%;
-  color: #ffffff;
+  color: #fff;
+  background: #1b1b1b;
 }
 
 /* визуальный блок */
@@ -18,9 +18,9 @@
 }
 
 .coral-joint__image {
-  height: 220px;
-  width: 100%;
   display: block;
+  width: 100%;
+  height: 220px;
   object-fit: cover;
   clip-path: ellipse(140% 110% at 50% -10%);
 }
@@ -35,28 +35,28 @@
   margin-bottom: 18px;
 
   img {
+    display: block;
     width: auto;
     height: 100%;
     object-fit: contain;
-    display: block;
   }
 }
 
 /* заголовок */
 .coral-joint__title {
   margin-bottom: 4px;
-  font-family: 'TrajanPro3Regular', sans-serif;
-  font-size: 16px;
-  font-style: normal;
   font-weight: 400;
+  font-size: 16px;
+  font-family: 'TrajanPro3Regular', sans-serif;
+  font-style: normal;
   line-height: 20px;
 }
 
 /* текст */
 .coral-joint__text {
-  font-size: 10px;
   margin-top: 0;
   margin-bottom: 18px;
+  font-size: 10px;
 }
 
 /* footer */
@@ -66,12 +66,12 @@
 
 /* кнопка */
 .coral-joint__button {
-  border-radius: 8px;
-  border: 1px solid var(--colorBorder, rgba(0, 0, 0, 0.15));
-  background: var(--colorBgContainer, #fff);
+  width: 100%;
   padding: 5px 15px;
   font-size: 14px;
   line-height: 22px;
+  background: var(--colorBgContainer, #fff);
+  border: 1px solid var(--colorBorder, rgb(0 0 0 / 15%));
+  border-radius: 8px;
   cursor: pointer;
-  width: 100%;
 }

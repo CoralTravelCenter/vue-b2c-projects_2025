@@ -76,12 +76,12 @@ function setCurrentBrand(newBrand) {
 
 .brand-list {
 	display: flex;
+	gap: 24px;
 	align-items: center;
 	justify-content: center;
-	gap: 24px;
-	list-style: none;
-	padding: 0;
 	margin: 0;
+	padding: 0;
+	list-style: none;
 
 	@include mixins.respond-up(lg) {
 		width: 100%;
@@ -90,10 +90,10 @@ function setCurrentBrand(newBrand) {
 
 /* Модификатор: прокручиваемый список */
 .brand-list--scroll {
+	justify-content: flex-start;
 	width: 100%;
 	overflow-x: auto;
 	scroll-snap-type: x mandatory;
-	justify-content: flex-start;
 
 	/* Скрываем системные скроллбары, где возможно */
 	-ms-overflow-style: none; /* IE/Edge (старые) */
@@ -117,6 +117,7 @@ function setCurrentBrand(newBrand) {
 	@include mixins.respond-up(md) {
 		max-width: 100px;
 	}
+
 	@include mixins.respond-up(lg) {
 		min-width: unset;
 	}
@@ -124,14 +125,14 @@ function setCurrentBrand(newBrand) {
 
 /* Элемент: кнопка-обёртка логотипа */
 .brand-list__btn {
-	cursor: pointer;
-	padding: 16px;
-	border: none;
-	background: transparent;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 100%;
+	padding: 16px;
+	background: transparent;
+	border: none;
+	cursor: pointer;
 }
 
 /* Модификатор активной кнопки */
@@ -141,10 +142,10 @@ function setCurrentBrand(newBrand) {
 
 /* Элемент: изображение логотипа */
 .brand-list__img {
+	display: block;
 	width: 100%;
 	max-width: 70px;
 	height: 100%;
-	display: block;
 	object-fit: contain;
 
 	/* На маленьких экранах логотипы чуть меньше внутри scroll-контейнера */

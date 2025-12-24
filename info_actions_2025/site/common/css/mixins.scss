@@ -3,26 +3,30 @@
 
 @mixin kv-aspect-ratio {
   aspect-ratio: var(--ratio-428);
-  @media (min-width: 768px) {
+
+  @media (width >= 768px) {
     aspect-ratio: var(--ratio-768);
   }
-  @media (min-width: 1024px) {
+
+  @media (width >= 1024px) {
     aspect-ratio: var(--ratio-1024);
   }
-  @media (min-width: 1280px) {
+
+  @media (width >= 1280px) {
     aspect-ratio: var(--ratio-1280);
   }
-  @media (min-width: 1440px) {
+
+  @media (width >= 1440px) {
     aspect-ratio: var(--ratio-1440);
   }
 }
 
 @mixin hero-layout {
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  align-items: start;
   gap: 16px;
+  align-items: start;
+  margin: 0 auto;
   padding-block: calc(var(--padding_XXXL) / 2);
 }
 
@@ -30,19 +34,19 @@
   position: relative;
 
   > article .contenu {
-    z-index: 2;
     position: relative;
+    z-index: 2;
   }
 
-  &:after {
-    content: '';
-    width: 100vw;
-    height: 100%;
+  &::after {
     position: absolute;
     top: 0;
     left: 50%;
-    transform: translateX(-50%);
     z-index: 1;
+    width: 100vw;
+    height: 100%;
+    transform: translateX(-50%);
+    content: '';
   }
 }
 
@@ -50,9 +54,9 @@
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 3;
   width: 100%;
   height: 100%;
-  z-index: 3;
 
   .vimeo-player {
     position: absolute;
@@ -75,9 +79,9 @@
 }
 
 @mixin scale-iframe($scale: 1.1) {
+  display: block;
   transform: scale($scale);
   transform-origin: center;
-  display: block;
 }
 
 @mixin flex-grid($elements, $gap, $justify) {
@@ -99,8 +103,8 @@
 
 @mixin ruble {
   &::after {
-    content: "₽";
     margin-left: 5px;
+    content: "₽";
   }
 }
 
@@ -155,8 +159,8 @@ $child - задаем тег, для которого хотим повысит�
 @mixin pseudo($side) {
   position: relative;
   &::#{$side} {
-    content: '';
     position: absolute;
     display: block;
+    content: '';
   }
 }

@@ -1,16 +1,16 @@
 section.hero > article .contenu {
   .prime-btn {
-    border-radius: 48px;
-    background-color: var(--color_Btn_Bg_Default);
     height: 48px;
+    margin: 0;
     padding: 12px 20px;
-    border: none;
     color: var(--color_Text_Light);
     font-size: var(--font_Size_Body);
-    cursor: pointer;
-    margin: 0;
     text-align: center;
     text-decoration: none;
+    background-color: var(--color_Btn_Bg_Default);
+    border: none;
+    border-radius: 48px;
+    cursor: pointer;
     transition: background-color var(--transition);
 
     @media(hover: hover) {
@@ -34,21 +34,21 @@ section.hero > article .contenu {
   }
 
   .prime-btn.light {
-    background-color: var(--color_Btn_Bg_Alt);
     color: var(--color_Btn_Text_Alt);
+    background-color: var(--color_Btn_Bg_Alt);
     border: 1px solid var(--color_Btn_Bg_Alt);
     transition: border-color var(--transition), color var(--transition);
 
     @media(hover: hover) {
       &:hover {
-        border-color: var(--color_Btn_Bg_Hover);
-        color: var(--color_Btn_Bg_Hover)
+        color: var(--color_Btn_Bg_Hover);
+        border-color: var(--color_Btn_Bg_Hover)
       }
     }
 
     &:active {
-      border-color: var(--color_Btn_Border_Pressed);
       color: var(--color_Btn_Border_Pressed);
+      border-color: var(--color_Btn_Border_Pressed);
     }
 
     &:focus-visible {
@@ -58,21 +58,21 @@ section.hero > article .contenu {
   }
 
   .prime-btn.ghost {
-    border: 1px solid var(--color_Btn_Border_Ghost_Default);
-    background: transparent;
     color: var(--color_Text_Dark);
+    background: transparent;
+    border: 1px solid var(--color_Btn_Border_Ghost_Default);
     transition: border-color var(--transition), color var(--transition);
 
     @media(hover: hover) {
       &:hover {
-        border-color: var(--color_Btn_Bg_Hover);
-        color: var(--color_Btn_Bg_Hover)
+        color: var(--color_Btn_Bg_Hover);
+        border-color: var(--color_Btn_Bg_Hover)
       }
     }
 
     &:active {
-      border-color: var(--color_Btn_Border_Pressed);
       color: var(--color_Btn_Border_Pressed);
+      border-color: var(--color_Btn_Border_Pressed);
     }
 
     &:focus-visible {
@@ -82,8 +82,8 @@ section.hero > article .contenu {
   }
 
   .prime-link {
-    font-size: var(--font_Size_Body);
     color: var(--color_Btn_Bg_Default);
+    font-size: var(--font_Size_Body);
     transition: color var(--transition);
 
     @media(hover: hover) {

@@ -60,26 +60,26 @@ function handleClick(country) {
 
 .country-tabs {
 	display: flex;
-	list-style: none;
 	gap: 16px;
 	margin: 0;
 	padding: 12px;
-	background: #ffffff;
+	list-style: none;
+	background: #fff;
 	border-radius: 48px;
 }
 
 .country-tabs__btn {
-	cursor: pointer;
-	padding: 12px 24px;
-	border-radius: 24px;
-	line-height: 1;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	padding: 12px 24px;
+	color: #000;
+	font: inherit;
+	line-height: 1;
 	background: transparent;
 	border: none;
-	font: inherit;
-	color: #000000;
+	border-radius: 24px;
+	cursor: pointer;
 }
 
 .country-tabs__btn:not(.country-tabs__btn--active):hover {
@@ -87,7 +87,7 @@ function handleClick(country) {
 }
 
 .country-tabs__btn--active {
-	background: #0093d0;
 	color: #fff;
+	background: #0093d0;
 }
 </style>

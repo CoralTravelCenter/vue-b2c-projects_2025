@@ -9,19 +9,19 @@
 
 @mixin respond-up($breakpoint) {
   @if $breakpoint == md {
-    @media (min-width: 768px) {
+    @media (width >= 768px) {
       @content;
     }
   } @else if $breakpoint == lg {
-    @media (min-width: 1024px) {
+    @media (width >= 1024px) {
       @content;
     }
   } @else if $breakpoint == xl {
-    @media (min-width: 1280px) {
+    @media (width >= 1280px) {
       @content;
     }
   } @else if $breakpoint == 2xl {
-    @media (min-width: 1440px) {
+    @media (width >= 1440px) {
       @content;
     }
   }
@@ -33,15 +33,15 @@
 @mixin pseudo($side) {
   position: relative;
   &::#{$side} {
-    content: '';
     position: absolute;
     display: block;
+    content: '';
   }
 }
 
 @mixin ruble {
   &::after {
-    content: "₽";
     margin-left: 5px;
+    content: "₽";
   }
 }

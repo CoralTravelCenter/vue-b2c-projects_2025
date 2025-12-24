@@ -101,13 +101,13 @@ async function onRedirectClick({name}) {
 @use '../styles/mixins';
 
 .card {
-	background: #fff;
-	border-radius: 12px;
-	padding: 8px;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
 	width: 100%;
+	padding: 8px;
+	background: #fff;
+	border-radius: 12px;
 
 	@include mixins.respond-up(lg) {
 		max-width: 300px;
@@ -118,20 +118,20 @@ async function onRedirectClick({name}) {
 	height: 170px;
 
 	img {
+		display: block;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		display: block;
 		border-radius: 12px;
 	}
 }
 
 .card__location {
 	display: inline-flex;
-	align-items: center;
 	gap: 4px;
+	align-items: center;
+	color: rgb(0 0 0 / 65%);
 	font-size: 12px;
-	color: rgba(0, 0, 0, 0.65);
 
 	svg {
 		flex-shrink: 0;
@@ -139,9 +139,9 @@ async function onRedirectClick({name}) {
 }
 
 .card__hotel-name {
-	font-size: 16px;
-	font-weight: 600;
 	margin: 0; /* reset */
+	font-weight: 600;
+	font-size: 16px;
 }
 
 .card__rating {
@@ -154,8 +154,8 @@ async function onRedirectClick({name}) {
 }
 
 .card__category {
-	color: #f7db14;
 	margin: 0;
+	color: #f7db14;
 }
 
 .card__push-bottom {
@@ -164,23 +164,23 @@ async function onRedirectClick({name}) {
 
 .card__price {
 	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
 	align-items: center;
 	justify-content: space-between;
-	gap: 8px;
 	margin-bottom: 8px;
-	font-size: 16px;
-	font-weight: 600;
 	color: #0093d0;
-	flex-wrap: wrap;
+	font-weight: 600;
+	font-size: 16px;
 }
 
 .card__attention {
-	color: rgba(0, 0, 0, 0.65);
-	border-top: 1px solid #f0f0f0;
+	display: inline-block;
 	padding-top: 0.8em;
+	color: rgb(0 0 0 / 65%);
 	font-size: 0.625rem;
 	line-height: 1.5;
-	display: inline-block;
+	border-top: 1px solid #f0f0f0;
 }
 
 .coral-main-btn.custom {

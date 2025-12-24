@@ -100,18 +100,18 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
 /* Навигационные кнопки слайдера */
 .hotel-slider__nav-btn {
-	width: 40px;
-	height: 40px;
-	border-radius: 50%;
-	border: 1px solid #ffffff;
-	background: #ffffff;
+	position: absolute;
+	top: 50%;
+	z-index: 10;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	position: absolute;
-	top: 50%;
+	width: 40px;
+	height: 40px;
+	background: #fff;
+	border: 1px solid #fff;
+	border-radius: 50%;
 	transform: translateY(-50%);
-	z-index: 10;
 	cursor: pointer;
 	transition: border-color 0.3s ease;
 
@@ -161,26 +161,26 @@ swiper-container {
 }
 
 /* Псевдоэлемент поверх правого края контейнера */
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
 	swiper-container::after {
-		content: "";
 		position: absolute;
-		width: 20%;
-		height: 100%;
 		top: 0;
 		right: 0;
 		z-index: 3;
+		width: 20%;
+		height: 100%;
+		background: linear-gradient(90deg, rgb(38 38 38 / 0%) 0%, #262626 250%);
+		content: "";
 		pointer-events: none;
-		background: linear-gradient(90deg, rgba(38, 38, 38, 0) 0%, #262626 250%);
 	}
 }
 
 /* Низкий скроллбар и внутренние отступы (через ::part) */
 swiper-container::part(scrollbar) {
-	bottom: 11px;
 	top: unset;
+	bottom: 11px;
+	background: rgb(217 217 217 / 20%);
 	border-radius: 16px;
-	background: rgba(217, 217, 217, 0.20);
 }
 
 swiper-container::part(container) {
@@ -190,15 +190,15 @@ swiper-container::part(container) {
 
 /* Слайды растягиваем по высоте контента карточки */
 swiper-slide {
-	height: auto;
 	display: flex;
+	height: auto;
 }
 
 /* Фолбэк-лента карточек (когда нет слайдера) */
 .hotel-slider__cards {
 	display: flex;
 	gap: 24px;
-	padding-bottom: 24px;
 	padding-right: 24px;
+	padding-bottom: 24px;
 }
 </style>

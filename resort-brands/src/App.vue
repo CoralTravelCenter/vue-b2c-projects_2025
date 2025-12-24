@@ -173,17 +173,17 @@ watch([currentCountry, currentBrand], async () => {
 @use './styles/mixins';
 
 .no-data-message {
-	background: #FFFFFF;
-	width: auto;
-	margin: 0;
-	border-radius: 8px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 20px !important;
-	color: #000000 !important;
+	width: auto;
 	min-height: 430px;
+	margin: 0;
+	color: #000 !important;
+	font-size: 20px !important;
 	text-align: center !important;
+	background: #FFF;
+	border-radius: 8px;
 
 	@include mixins.respond-up(lg) {
 		margin-right: 24px;
@@ -201,8 +201,8 @@ watch([currentCountry, currentBrand], async () => {
 .skeletors-container {
 	display: flex;
 	gap: 16px;
-	margin-bottom: 24px;
 	margin-right: 24px;
+	margin-bottom: 24px;
 
 	.vue-skeletor--rect {
 		border-radius: 8px;
@@ -213,11 +213,11 @@ watch([currentCountry, currentBrand], async () => {
  *  Контейнер приложения
  * ============================================= */
 .app-container {
-	width: 100%;
-	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
+	width: 100%;
+	overflow: hidden;
 }
 
 h2 {
@@ -230,6 +230,7 @@ h2 {
 .country-select {
 	align-self: flex-start;
 	order: 2;
+
 	@include mixins.respond-up(md) {
 		align-self: center;
 	}
@@ -238,6 +239,7 @@ h2 {
 /* Навигация брендов */
 .brands-nav {
 	order: 3;
+
 	@include mixins.respond-up(lg) {
 		order: 4;
 	}
@@ -246,6 +248,7 @@ h2 {
 /* Порядок слайдера для мобильных/десктопа */
 .slider {
 	order: 4;
+
 	@include mixins.respond-up(lg) {
 		order: 3;
 	}
@@ -254,10 +257,11 @@ h2 {
 /* Шапка с фильтрами */
 .headline-wrapper {
 	display: flex;
-	justify-content: space-between;
 	flex-direction: column;
-	align-items: center;
 	gap: 16px;
+	align-items: center;
+	justify-content: space-between;
+
 	@include mixins.respond-up(md) {
 		flex-direction: row;
 	}
@@ -267,13 +271,13 @@ h2 {
 .main-view {
 	display: flex;
 	flex-direction: column;
+	flex-shrink: 0;
+	justify-content: space-between;
+	min-height: 560px;
+	padding: 16px;
+	overflow: clip;
 	background: #262626;
 	border-radius: 12px;
-	padding: 16px;
-	flex-shrink: 0;
-	min-height: 560px;
-	justify-content: space-between;
-	overflow: clip;
 
 	@include mixins.respond-up(lg) {
 		flex-direction: row;
@@ -285,27 +289,28 @@ h2 {
 .main-view-action {
 	display: flex;
 	flex-direction: column;
+	gap: 16px;
 	align-items: center;
 	justify-content: center;
-	text-align: center;
-	gap: 16px;
-	color: #ffffff;
 	padding-bottom: 24px;
+	color: #fff;
+	text-align: center;
 
 	@include mixins.respond-up(lg) {
 		padding-inline: 100px;
 	}
+
 	@include mixins.respond-up(lg) {
 		width: 40%;
 	}
 
 	h3 {
+		margin: 0;
 		color: #fff;
+		font-weight: 600;
 		font-size: 30px;
 		font-style: normal;
 		text-align: center;
-		margin: 0;
-		font-weight: 600;
 		text-transform: uppercase;
 	}
 
@@ -316,6 +321,7 @@ h2 {
 
 .main-view-slider {
 	width: 100%;
+
 	@include mixins.respond-up(lg) {
 		width: 60%;
 	}

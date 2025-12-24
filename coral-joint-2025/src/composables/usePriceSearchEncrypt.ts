@@ -1,6 +1,6 @@
 import {DEFAULT_DEPARTURE, DEFAULT_DEPARTURE_FRIENDLY, DEFAULT_DEPARTURE_ID, PACKAGE_ENDPOINTS} from "@/api";
 import useFetch from "./useFetch";
-import {ArrivalLocation} from "@/types";
+import type {ArrivalLocation} from "@/types";
 import type {ComputedRef} from "vue";
 
 export default async function usePriceSearchEncrypt(location: ArrivalLocation, days: string[][], nights: ComputedRef<number>): Promise<any> {

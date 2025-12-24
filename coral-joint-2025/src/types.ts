@@ -1,34 +1,34 @@
 interface ParentLocation {
-    id: string;
-    type: number;
-    name: string;
-    countryId: string;
+	id: string;
+	type: number;
+	name: string;
+	countryId: string;
 }
 
 export interface ArrivalLocation {
-    id: string;
-    type: number;
-    name: string;
-    friendlyUrl: string;
-    parent?: ParentLocation;
-    children?: any[];
+	id: string;
+	type: number;
+	name: string;
+	friendlyUrl: string;
+	parent?: ParentLocation;
+	children?: unknown[];
 }
 
 export interface Hotel {
-    name: string;
-    location: string;
-    benefits: string[];
-    erid: string;
-    ligal: string
+	name: string;
+	location: string;
+	benefits: string[];
+	erid: string;
+	ligal: string;
 }
 
 declare global {
-    function ym(
-        counterId: number,
-        action: string,
-        target?: string,
-        params?: Record<string, any>
-    ): void
+	function ym(
+		counterId: number,
+		action: string,
+		target?: string,
+		params?: Record<string, unknown>,
+	): void;
 }
 
 type MealNames = string[];
@@ -36,149 +36,149 @@ type MealNames = string[];
 type PriceAmount = number | string | null | undefined;
 
 interface HotelCategory {
-    key: string;
-    name: string;
+	key: string;
+	name: string;
 }
 
 interface HotelImageSize {
-    url: string;
+	url: string;
 }
 
 interface HotelImage {
-    sizes: HotelImageSize[];
+	sizes: HotelImageSize[];
 }
 
 interface HotelInfo {
-    name: string;
-    locationSummary: string;
-    images: HotelImage[];
-    eliteHotel?: boolean;
-    categoryKey?: string;
+	name: string;
+	locationSummary: string;
+	images: HotelImage[];
+	eliteHotel?: boolean;
+	categoryKey?: string;
 }
 
 interface HotelOfferPrice {
-    amount?: PriceAmount;
+	amount?: PriceAmount;
 }
 
 interface HotelOffer {
-    price?: HotelOfferPrice;
+	price?: HotelOfferPrice;
 }
 
 interface RoomAlternatives {
-    mealNames: MealNames;
+	mealNames: MealNames;
 }
 
 export interface PriceSearchListResult {
-    hotel: HotelInfo;
-    offers?: HotelOffer[];
-    hotelCategories?: HotelCategory[];
-    roomAlternatives: RoomAlternatives;
+	hotel: HotelInfo;
+	offers?: HotelOffer[];
+	hotelCategories?: HotelCategory[];
+	roomAlternatives: RoomAlternatives;
 }
 
 export interface PriceSearchListResult {
-    searchCriterias: SearchCriterias;
+	searchCriterias: SearchCriterias;
 
-    rooms: Record<string, { name: string }>;
-    meals: Record<string, { name: string }>;
-    accommodations: Record<string, { name: string }>;
+	rooms: Record<string, { name: string }>;
+	meals: Record<string, { name: string }>;
+	accommodations: Record<string, { name: string }>;
 
-    departureLocations: Record<
-        string,
-        {
-            id: string;
-            type: number;
-            name: string;
-            friendlyUrl: string;
-        }
-    >;
+	departureLocations: Record<
+		string,
+		{
+			id: string;
+			type: number;
+			name: string;
+			friendlyUrl: string;
+		}
+	>;
 
-    countries: Record<string, { name: string }>;
-    regions: Record<string, { name: string }>;
-    places: Record<string, { name: string }>;
-    areas: Record<string, { name: string }>;
+	countries: Record<string, { name: string }>;
+	regions: Record<string, { name: string }>;
+	places: Record<string, { name: string }>;
+	areas: Record<string, { name: string }>;
 
-    hotelFeatures: Record<
-        string,
-        {
-            name: string;
-            iconUrl: string;
-        }
-    >;
+	hotelFeatures: Record<
+		string,
+		{
+			name: string;
+			iconUrl: string;
+		}
+	>;
 
-    hotelConcepts: Record<
-        string,
-        {
-            name: string;
-            iconUrl: string;
-        }
-    >;
+	hotelConcepts: Record<
+		string,
+		{
+			name: string;
+			iconUrl: string;
+		}
+	>;
 
-    hotelCategories: Record<
-        string,
-        {
-            name: string;
-            starCount: number;
-            isHalfStar: boolean;
-        }
-    >;
+	hotelCategories: Record<
+		string,
+		{
+			name: string;
+			starCount: number;
+			isHalfStar: boolean;
+		}
+	>;
 
-    topProducts: unknown[];
+	topProducts: unknown[];
 
-    products: Array<{
-        hotel: unknown;            // не углубляемся
-        offers: unknown[];         // не углубляемся
-        roomAlternatives: unknown; // не углубляемся
-    }>;
+	products: Array<{
+		hotel: unknown; // не углубляемся
+		offers: unknown[]; // не углубляемся
+		roomAlternatives: unknown; // не углубляемся
+	}>;
 
-    filter: unknown;
+	filter: unknown;
 
-    availableSortTypes: Array<{
-        sortType: number;
-        name: string;
-    }>;
+	availableSortTypes: Array<{
+		sortType: number;
+		name: string;
+	}>;
 }
 
 export interface SearchCriterias {
-    flightType: number;
-    reservationType: number;
-    beginDates: string[];
-    datePickerMode: number;
+	flightType: number;
+	reservationType: number;
+	beginDates: string[];
+	datePickerMode: number;
 
-    nights: Array<{
-        value: number;
-    }>;
+	nights: Array<{
+		value: number;
+	}>;
 
-    roomCriterias: unknown[];
+	roomCriterias: unknown[];
 
-    departureLocations: Array<{
-        id: string;
-        type: number;
-        name: string;
-        friendlyUrl: string;
-        parent?: unknown;
-    }>;
+	departureLocations: Array<{
+		id: string;
+		type: number;
+		name: string;
+		friendlyUrl: string;
+		parent?: unknown;
+	}>;
 
-    arrivalLocations: Array<{
-        id: string;
-        type: number;
-        name: string;
-        friendlyUrl: string;
-        parent?: unknown;
-    }>;
+	arrivalLocations: Array<{
+		id: string;
+		type: number;
+		name: string;
+		friendlyUrl: string;
+		parent?: unknown;
+	}>;
 
-    paging: {
-        hasPreviousPage: boolean;
-        hasNextPage: boolean;
-        pageNumber: number;
-        pageSize: number;
-        sortType: number;
-    };
+	paging: {
+		hasPreviousPage: boolean;
+		hasNextPage: boolean;
+		pageNumber: number;
+		pageSize: number;
+		sortType: number;
+	};
 
-    imageSizes: number[];
-    additionalFilters: unknown[];
+	imageSizes: number[];
+	additionalFilters: unknown[];
 }
 
 export interface EncryptResult {
-    redirectionUrl: string;
-    queryParam: string;
+	redirectionUrl: string;
+	queryParam: string;
 }

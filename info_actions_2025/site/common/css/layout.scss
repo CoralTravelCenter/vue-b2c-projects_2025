@@ -1,6 +1,6 @@
 @use "mixins";
 
-*, *:after, *:before {
+*, *::after, *::before {
   box-sizing: border-box;
 }
 
@@ -41,17 +41,17 @@ section.hero > article .contenu {
   }
 
   img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
   }
 }
 
 section.hero.full-width {
   @include mixins.hero-layout-full-width;
 
-  &:after {
+  &::after {
     background: #fff;
   }
 }

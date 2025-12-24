@@ -1,5 +1,29 @@
 {
-  "dependencies": {
-    "geojson": "^0.5.0"
-  }
+	"dependencies": {
+		"geojson": "^0.5.0"
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
+		"format": "prettier . --write",
+		"lint:css": "stylelint \"**/*.{css,scss,vue}\"",
+		"lint:css:fix": "stylelint \"**/*.{css,scss,vue}\" --fix"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.39.2",
+		"@stylelint/prettier-config": "^4.0.0",
+		"@typescript-eslint/eslint-plugin": "^8.50.1",
+		"@typescript-eslint/parser": "^8.50.1",
+		"eslint": "^9.39.2",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-vue": "^10.6.2",
+		"globals": "^16.5.0",
+		"prettier": "^3.7.4",
+		"stylelint": "^16.26.1",
+		"stylelint-config-rational-order": "^0.1.2",
+		"stylelint-config-recommended-vue": "^1.6.1",
+		"stylelint-config-standard-scss": "^16.0.0",
+		"stylelint-order": "^7.0.0",
+		"vue-eslint-parser": "^10.2.0"
+	}
 }

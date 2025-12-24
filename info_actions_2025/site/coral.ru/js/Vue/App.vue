@@ -83,22 +83,23 @@ const isBonus = p => p.filtersArr.some(f => /bonus/i.test(f));
 @use '../../../common/css/mixins';
 
 .cards-container {
-	list-style: none;
-	padding: 0;
 	margin: 0;
+	padding: 0;
+	list-style: none;
+
 	@include mixins.flex-grid(1, 24px, center);
 
-	@media (min-width: 768px) {
+	@media (width >= 768px) {
 		@include mixins.flex-grid(2, 24px, start);
 	}
 
-	@media (min-width: 1280px) {
+	@media (width >= 1280px) {
 		@include mixins.flex-grid(4, 24px, start);
 	}
 }
 
 .cards-container:has(.sunmar) {
-	@media (min-width: 1280px) {
+	@media (width >= 1280px) {
 		@include mixins.flex-grid(3, 24px, start);
 	}
 }

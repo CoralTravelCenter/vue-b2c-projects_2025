@@ -9,29 +9,26 @@
 @use "action";
 @use "attention";
 
-@media (max-width: 993px) {
+@media (width <= 993px) {
   :host {
     position: relative;
 
     &::after {
-      content: '';
-      display: block;
       position: absolute;
       top: 0;
       left: 0;
+      z-index: 1;
+      display: block;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1;
+      background-color: rgb(0 0 0 / 50%);
+      content: '';
     }
   }
 }
 
 
 .popup-body {
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
   position: fixed;
   top: 0;
   left: 0;
@@ -39,25 +36,28 @@
   display: flex;
   align-items: start;
   justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
   padding: 2rem;
   overflow-y: scroll;
 
-  @media (min-width: 994px) {
+  @media (width >= 994px) {
     &::after {
-      content: '';
-      display: block;
       position: absolute;
       top: 0;
       left: 0;
+      z-index: 1;
+      display: block;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1;
+      background-color: rgb(0 0 0 / 50%);
+      content: '';
     }
   }
 
 
-  @media (max-width: 993px) {
+  @media (width <= 993px) {
     padding: 1rem;
   }
 }
@@ -69,16 +69,16 @@
 .popup-content {
   display: flex;
   flex-direction: column;
+  gap: 20px;
   align-items: center;
   justify-content: start;
-  gap: 20px;
 }
 
 .popup-benefits {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 0;
   margin: 0;
+  padding: 0;
   list-style: none;
 }

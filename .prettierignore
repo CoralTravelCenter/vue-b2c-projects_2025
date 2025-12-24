@@ -1,0 +1,7 @@
+**/node_modules/**
+**/dist/**
+**/build/**
+**/.nuxt/**
+**/.output/**
+**/.vite/**
+**/coverage/**

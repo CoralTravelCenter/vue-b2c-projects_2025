@@ -1,6 +1,6 @@
 // helpers/publicShow.ts
 import {nextTick} from 'vue'
-import {ICtx} from "../types";
+import type {ICtx} from "../types";
 import {enablePageScroll} from "@fluejs/noscroll";
 
 function fireMetrika(ymMetrika?: string) {

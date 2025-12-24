@@ -1,20 +1,17 @@
 // Цвета
 $white: #fff;
 $black: #000;
-
 $btn-bg: #0092d0;
 $btn-bg-hover: #077dad;
 $btn-bg-pressed: #0063b3;
 $btn-bg-focused: #33c2ff;
 $btn-border-focused: #0092d0;
-$btn-bg-disabled: rgba(0, 0, 0, .4);
-
+$btn-bg-disabled: rgb(0 0 0 / 40%);
 $text-light: #fff;
-$text-muted: rgba(0, 0, 0, .65);
+$text-muted: rgb(0 0 0 / 65%);
 $text-accent: #0093d0;
-
 $backdrop: #1b1b1b;
-$divider: rgba(0, 0, 0, .06);
+$divider: rgb(0 0 0 / 6%);
 $border: #d9d9d9;
 
 // Прочее
