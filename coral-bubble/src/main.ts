@@ -1,6 +1,6 @@
 import {defineCustomElement} from "vue";
 import Bubble from './components/Bubble.ce.vue'
-// import './style.css';
+// import './shadow.style.css';
 
 const componentName = 'coral-bubble';
 const definedComponent = defineCustomElement(Bubble)
