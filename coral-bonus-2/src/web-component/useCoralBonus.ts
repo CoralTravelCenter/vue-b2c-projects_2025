@@ -13,9 +13,7 @@ export function mountCoralBonus(host: HTMLElement, cfg: CoralBonusConfigGetters)
     return setupAutoRecalcByDataLayer(
         cfg.getRulesRaw,
         cfg.getHotelRulesRaw,
-        (result: CalcResult) => {
-            console.log('[coral-bonus] RESULT', result)
-            emitBonusUpdated(host, result)
-        },
+        // @ts-ignore
+        (result: CalcResult) => emitBonusUpdated(host, result)
     )
 }

@@ -1,11 +1,12 @@
-export type BreakdownItem = {
-    code: string
+export type UiLine = {
     title: string
-    amountRub: number
-    meta?: Record<string, any>
+    amountRub?: number
+    percent?: number
+    url?: string
 }
+
 
 export type CalcResult = {
     amountRub: number
-    items: BreakdownItem[]
+    lines: UiLine[]
 }

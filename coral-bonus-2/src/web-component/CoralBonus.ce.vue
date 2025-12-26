@@ -1,26 +1,29 @@
 <script setup lang="ts">
-import {onBeforeUnmount, onMounted, shallowRef, useTemplateRef} from 'vue'
+import {onBeforeUnmount, onMounted, ShallowRef, shallowRef, useTemplateRef} from 'vue'
 import {setupAutoRecalcByDataLayer} from "@/domain";
 import {formatPriceRub} from "../../../usefuls";
 import tippy, {roundArrow} from 'tippy.js';
-import {BreakdownItem} from "@/domain/types";
+import {UiLine} from "@/domain/types";
 
 const props = defineProps<{
 	rules: string
 	hotelRules?: string
 }>()
 
-const trigger = useTemplateRef('trigger')
-const items = shallowRef<BreakdownItem[]>([])
+const trigger: ShallowRef<HTMLButtonElement | null> = useTemplateRef('trigger')
+const lines = shallowRef<UiLine[]>([])
 let stop: null | (() => void) = null
 const amountRub = shallowRef<number>(0)
 
 function setTotlipMarkup() {
-	return items.value.map(el => {
+	return lines.value.map(el => {
 		return `
 			<li>
-				<span>${el.amountRub}</span>
-				<a>${el.title}</a>
+				${el.amountRub
+				? `<span>${formatPriceRub(el.amountRub)}</span>`
+				: `<span>${el.percent}%</span>`
+		}
+				${el.url ? `<a href="${el.url}" target="_blank">${el.title}</a>` : `<span style="text-align: right">${el.title}</span>`}
 			</li>
 		`
 	}).join('')
@@ -29,15 +32,18 @@ function setTotlipMarkup() {
 onMounted(() => {
 	stop = setupAutoRecalcByDataLayer(
 			() => props.rules,
-			() => props.hotelRules,
-			async (result) => {
+			(result) => {
 				amountRub.value = result.amountRub
-				items.value = result.items
+				lines.value = result.lines
 			},
 	)
 	tippy(trigger.value, {
-		content: `<ul>${setTotlipMarkup()}</ul>`,
-		trigger: 'click',
+		content: `
+			<ul>
+				${setTotlipMarkup()}
+				<li>Нет карты CoralBonus? <a class="cb-link" href="https://coralbonus.ru/registration?promo=R3R5VO93GKG8N1PGQC1UP0G6EICQLRWEN3Z64WZGC4YBYIKHFJV55IND5O20WUJ" target="_blank">Получить прямо сейчас</a></li>
+			</ul>
+		`,
 		allowHTML: true,
 		interactive: true,
 		arrow: roundArrow,

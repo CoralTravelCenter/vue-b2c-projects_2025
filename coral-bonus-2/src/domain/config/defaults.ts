@@ -1,11 +1,3 @@
-import type {HotelRule, RulesConfig} from '../types'
-
-export const DEFAULT_RULES: RulesConfig = {
-    scope: {country: 'UNKNOWN'},
-    base: {percent: 0},
-    welcome: {newUserAmount: 0},
-    starsBonus: {},
-    promotions: [],
-}
+import type {HotelRule} from '../types'
 
 export const DEFAULT_HOTEL_RULES: HotelRule[] = []

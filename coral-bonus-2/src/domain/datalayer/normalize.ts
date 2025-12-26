@@ -1,4 +1,4 @@
-import type {NormalizedInput, Stars} from '../types'
+import type {NormalizedInput} from '../types'
 import {findLastViewItem} from './readViewItem'
 import {isNewUserFromDataLayer} from './readUser'
 
@@ -7,12 +7,16 @@ function toNumber(x: any, fallback = 0) {
     return Number.isFinite(n) ? n : fallback
 }
 
-function extractStarsFromName(name: string | undefined): Stars | null {
-    if (!name) return null
-    const m = name.match(/([3-5])\s*\*/i)
+function readStarsFromInsider(): 3 | 4 | 5 | null {
+    const raw = (window as any).insider_object?.product?.custom?.Star
+    if (raw == null) return null
+
+    // допускаем "4", 4, "4*", "4*DELUXE"
+    const m = String(raw).match(/[345]/)
     if (!m) return null
-    const s = Number(m[1])
-    return (s === 3 || s === 4 || s === 5) ? (s as Stars) : null
+
+    const n = Number(m[0])
+    return (n === 3 || n === 4 || n === 5) ? (n as 3 | 4 | 5) : null
 }
 
 export function normalizeFromDataLayer(now = new Date()): NormalizedInput {
@@ -26,7 +30,7 @@ export function normalizeFromDataLayer(now = new Date()): NormalizedInput {
     const hotelId = item?.item_id != null ? String(item.item_id) : null
     const hotelName = item?.item_name != null ? String(item.item_name) : null
     const countryName = item?.item_brand != null ? String(item.item_brand) : null
-    const hotelStars = extractStarsFromName(item?.item_name)
+    const hotelStars = readStarsFromInsider()
 
     return {
         now,

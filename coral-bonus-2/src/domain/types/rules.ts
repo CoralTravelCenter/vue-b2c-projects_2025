@@ -3,30 +3,36 @@ import type {Stars} from './input'
 export type DateISO = string // 'YYYY-MM-DD' (без времени)
 
 export type RulesConfig = {
-    scope: {
-        country: string // "EG" | "TR" | ... (то, что задаём в rules)
+    scope?: {
+        country?: string
     }
 
     base?: {
-        percent?: number // 1 => 1%
+        name: string
+        percent: number
     }
 
     welcome?: {
-        newUserAmount?: number // фикс для новых
+        name: string
+        amount: number
+        url?: string
     }
 
-    starsBonus?: Partial<Record<Stars, number>> // {3:3000,4:4000,5:5000}
+    starsBonus?: {
+        name: string
+        values: Record<'3' | '4' | '5', number>
+        url?: string
+    }
 
     promotions?: Array<{
-        code: string
-        title?: string
+        name: string
         amount: number
-        from?: DateISO
-        until?: DateISO
+        from?: string
+        until?: string
+        url?: string
     }>
 }
 
-// hotel-rules атрибут
 export type HotelRule = {
     code: string
     title?: string

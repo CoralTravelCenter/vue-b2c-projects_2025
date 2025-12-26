@@ -1,26 +1,20 @@
-// @ts-expect-error isolatedModules
-import {defineCustomElement} from "vue";
-import CB from '@/web-component/CoralBonus.ce.vue';
-import markup from './markup.html?raw'
-import tippyStyles from 'tippy.js/dist/tippy.css?inline';
-import arrow from 'tippy.js/dist/svg-arrow.css?inline';
-import tippyStylesAnim from 'tippy.js/animations/scale.css?inline';
-import styles from './style.css?inline';
+// @ts-ignore
+// import CB from '@/web-component/CoralBonus.ce.vue';
 import {ReactDomObserver} from "../../usefuls";
+// import markup from './markup.html?raw';
 import './style.css';
 
-const componentName = 'coral-bonus';
-const definedComponent = defineCustomElement(CB, {
-    styles: [tippyStyles, tippyStylesAnim, arrow, styles],
-})
-if (!customElements.get(componentName)) {
-    customElements.define(componentName, definedComponent)
-}
+// const componentName = 'coral-bonus';
+// const definedComponent = defineCustomElement(CB, {
+//     styles: [tippyStyles, tippyStylesAnim, arrow, shadowStyles],
+// })
+// if (!customElements.get(componentName)) {
+//     customElements.define(componentName, definedComponent)
+// }
 
 
 (async () => {
     await customElements.whenDefined('coral-bonus');
-    document?.body?.insertAdjacentHTML('afterbegin', markup);
 
     const cdCard = document?.querySelector('#coral-bonus-widget');
     if (!cdCard) return;
@@ -29,7 +23,6 @@ if (!customElements.get(componentName)) {
     new ReactDomObserver('.coral-bonus', {
         onAppear: el => {
             const clone = cdCard.cloneNode(true);
-            console.log(clone)
             clone.setAttribute('data-clone', 'true');
             el?.append(clone)
         }

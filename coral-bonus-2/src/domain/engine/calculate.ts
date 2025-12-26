@@ -1,6 +1,5 @@
-import type {BreakdownItem, CalcResult, HotelRule, NormalizedInput, RulesConfig, Stars} from '../types'
+import type {CalcResult, NormalizedInput, RulesConfig, UiLine} from '../types'
 import {isActiveByDate} from './date'
-import {hotelRuleMatches} from './match'
 
 function toNumber(x: any, fallback = 0) {
     const n = Number(x)
@@ -13,92 +12,74 @@ function percentOf(value: number, percent: number) {
     return Math.floor(value * (percent / 100))
 }
 
-function starsBonusAmount(stars: Stars | null, table: RulesConfig['starsBonus']) {
-    if (!stars || !table) return 0
-    return toNumber((table as any)[stars], 0)
-}
-
-export function calculateResult(
-    rules: RulesConfig,
-    hotelRules: HotelRule[],
-    input: NormalizedInput,
-): CalcResult {
-    const items: BreakdownItem[] = []
-
+export function calculateResult(rules: RulesConfig, input: NormalizedInput): CalcResult {
+    const lines: UiLine[] = []
     const price = Math.max(0, toNumber(input.priceRub, 0))
 
-    // 1) base percent
-    const basePercent = Math.max(0, toNumber(rules.base?.percent, 0))
-    const baseRub = percentOf(price, basePercent)
-    if (baseRub > 0) {
-        items.push({
-            code: 'BASE_PERCENT',
-            title: `${basePercent}% от стоимости`,
-            amountRub: baseRub,
-            meta: {percent: basePercent, priceRub: price},
-        })
+    // итог всегда считаем отдельно (а не через lines)
+    let totalAmountRub = 0
+
+    const pushLine = (title: string | undefined, amountRub: number, url?: string) => {
+        if (!title) return
+        if (!amountRub || amountRub <= 0) return
+
+        totalAmountRub += amountRub
+        lines.push({title, amountRub, url})
     }
 
-    // 2) stars bonus
-    const starsRub = starsBonusAmount(input.hotelStars, rules.starsBonus)
-    if (starsRub > 0 && input.hotelStars) {
-        items.push({
-            code: `STARS_${input.hotelStars}`,
-            title: `Бонус за отель ${input.hotelStars}*`,
-            amountRub: starsRub,
-            meta: {stars: input.hotelStars},
-        })
+    // 0) scope
+    if (rules.scope?.country && input.countryName !== rules.scope.country) {
+        return {amountRub: 0, lines: []}
     }
 
-    // 3) welcome new user
-    const welcomeAmount = Math.max(0, toNumber(rules.welcome?.newUserAmount, 0))
-    const welcomeRub = input.isNewUser ? welcomeAmount : 0
-    if (welcomeRub > 0) {
-        items.push({
-            code: 'WELCOME',
-            title: 'Приветственные бонусы (новый пользователь)',
-            amountRub: welcomeRub,
-        })
-    }
+    // 1) base (в UI показываем текст, в сумму добавляем рубли)
+    if (rules.base?.name) {
+        const pct = Math.max(0, toNumber(rules.base.percent, 0))
+        const rub = percentOf(price, pct)
 
-    // 4) promotions
-    if (Array.isArray(rules.promotions)) {
-        for (const p of rules.promotions) {
-            if (!p?.code) continue
-            if (!isActiveByDate(input.now, p.from, p.until)) continue
-
-            const amount = Math.max(0, toNumber(p.amount, 0))
-            if (amount <= 0) continue
-
-            items.push({
-                code: `PROMO:${p.code}`,
-                title: p.title ? p.title : `Акция ${p.code}`,
-                amountRub: amount,
-                meta: {from: p.from, until: p.until, code: p.code},
+        if (rub > 0) {
+            lines.push({
+                title: rules.base.name,
+                percent: rules.base.percent,
             })
+            totalAmountRub += rub
         }
     }
 
-    // 5) hotelRules (фикс + %), суммируются
-    for (const r of hotelRules ?? []) {
-        if (!r?.code) continue
-        if (!hotelRuleMatches(r, input)) continue
 
-        const fixed = Math.max(0, toNumber(r.bonus?.amount, 0))
-        const pct = Math.max(0, toNumber(r.bonus?.percent, 0))
-        const pctRub = percentOf(price, pct)
-        const totalRuleRub = fixed + pctRub
-
-        if (totalRuleRub <= 0) continue
-
-        items.push({
-            code: `HOTEL_RULE:${r.code}`,
-            title: r.title ? r.title : `Правило отеля ${r.code}`,
-            amountRub: totalRuleRub,
-            meta: {ruleCode: r.code, fixed, percent: pct, percentRub: pctRub},
-        })
+    // 2) welcome (текст только из конфига)
+    if (rules.welcome && input.isNewUser) {
+        pushLine(
+            rules.welcome.name,
+            Math.max(0, toNumber(rules.welcome.amount, 0)),
+            rules.welcome.url,
+        )
     }
 
-    const amountRub = items.reduce((sum, x) => sum + x.amountRub, 0)
-    return {amountRub, items}
+    // 3) starsBonus
+    const stars = input.hotelStars // 3 | 4 | 5 | null
+    const sb = rules.starsBonus
+
+    if (stars && sb?.name && sb?.values) {
+        const amount = Math.max(0, toNumber((sb.values as any)[String(stars)], 0))
+
+        if (amount > 0) {
+            lines.push({
+                title: sb.name,      // "по акции «Первым рейсом»"
+                amountRub: amount,   // 3000/4000/5000
+                url: sb.url,         // ✅ ссылка из конфига
+            })
+            totalAmountRub += amount
+        }
+    }
+
+    // 4) promotions
+    for (const p of rules.promotions ?? []) {
+        if (!p?.name) continue
+        if (!isActiveByDate(input.now, p.from, p.until)) continue
+
+        pushLine(p.name, Math.max(0, toNumber(p.amount, 0)), p.url)
+    }
+
+    return {amountRub: totalAmountRub, lines}
 }
