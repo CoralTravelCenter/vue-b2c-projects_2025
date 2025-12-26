@@ -23,6 +23,7 @@ import './style.css';
     new ReactDomObserver('.coral-bonus', {
         onAppear: el => {
             const clone = cdCard.cloneNode(true);
+            // @ts-ignore
             clone.setAttribute('data-clone', 'true');
             el?.append(clone)
         }
@@ -37,7 +38,9 @@ import './style.css';
             if (cbCards && cbCards.length > 0) {
                 Array.from(cbCards).forEach(card => {
                     const clone = cdCard.cloneNode(true);
+                    // @ts-ignore
                     clone.setAttribute('data-clone', 'true');
+                    // @ts-ignore
                     card.closest('div')?.insertAdjacentElement('beforebegin', clone)
                 })
             }

@@ -156,7 +156,7 @@ export async function hostReactAppReady(
     selector = "#__next > div",
     intervalMs = 300,
     timeoutMs = 0,
-): Promise {
+): Promise<any> {
     return withTimeout<Element>(
         (resolve) => {
             const tick = () => {
