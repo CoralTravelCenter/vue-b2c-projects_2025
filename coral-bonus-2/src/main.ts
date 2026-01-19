@@ -14,6 +14,8 @@ import './style.css';
 
 
 (async () => {
+
+
     await customElements.whenDefined('coral-bonus');
 
     const cdCard = document?.querySelector('#coral-bonus-widget');

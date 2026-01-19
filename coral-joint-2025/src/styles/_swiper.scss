@@ -56,3 +56,11 @@ swiper-container.out-of-view {
 .prime-btn {
   text-decoration: none;
 }
+
+swiper-container::part(bullet) {
+  background: #FFFFFF;
+}
+
+swiper-container::part(bullet-active) {
+  background: #FFFFFF;
+}

@@ -1,3 +1,164 @@
-body.js-scroll-lock {
-    overflow: hidden !important;
+html:has([data-noscroll-target-scroll-disabled]) {
+    overflow-x: unset !important;
 }
+
+/*sunmar-popup .visual {*/
+/*    height: 230px;*/
+/*    background-image: url(https://b2ccdn.sunmar.ru/content/landing-pages/our-advantages/popup.webp);*/
+/*    background-repeat: no-repeat;*/
+/*    background-size: cover;*/
+/*    background-position: center;*/
+/*}*/
+
+/*sunmar-popup .headline, sunmar-popup .subline {*/
+/*    text-align: left;*/
+/*}*/
+
+/*sunmar-popup .cards {*/
+/*    width: 100%;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    gap: 16px;*/
+/*}*/
+
+/*sunmar-popup .card {*/
+/*    padding-block: 34px;*/
+/*    padding-inline: 16px;*/
+/*    font-size: 16px;*/
+/*    font-weight: bold;*/
+/*    background-repeat: no-repeat;*/
+/*    background-size: contain;*/
+/*    position: relative;*/
+/*    background-position: right center;*/
+/*    color: #000;*/
+/*}*/
+
+/*sunmar-popup .card span {*/
+/*    position: relative;*/
+/*    z-index: 2;*/
+/*}*/
+
+/*sunmar-popup h4 {*/
+/*    font-size: 24px;*/
+/*    text-align: left;*/
+/*}*/
+
+/*sunmar-popup::part(popup-content) {*/
+/*    align-items: start;*/
+/*    padding: 24px;*/
+/*}*/
+
+/*sunmar-popup::part(popup-benefits) {*/
+/*    display: none;*/
+/*}*/
+
+/*sunmar-popup .card:nth-child(1) {*/
+/*    background-image: url("https://b2ccdn.sunmar.ru/content/landing-pages/our-advantages/uae.png");*/
+/*}*/
+
+/*sunmar-popup .card:nth-child(2) {*/
+/*    background-image: url("https://b2ccdn.sunmar.ru/content/landing-pages/our-advantages/egypt.png");*/
+/*}*/
+
+/*sunmar-popup .card:nth-child(3) {*/
+/*    background-image: url("https://b2ccdn.sunmar.ru/content/landing-pages/our-advantages/tai.png");*/
+/*}*/
+
+/*sunmar-popup .card:nth-child(4) {*/
+/*    background-image: url("https://b2ccdn.sunmar.ru/content/landing-pages/our-advantages/mald.png");*/
+/*}*/
+
+/*@media (min-width: 993px) {*/
+/*    sunmar-popup .visual {*/
+/*        display: none;*/
+/*    }*/
+
+/*    sunmar-popup::part(popup-dialog) {*/
+/*        max-width: 960px;*/
+/*        display: flex;*/
+/*    }*/
+
+/*    sunmar-popup::part(popup-visual),*/
+/*    sunmar-popup::part(popup-content) {*/
+/*        width: 50%;*/
+/*    }*/
+
+/*    sunmar-popup::part(popup-visual) {*/
+/*        background-image: url("https://b2ccdn.sunmar.ru/content/landing-pages/our-advantages/popup-desc.webp");*/
+/*        background-repeat: no-repeat;*/
+/*        background-size: cover;*/
+/*    }*/
+
+/*    sunmar-popup .cards {*/
+/*        flex-direction: row;*/
+/*        flex-wrap: wrap;*/
+/*    }*/
+
+/*    sunmar-popup .card {*/
+/*        width: calc(50% - 10px);*/
+/*        min-height: 156px;*/
+/*        background-size: 60%;*/
+/*        background-position: right bottom;*/
+/*        display: flex;*/
+/*        align-items: start;*/
+/*        padding: 16px;*/
+/*        position: relative;*/
+/*        cursor: pointer;*/
+/*        overflow: clip;*/
+/*        background-image: unset !important;*/
+/*    }*/
+
+/*    sunmar-popup .card:before {*/
+/*        content: '';*/
+/*        border-radius: 100%;*/
+/*        width: 186px;*/
+/*        height: 186px;*/
+/*        position: absolute;*/
+/*        bottom: -100px;*/
+/*        right: -30px;*/
+/*        background: #DFDFE8;*/
+/*        opacity: 0.54;*/
+/*        transition: transform 300ms;*/
+/*        transform-origin: right bottom;*/
+/*    }*/
+
+/*    sunmar-popup .card:after {*/
+/*        content: "";*/
+/*        width: 140px;*/
+/*        height: 114px;*/
+/*        position: absolute;*/
+/*        bottom: 0;*/
+/*        right: 0;*/
+/*        display: block;*/
+/*        background-repeat: no-repeat;*/
+/*        transition: transform 300ms;*/
+/*        background-position: right bottom;*/
+/*        transform-origin: right bottom;*/
+/*    }*/
+
+/*    sunmar-popup .card:hover::before {*/
+/*        transform: scale(1.7);*/
+/*    }*/
+
+/*    sunmar-popup .card:hover::after {*/
+/*        transform: scale(1.05);*/
+/*    }*/
+
+/*    sunmar-popup .card:nth-child(1):after {*/
+/*        background-image: url("https://b2ccdn.sunmar.ru/content/landing-pages/our-advantages/uae-d-2.png");*/
+/*    }*/
+
+/*    sunmar-popup .card:nth-child(2):after {*/
+/*        background-image: url("https://b2ccdn.sunmar.ru/content/landing-pages/our-advantages/egypt-d-2.png");*/
+/*    }*/
+
+/*    sunmar-popup .card:nth-child(3):after {*/
+/*        height: 200px;*/
+/*        background-image: url("https://b2ccdn.sunmar.ru/content/landing-pages/our-advantages/tai-d-2.png");*/
+/*    }*/
+
+/*    sunmar-popup .card:nth-child(4):after {*/
+/*        height: 200px;*/
+/*        background-image: url("https://b2ccdn.sunmar.ru/content/landing-pages/our-advantages/mald-d-2.png");*/
+/*    }*/
+/*}*/

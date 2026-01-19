@@ -1,106 +1,103 @@
 <script setup lang="ts">
-import { type RemovableRef, useStorage } from "@vueuse/core";
-import { onMounted, onUnmounted, shallowRef, watchEffect } from "vue";
+import { type RemovableRef, useStorage } from '@vueuse/core'
+import { onMounted, onUnmounted, shallowRef, watchEffect } from 'vue'
 
-import { enablePageScroll } from "@fluejs/noscroll";
-import parseGuardSelectors from "../helpers/parseGuardSelectors";
-import publicShow from "../helpers/publicShow.ts";
-import resolveAutoShow from "../helpers/resolveAutoShow";
-import waitUntilElementsGone from "../helpers/waitUntilElementGone.ts";
-import { ICtx, IGuards, IProps } from "../types";
+import { usePageScrollToggle } from '@fluejs/noscroll/vue'
+import parseGuardSelectors from '../helpers/parseGuardSelectors'
+import publicShow from '../helpers/publicShow.ts'
+import resolveAutoShow from '../helpers/resolveAutoShow'
+import waitUntilElementsGone from '../helpers/waitUntilElementGone.ts'
+import { AutoshowArgs, ICtx, IGuards, IProps } from '../types'
 
-const { id, autoShow, guardSelectors, ymMetrika } = defineProps<IProps>();
+const { id, autoShow, guardSelectors, ymMetrika } = defineProps<IProps>()
 
-const mounted = shallowRef(false);
-const visible = shallowRef(false);
+const mounted = shallowRef(false)
+const visible = shallowRef(false)
+const isPageScrollDisabled = shallowRef(false)
 
-let autoDelayTimer: number | null = null;
-let wasAutoShown: RemovableRef<boolean> | null = null;
+let autoDelayTimer: number | null = null
+let wasAutoShown: RemovableRef<boolean> | null = null
 
 function clearAutoTimer() {
 	if (autoDelayTimer !== null) {
-		clearTimeout(autoDelayTimer);
-		autoDelayTimer = null;
+		clearTimeout(autoDelayTimer)
+		autoDelayTimer = null
 	}
 }
 
 function hide() {
-	if (!visible.value) return;
-	visible.value = false;
+	if (!visible.value) return
+	visible.value = false
 }
 
 function afterLeave() {
-	mounted.value = false;
-	enablePageScroll();
-	clearAutoTimer();
+	mounted.value = false
+	isPageScrollDisabled.value = false
+	clearAutoTimer()
 }
 
 function onKeydown(e: KeyboardEvent) {
-	if (e.key === "Escape") hide();
+	if (e.key === 'Escape') hide()
 }
 
-function runAutoShow(args: {
-	autoShowAttr?: string;
-	autoDelay: false | number;
-	wasAutoShown: { value: boolean };
-}) {
-	const { autoShowAttr, autoDelay, wasAutoShown } = args;
+function runAutoShow(args: AutoshowArgs) {
+	const { autoShowAttr, autoDelay, wasAutoShown } = args
 
-	if (autoShowAttr === undefined) return;
-	if (autoDelay === false) return;
-	if (wasAutoShown.value) return;
+	if (autoShowAttr === undefined) return
+	if (autoDelay === false) return
+	if (wasAutoShown.value) return
 
-	wasAutoShown.value = true;
+	wasAutoShown.value = true
 
-	const ctx: ICtx = { visible, mounted, ymMetrika };
-	const doShow = () => publicShow(ctx);
+	const ctx: ICtx = { visible, mounted, ymMetrika }
+	const doShow = () => publicShow(ctx, isPageScrollDisabled)
 
-	if (autoDelay === 0) doShow();
-	else autoDelayTimer = window.setTimeout(doShow, autoDelay);
+	if (autoDelay === 0) doShow()
+	else autoDelayTimer = window.setTimeout(doShow, autoDelay)
 }
 
 async function setupAutoShow() {
-	clearAutoTimer();
+	clearAutoTimer()
 
-	if (autoShow === undefined) return;
+	if (autoShow === undefined) return
 
-	const autoDelay = resolveAutoShow(autoShow);
-	wasAutoShown = useStorage<boolean>(`coral-popup-auto-shown-${id}`, false);
+	const autoDelay = resolveAutoShow(autoShow)
+	wasAutoShown = useStorage<boolean>(`coral-popup-auto-shown-${id}`, false)
 
-	const guards: IGuards = parseGuardSelectors(guardSelectors);
-	await waitUntilElementsGone({ floating: guards });
+	const guards: IGuards = parseGuardSelectors(guardSelectors)
+	await waitUntilElementsGone({ floating: guards })
 
 	runAutoShow({
 		autoShowAttr: autoShow,
 		autoDelay,
 		wasAutoShown,
-	});
+	})
 }
 
 function show() {
-	const ctx = { visible, mounted, ymMetrika };
-	return publicShow(ctx);
+	const ctx = { visible, mounted, ymMetrika }
+	return publicShow(ctx, isPageScrollDisabled)
 }
 
-onMounted(() => {
-	void setupAutoShow();
-});
+usePageScrollToggle(isPageScrollDisabled)
 
-watchEffect((onCleanup) => {
-	if (!visible.value) return;
-	document.addEventListener("keydown", onKeydown, true);
+onMounted(() => setupAutoShow())
+
+watchEffect(onCleanup => {
+	if (!visible.value) return
+	document.addEventListener('keydown', onKeydown, true)
 	onCleanup(() => {
-		document.removeEventListener("keydown", onKeydown, true);
-	});
-});
+		document.removeEventListener('keydown', onKeydown, true)
+	})
+})
 
 onUnmounted(() => {
-	clearAutoTimer();
-	enablePageScroll();
-	wasAutoShown = null;
-});
+	clearAutoTimer()
+	isPageScrollDisabled.value = false
+	wasAutoShown = null
+})
 
-defineExpose({ show, hide });
+defineExpose({ show, hide })
 </script>
 
 <template>
@@ -148,5 +145,5 @@ defineExpose({ show, hide });
 </template>
 
 <style lang="scss">
-@use "Popup";
+@use 'Popup';
 </style>

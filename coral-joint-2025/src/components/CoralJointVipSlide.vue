@@ -9,7 +9,6 @@ const props = defineProps<({
 	ligal: string,
 })>()
 
-console.log(props)
 </script>
 
 <template>

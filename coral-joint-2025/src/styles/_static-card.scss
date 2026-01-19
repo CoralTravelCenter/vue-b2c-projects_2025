@@ -20,7 +20,7 @@
 .coral-joint__image {
   display: block;
   width: 100%;
-  height: 220px;
+  height: 260px;
   object-fit: cover;
   clip-path: ellipse(140% 110% at 50% -10%);
 }
@@ -36,9 +36,10 @@
 
   img {
     display: block;
-    width: auto;
+    width: 80px;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    filter: brightness(10);
   }
 }
 

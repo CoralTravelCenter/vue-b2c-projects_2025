@@ -1,5 +1,5 @@
 import './style.css';
-import {ReactDomObserver} from "../../usefuls";
+import {SimpleReactDomObserver} from "../../usefuls";
 import {createApp} from "vue";
 import App from "./App.vue";
 
@@ -35,50 +35,7 @@ import App from "./App.vue";
 ];
 
 
-let resolveClick!: () => void
-const clickPromise = new Promise<void>((res) => (resolveClick = res))
-
-let appeared = false
-
-const QSRecentlyView = new ReactDomObserver(
-    'div[class*="QSRecentlyView_qsRecentlyViewContainer__"]',
-    {
-        once: true,
-        onAppear: (el) => {
-            appeared = true
-
-            if (!el) return resolveClick()
-
-            const firstCard = el.querySelectorAll(
-                'div[class*="QSRecentlyViewItem_qsRecentlyViewItemContainer__"]',
-            ) as NodeList | null
-
-            // если карточек нет — продолжаем
-            if (!firstCard) return resolveClick()
-
-            firstCard[0].addEventListener(
-                'click',
-                (e) => {
-                    console.log(e.target)
-                    resolveClick()
-                }
-            )
-        },
-    },
-)
-
-QSRecentlyView.start()
-
-// если не появился — не ждём вечно
-setTimeout(() => {
-    if (!appeared) resolveClick()
-}, 150) // время подстрой под сайт
-
-await clickPromise
-console.log('__Resolve')
-
-
-const FastSearchView = new ReactDomObserver('#rc-tabs-1-panel-1', {
+ new SimpleReactDomObserver('[data-testid="quickSearchBarBlock"]', {
     onAppear: el => {
         if (!el) return
         const searchApp = document.createElement('div')
@@ -87,7 +44,4 @@ const FastSearchView = new ReactDomObserver('#rc-tabs-1-panel-1', {
         const app = createApp(App)
         app.mount('#quick-search-app')
     },
-})
-FastSearchView.start()
-
-// &p=1 & w = 0 & s = 0 & ws = 10 - пакеты
+}).start()
