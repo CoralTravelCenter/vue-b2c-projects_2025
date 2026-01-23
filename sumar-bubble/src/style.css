@@ -1,0 +1,27 @@
+sunmar-bubble {
+    --glow-intensity: 1; /* сила свечения */
+    --glow-hover-multiplier: 1; /* запас, если понадобится */
+}
+
+.soft-white-glow {
+    --i: 0;
+
+    color: #fff;
+    text-shadow: 0 0 calc(2px * var(--i)) rgba(255, 255, 255, 0.35),
+    0 0 calc(6px * var(--i)) rgba(255, 255, 255, 0.2),
+    0 0 calc(12px * var(--i)) rgba(255, 255, 255, 0.1);
+
+    transition: text-shadow 0.3s ease;
+}
+
+sunmar-bubble:hover .soft-white-glow {
+    --i: calc(var(--glow-intensity) * var(--glow-hover-multiplier));
+}
+
+sunmar-bubble .icon {
+    transition: transform 0.3s ease;
+}
+
+sunmar-bubble:hover .icon {
+    transform: scale(1.05);
+}

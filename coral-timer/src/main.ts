@@ -1,13 +1,13 @@
-import { defineCustomElement } from "vue";
-// @ts-ignore
-import Timer from "./Timer/Timer.ce.vue";
-
+import {defineCustomElement} from "vue";
+import Timer from "./component/Timer.ce.vue";
 // import markup from "./markup.html?raw";
+
+// import './style.css'
 
 const componentName = "coral-timer";
 const definedComponent = defineCustomElement(Timer);
 if (!customElements.get(componentName)) {
-	customElements.define(componentName, definedComponent);
+    customElements.define(componentName, definedComponent);
 }
 
 // await customElements.whenDefined(componentName);

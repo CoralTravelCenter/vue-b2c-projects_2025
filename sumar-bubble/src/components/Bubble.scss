@@ -1,0 +1,46 @@
+.sunmar-popup-trigger {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: fit-content;
+  padding: 7px 16px 7px 8px;
+  font-family: inherit;
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  transition: border-color 0.3s ease;
+
+  @media (width <= 993px) {
+    padding: 0;
+    border: none;
+  }
+}
+
+::slotted([slot="icon"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #fff;
+  background: #E84F0E;
+  border-radius: 100%;
+  flex-shrink: 0;
+}
+
+::slotted([slot="text"]) {
+  margin: 0;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;
+  text-align: left;
+
+  @media (width <= 993px) {
+    display: none;
+  }
+}

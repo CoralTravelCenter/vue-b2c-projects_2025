@@ -1,20 +1,33 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
+import dayjs from "dayjs";
 
-const props = defineProps<{
+const {timer} = defineProps<{
 	timer: string; // YYYY-MM-DD
 }>();
 
-const timeLeft = ref<number>(0);
 const isVisible = ref<boolean>(true);
+const timeLeft = ref<number>(0); // ✅ восстановили
+
 let interval: number | null = null;
 
-const targetTime = new Date(`${props.timer}T00:00:00`).getTime();
-
 const update = (): void => {
-	const diff = targetTime - Date.now();
-	timeLeft.value = Math.max(diff, 0);
-	if (diff <= 0) stop();
+	const now = dayjs();
+	const targetTime = dayjs(timer);
+
+	// сколько осталось (мс)
+	const diff = targetTime.diff(now);
+
+	// если время вышло — фиксируем 0, скрываем/останавливаем
+	if (diff <= 0) {
+		timeLeft.value = 0;
+		isVisible.value = false; // если хочешь просто спрятать
+		stop();
+		return;
+	}
+
+	timeLeft.value = diff;
+	isVisible.value = true;
 };
 
 const start = (): void => {
@@ -52,15 +65,18 @@ const minutes = computed(() => Math.floor(timeLeft.value / 60000) % 60);
 const seconds = computed(() => Math.floor(timeLeft.value / 1000) % 60);
 
 const daysLabel = computed(() => plural(days.value, "день", "дня", "дней"));
-
 const hoursLabel = computed(() => plural(hours.value, "час", "часа", "часов"));
 </script>
 
+
 <template>
 	<div v-if="isVisible" class="container" part="container">
-		<div class="text" part="text-block">
-			<slot name="headline" />
-			<slot name="subline" />
+		<div class="content" part="content">
+			<div class="text" part="text-block">
+				<slot name="headline"/>
+				<slot name="subline"/>
+			</div>
+			<slot name="link"/>
 		</div>
 
 		<div class="countdown" part="countdown-block">
@@ -90,8 +106,6 @@ const hoursLabel = computed(() => plural(hours.value, "час", "часа", "ч�
 				<div class="label">сек</div>
 			</div>
 		</div>
-
-		<slot name="link" />
 	</div>
 </template>
 
