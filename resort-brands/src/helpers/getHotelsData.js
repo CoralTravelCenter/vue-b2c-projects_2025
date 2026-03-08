@@ -2,6 +2,8 @@ import {doRequestToServer, HOTEL_PRICE_API} from "../api.js";
 import {getParsedRating} from "./getParsedRating.js";
 
 export async function getHotelData(arvLoc, brandDatesRange, brandNightsQuantity) {
+  if (!Array.isArray(arvLoc) || arvLoc.length === 0) return [];
+
   const payload = {
     searchCriterias: {
       reservationType: 2,
@@ -31,15 +33,17 @@ export async function getHotelData(arvLoc, brandDatesRange, brandNightsQuantity)
     const hotelCategories = response?.result?.hotelCategories ?? {};
     const products = response?.result?.products ?? [];
 
-    if (products.length === 0) return null;
+    if (products.length === 0) return [];
 
     return products.map(obj => {
       const {hotel, offers} = obj;
+      const rawPrice = Number(offers?.[0]?.price?.amount);
+
       return {
-        price: offers?.[0]?.price?.amount ?? null,
+        price: Number.isFinite(rawPrice) ? rawPrice : null,
         name: hotel?.name ?? "Без названия",
         location_name: hotel?.locationSummary
-          ? hotel.locationSummary.split(',').slice(1, 3).join(',')
+          ? hotel.locationSummary.split(',').slice(1, 3).map((part) => part.trim()).join(', ')
           : "Неизвестная локация",
         img: hotel?.images?.[0]?.sizes?.[0]?.url,
         marker_img: hotel?.images?.[0]?.sizes?.[0]?.url,
@@ -47,7 +51,7 @@ export async function getHotelData(arvLoc, brandDatesRange, brandNightsQuantity)
       };
     });
   } catch (e) {
-    console.error("Ошибка загрузки локаций:", e);
-    return null;
+    console.error("Ошибка загрузки данных отелей:", e);
+    return [];
   }
 }

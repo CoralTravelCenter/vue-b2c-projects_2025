@@ -63,7 +63,7 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)')
         	1024: { slidesPerView: 2.5, allowTouchMove: false }
       }"
 		>
-			<swiper-slide v-for="slide in sliderItems" :key="slide.name">
+			<swiper-slide v-for="slide in sliderItems" :key="`${slide.name}-${slide.location_name}-${slide.price}`">
 				<!-- Готовая карточка (отдельный компонент) -->
 				<Card :slide="slide" :currentCountry="currentCountry"/>
 			</swiper-slide>
@@ -71,7 +71,12 @@ const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
 		<!-- Фолбэк-сетка, когда карточек мало -->
 		<div v-else class="hotel-slider__cards">
-			<Card v-for="slide in sliderItems" :key="slide.name" :slide="slide" :currentCountry="currentCountry"/>
+			<Card
+					v-for="slide in sliderItems"
+					:key="`${slide.name}-${slide.location_name}-${slide.price}`"
+					:slide="slide"
+					:currentCountry="currentCountry"
+			/>
 		</div>
 
 		<!-- Кнопка "вперёд" (показываем только на десктопе и при достаточном количестве карточек) -->

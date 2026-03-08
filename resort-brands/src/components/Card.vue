@@ -1,5 +1,5 @@
 <script setup>
-import {computed, inject} from 'vue';
+import {computed, inject, ref} from 'vue';
 import priceCalculation from "../helpers/priceCalculation.js";
 import {getArrivalLocation} from "../helpers/getArrivalLocations.js";
 import {getRedirectUrl} from "../helpers/getRedirectUrl.js";
@@ -30,15 +30,39 @@ const starsCount = computed(() => {
 const isNumericRating = computed(() => Number.isFinite(numericRating.value));
 const categoryText = computed(() => (!isNumericRating.value && typeof props.slide?.rating === 'string') ? props.slide.rating : '');
 
+const brandDatesRange = inject('brandDatesRange', ref(null))
+const brandNightsQuantity = inject('brandNightsQuantity', ref(null))
+const isRedirecting = ref(false)
 
-const range = inject('brandDatesRange').value
-const nights = inject('brandNightsQuantity').value
+const hasValidSearchParams = computed(() => {
+	const range = brandDatesRange.value
+	const nights = brandNightsQuantity.value
+	return Array.isArray(range) && range.length === 2 && Number.isFinite(nights) && nights > 0
+})
+
+const displayedNights = computed(() => {
+	const nights = Number(brandNightsQuantity.value)
+	return Number.isFinite(nights) && nights > 0 ? nights : 7
+})
 
 async function onRedirectClick({name}) {
-	const arvLoc = await getArrivalLocation([name]);
-	const res = await getRedirectUrl(arvLoc, range, nights);
-	const buildedLink = `https://www.coral.ru/${res?.result?.redirectionUrl}?qp=${res?.result?.queryParam}&p=2&w=0&s=0`;
-	window.open(buildedLink, '_blank');
+	if (!name || isRedirecting.value || !hasValidSearchParams.value) return
+
+	isRedirecting.value = true
+	try {
+		const arvLoc = await getArrivalLocation([name]);
+		if (!Array.isArray(arvLoc) || arvLoc.length === 0) return
+
+		const res = await getRedirectUrl(arvLoc, brandDatesRange.value, brandNightsQuantity.value);
+		const redirectionUrl = res?.result?.redirectionUrl
+		const queryParam = res?.result?.queryParam
+		if (!redirectionUrl || !queryParam) return
+
+		const builtLink = `https://www.coral.ru/${redirectionUrl}?qp=${queryParam}&p=2&w=0&s=0`;
+		window.open(builtLink, '_blank', 'noopener,noreferrer');
+	} finally {
+		isRedirecting.value = false
+	}
 }
 </script>
 
@@ -55,7 +79,7 @@ async function onRedirectClick({name}) {
 		</div>
 
 		<span class="card__location" aria-label="Локация">
-      <LocationIcon aria-hidden="true" current-country=""/>
+      <LocationIcon aria-hidden="true"/>
       {{ slide.location_name }}
     </span>
 
@@ -85,13 +109,14 @@ async function onRedirectClick({name}) {
 				<button
 						class="coral-main-btn custom"
 						@click="onRedirectClick(slide)"
+						:disabled="isRedirecting || !hasValidSearchParams"
 				>
 					Забронировать
 				</button>
 			</div>
 
 			<span class="card__attention">
-        * Цена указана из расчёта проживания не менее 7 ночей, за одного туриста, без перелёта
+        * Цена указана из расчёта проживания не менее {{ displayedNights }} ночей, за одного туриста, без перелёта
       </span>
 		</div>
 	</article>
@@ -187,5 +212,10 @@ async function onRedirectClick({name}) {
 	padding: 10px 12px;
 	font-weight: 400;
 	cursor: pointer;
+
+	&:disabled {
+		cursor: default;
+		opacity: 0.7;
+	}
 }
 </style>

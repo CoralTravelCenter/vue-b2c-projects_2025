@@ -12,7 +12,6 @@ import CountrySelect from "./components/CountrySelect.vue";
 const isLoading = ref(false)
 const isError = ref(null)
 const data = ref([])
-const redirectURL = ref('')
 const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
 // Хранилища
@@ -91,8 +90,11 @@ const hasHotels = computed(() => Array.isArray(data.value) && data.value.length 
 provide('brandDatesRange', brandDatesRange)
 provide('brandNightsQuantity', brandNightsQuantity)
 
+let lastRequestId = 0
+
 // Загрузка данных (реакция на страну/бренд)
 watch([currentCountry, currentBrand], async () => {
+	const requestId = ++lastRequestId
 	const key = `${currentBrand.value}::${currentCountry.value}`.trim().toLowerCase()
 	const hotels = brandHotelsOfCountry.value
 	const range = brandDatesRange.value
@@ -103,11 +105,10 @@ watch([currentCountry, currentBrand], async () => {
 
 	const result = await fetchData(isError, isLoading, dataCache, key, hotels, range, nights)
 
-	if (Array.isArray(result) && result.length > 0) {
-		data.value = result
-	} else {
-		data.value = []
-	}
+	// Игнорируем "устаревший" ответ, если пользователь успел сменить фильтр
+	if (requestId !== lastRequestId) return
+
+	data.value = Array.isArray(result) ? result : []
 }, {immediate: true})
 </script>
 

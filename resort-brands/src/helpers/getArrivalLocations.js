@@ -1,16 +1,25 @@
-import {ARRIVAL_LOCATIONS_API, doRequestToServer} from "../api";
+import {ARRIVAL_LOCATIONS_API, doRequestToServer} from "../api.js";
 
 const normalizeId = (id) => String(id).split("-")[0];
 
 export async function getArrivalLocation(hotels) {
-  if (hotels.length === 0) {
+  const normalizedHotels = Array.from(
+    new Set(
+      (Array.isArray(hotels) ? hotels : [])
+        .filter((name) => typeof name === "string")
+        .map((name) => name.trim())
+        .filter(Boolean)
+    )
+  );
+
+  if (normalizedHotels.length === 0) {
     console.error("getArrivalLocation: пустой/некорректный массив отелей");
     return [];
   }
 
   try {
     const responses = await Promise.all(
-      hotels.map((name) =>
+      normalizedHotels.map((name) =>
         doRequestToServer(ARRIVAL_LOCATIONS_API, {text: name})
       )
     );
@@ -28,14 +37,15 @@ export async function getArrivalLocation(hotels) {
     }
 
     // 2) СТРОГО фильтруем по имени (ровно как передали)
-    const nameSet = new Set(hotels);
+    const nameSet = new Set(normalizedHotels);
     const result = [];
     for (const [id, loc] of byId.entries()) {
-      if (loc?.name && nameSet.has(loc.name)) {
+      const locationName = typeof loc?.name === "string" ? loc.name.trim() : "";
+      if (locationName && nameSet.has(locationName)) {
         result.push({
           id,
           type: loc.type,
-          name: loc.name,
+          name: locationName,
           friendlyUrl: loc.friendlyUrl,
         });
       }
