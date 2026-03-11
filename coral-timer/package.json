@@ -1,23 +1,23 @@
 {
-	"name": "coral-timer",
-	"private": true,
-	"version": "1.0.0",
-	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"build": "tsc && vite build",
-		"preview": "vite preview"
-	},
-	"devDependencies": {
-		"@vitejs/plugin-vue": "^6.0.3",
-		"sass-embedded": "^1.97.3",
-		"typescript": "^5.4.5",
-		"vite": "^5.2.12",
-		"vite-plugin-css-injected-by-js": "^3.5.2",
-		"vite-plugin-monkey": "^4.0.0"
-	},
-	"dependencies": {
-		"dayjs": "^1.11.19",
-		"vue": "^3.5.27"
-	}
+  "name": "coral-timer",
+  "private": true,
+  "version": "1.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.3",
+    "sass-embedded": "^1.97.3",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.12",
+    "vite-plugin-css-injected-by-js": "^3.5.2",
+    "vite-plugin-monkey": "^4.0.0"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.19",
+    "vue": "^3.5.27"
+  }
 }

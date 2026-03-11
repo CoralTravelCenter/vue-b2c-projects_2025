@@ -37,7 +37,7 @@ const nights = inject('brandNightsQuantity').value
 async function onRedirectClick({name}) {
 	const arvLoc = await getArrivalLocation([name]);
 	const res = await getRedirectUrl(arvLoc, range, nights);
-	const buildedLink = `https://www.coral.ru/${res?.result?.redirectionUrl}?qp=${res?.result?.queryParam}&p=2&w=0&s=0`;
+	const buildedLink = `https://www.coral.ru/${res?.result?.redirectionUrl}?${res?.result?.queryParam}&p=2&w=0&s=0`;
 	window.open(buildedLink, '_blank');
 }
 </script>

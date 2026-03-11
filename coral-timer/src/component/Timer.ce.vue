@@ -7,21 +7,27 @@ const {timer} = defineProps<{
 }>();
 
 const isVisible = ref<boolean>(true);
-const timeLeft = ref<number>(0); // ✅ восстановили
+const timeLeft = ref<number>(0);
 
 let interval: number | null = null;
 
 const update = (): void => {
 	const now = dayjs();
-	const targetTime = dayjs(timer);
+	const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(timer);
+	const targetTime = (isDateOnly ? dayjs(timer).endOf("day") : dayjs(timer));
 
-	// сколько осталось (мс)
+	if (!targetTime.isValid()) {
+		timeLeft.value = 0;
+		isVisible.value = false;
+		stop();
+		return;
+	}
+
 	const diff = targetTime.diff(now);
 
-	// если время вышло — фиксируем 0, скрываем/останавливаем
 	if (diff <= 0) {
 		timeLeft.value = 0;
-		isVisible.value = false; // если хочешь просто спрятать
+		isVisible.value = false;
 		stop();
 		return;
 	}

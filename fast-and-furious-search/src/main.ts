@@ -1,13 +1,13 @@
 import './style.css';
-import {SimpleReactDomObserver} from "../../usefuls";
-import {createApp} from "vue";
+import {ReactDomObserver} from "../../usefuls";
+import {type App as VueApp, createApp} from "vue";
 import App from "./App.vue";
 
 (window as any).POPULAR_TOURS = [
     {
-        name: 'Турция', // название страны для запроса
-        dates: ["2025-10-22", "2025-10-29"], // даты для запроса, формат ТОЛЬКО такой
-        stars: ["5"], // фильтр для звезд, может быть несколько вариантов
+        name: 'Турция',
+        dates: ["2025-10-22", "2025-10-29"],
+        stars: ["5"],
         nights: 7,
         adults: 2,
         dates_to_html: 'Даты вылета: 22.10 - 29.10',
@@ -34,14 +34,39 @@ import App from "./App.vue";
     },
 ];
 
+const HOST_SELECTOR = '[data-testid="quickSearchBarBlock"]';
+const APP_ID = 'quick-search-app';
 
- new SimpleReactDomObserver('[data-testid="quickSearchBarBlock"]', {
-    onAppear: el => {
-        if (!el) return
-        const searchApp = document.createElement('div')
-        searchApp.id = 'quick-search-app'
-        el?.parentElement?.append(searchApp)
-        const app = createApp(App)
-        app.mount('#quick-search-app')
-    },
-}).start()
+let vueApp: VueApp<Element> | null = null;
+
+function ensureMounted(hostEl: Element) {
+    if (!hostEl?.parentElement) return;
+
+    let container = document.getElementById(APP_ID);
+    if (!container) {
+        container = document.createElement('div');
+        container.id = APP_ID;
+        hostEl.parentElement.append(container);
+    }
+
+    if (vueApp) return;
+
+    vueApp = createApp(App);
+    vueApp.mount(container);
+}
+
+function startObserver() {
+    new ReactDomObserver(HOST_SELECTOR, {
+        onAppear: (el) => {
+            if (!el) return;
+            ensureMounted(el);
+        },
+    }).start();
+}
+
+startObserver();
+
+(window as any).CoralRouteBus.subscribe((state: { url: string }) => {
+    if (state.url !== '/') return;
+    startObserver();
+});

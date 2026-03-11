@@ -50,7 +50,7 @@ const data = computed(() => {
 	padding: 12px;
 	font-size: 12px;
 	column-gap: 24px;
-	background: red;
+	background: #99d3eb;
 	border-radius: 7px;
 	scroll-snap-align: start;
 }

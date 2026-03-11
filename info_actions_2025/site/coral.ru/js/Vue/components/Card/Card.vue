@@ -20,7 +20,7 @@ const {
 	promo_end_text: String,
 	erid: String,
 	entry_point: String,
-	ligal: {type: String, default: 'Реклама'},
+	ligal: String,
 })
 
 const isMobile = useMediaQuery('(hover: none), (pointer: coarse)')
@@ -36,10 +36,6 @@ function onCopySuccess() {
 		copied.value = false
 		copiedTimer = null
 	}, COPY_RESET_MS)
-}
-
-function onButtonClick() {
-	window.open(url, '_blank')
 }
 
 onBeforeUnmount(() => {
@@ -106,7 +102,8 @@ onBeforeUnmount(() => {
 						<span class="time-text">{{ promo_end_text }}</span>
 					</div>
 					<a
-							v-if="!entry_point"
+							v-if="url"
+							v-entry="entry_point"
 							class="promo-card__link prime-btn"
 							:href="url"
 							target="_blank"
@@ -114,7 +111,13 @@ onBeforeUnmount(() => {
 					>
 						Подробнее
 					</a>
-					<button v-entry="entry_point" v-else class="promo-card__link prime-btn">
+
+					<button
+							v-else
+							v-entry="entry_point"
+							id="popup-trigger"
+							class="promo-card__link prime-btn"
+					>
 						Подробнее
 					</button>
 				</div>

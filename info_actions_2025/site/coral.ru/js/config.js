@@ -61,6 +61,7 @@ window._promotion_settings = [
     name: "Черная пятница: все начнется 28 ноября",
     visual: "https://b2ccdn.coral.ru/content/img/actions/New_Promo_Coral_324x180_BlackFriday.jpg",
     url: "/hot-offers/black-friday/?banner_on_site=offers-teaser-black-friday/",
+    trigger: '#14_feb',
     promo_end: "2025-11-28 23:59",
     entry_point: "teaser_bf25"
   },

@@ -73,7 +73,6 @@ const isBonus = p => p.filtersArr.some(f => /bonus/i.test(f));
 				:ligal="promotion.ligal"
 				:erid="isApplication ? promotion.app_erid : promotion.erid"
 				:entry_point="promotion.entry_point"
-				v-show="!(isApplication && promotion.name.includes('SunmarBonus'))"
 				v-bonus="isBonus(promotion) && promotion.name"
 		/>
 	</ul>

@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "sass": "^1.90.0",
-    "vue": "^3.5.18"
+    "vue": "^3.5.28"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",

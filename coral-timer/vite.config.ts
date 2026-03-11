@@ -8,10 +8,11 @@ import pkg from "./package.json";
 export default defineConfig(({command}) => {
     const isDev = command === "serve";
     const isBuild = command === "build";
+    const nodeEnv = isDev ? "development" : "production";
 
     return {
         define: {
-            "process.env.NODE_ENV": JSON.stringify("production"),
+            "process.env.NODE_ENV": JSON.stringify(nodeEnv),
             __VUE_OPTIONS_API__: false,
             __VUE_PROD_DEVTOOLS__: false,
         },
