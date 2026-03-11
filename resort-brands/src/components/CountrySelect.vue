@@ -68,8 +68,8 @@ const model = defineModel('currentCountry')
 	cursor: pointer;
 
 	/* Сбрасываем нативные стрелки/стили */
-	appearance: none;
-	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
 	appearance: none;
 
 	option {

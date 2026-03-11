@@ -19,18 +19,20 @@ export async function fetchData(
   // гварды
   if (!Array.isArray(hotels) || hotels.length === 0) return [];
   if (!Array.isArray(range) || range.length !== 2) return [];
-  if (!nights) return [];
+  if (!Number.isFinite(nights) || nights <= 0) return [];
 
   // cache hit
-  const cached = dataCache.value[key];
-  if (cached) return cached;
+  if (Object.prototype.hasOwnProperty.call(dataCache.value, key)) {
+    return dataCache.value[key];
+  }
 
   isLoading.value = true;
   try {
     const arvLoc = await getArrivalLocation(hotels);
     const res = await getHotelData(arvLoc, range, nights);
-    dataCache.value[key] = res;
-    return res;
+    const normalized = Array.isArray(res) ? res : [];
+    dataCache.value[key] = normalized;
+    return normalized;
   } catch (e) {
     isError.value = e?.message || "Не удалось загрузить данные";
     return [];
