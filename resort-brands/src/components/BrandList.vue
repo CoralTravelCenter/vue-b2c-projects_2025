@@ -1,4 +1,6 @@
 <script setup>
+import {reactive} from 'vue'
+
 /* ==========================
  *  Пропсы
  *  - currentBrand: активный бренд (начальное значение)
@@ -19,10 +21,47 @@ const model = defineModel('currentBrand')
  *  Метрика (Яндекс.Метрика)
  * ========================== */
 const YM_ID = 96674199
+const LOGO_CDN_BASE = 'https://b2ccdn.coral.ru/content/landing-pages/resort-brands-home'
+const logoVariantIndexByBrand = reactive({})
 
 function sendAnalytics(brand) {
 	if (typeof window !== 'undefined' && typeof window.ym === 'function') {
 		window.ym(YM_ID, 'reachGoal', 'filter_by_hotel', {hotel: brand})
+	}
+}
+
+function toSnakeCaseBrandName(brand) {
+	return String(brand)
+		.normalize('NFKD')
+		.replace(/[\u0300-\u036f]/g, '')
+		.replace(/[^a-zA-Z0-9]+/g, '_')
+		.replace(/^_+|_+$/g, '')
+		.replace(/_+/g, '_')
+		.toLowerCase()
+}
+
+function getLogoCandidates(brand) {
+	const originalUrl = `${LOGO_CDN_BASE}/${brand}.png`
+	const snakeCaseName = toSnakeCaseBrandName(brand)
+	const snakeCaseUrl = `${LOGO_CDN_BASE}/${snakeCaseName}.png`
+
+	return snakeCaseName && snakeCaseUrl !== originalUrl
+		? [originalUrl, snakeCaseUrl]
+		: [originalUrl]
+}
+
+function getLogoSrc(brand) {
+	const candidates = getLogoCandidates(brand)
+	const variantIndex = logoVariantIndexByBrand[brand] ?? 0
+	return candidates[variantIndex] || candidates[0]
+}
+
+function handleLogoError(brand) {
+	const candidates = getLogoCandidates(brand)
+	const currentIndex = logoVariantIndexByBrand[brand] ?? 0
+
+	if (currentIndex < candidates.length - 1) {
+		logoVariantIndexByBrand[brand] = currentIndex + 1
 	}
 }
 
@@ -53,12 +92,13 @@ function setCurrentBrand(newBrand) {
 			>
 				<img
 						class="brand-list__img"
-						:src="`https://b2ccdn.coral.ru/content/landing-pages/resort-brands-home/${brand}.png`"
+						:src="getLogoSrc(brand)"
 						:alt="brand"
 						width="90"
 						height="36"
 						loading="lazy"
 						decoding="async"
+						@error="handleLogoError(brand)"
 				/>
 			</button>
 		</li>
