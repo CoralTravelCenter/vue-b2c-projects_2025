@@ -1,11 +1,13 @@
 import {defineConfig} from 'vite';
 import vue from '@vitejs/plugin-vue';
-import vueDevTools from 'vite-plugin-vue-devtools'
 import monkey from 'vite-plugin-monkey';
 import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    server: {
+        open: '/__vite-plugin-monkey.install.user.js',
+    },
     define: {
         'process.env.NODE_ENV': JSON.stringify('production'),
         __VUE_OPTIONS_API__: 'false',
@@ -17,7 +19,6 @@ export default defineConfig({
         },
     },
     plugins: [
-        vueDevTools(),
         vue({
             template: {
                 compilerOptions: {

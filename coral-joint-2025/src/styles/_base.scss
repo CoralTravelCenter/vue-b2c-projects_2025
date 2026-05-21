@@ -1,5 +1,12 @@
 @use 'tokens' as *;
 
+@font-face {
+  font-family: 'TrajanPro3Regular';
+  src: url("https://b2ccdn.coral.ru/content/TrajanPro3Regular.woff2");
+  font-weight: 400; /* Регулярное начертание */
+  font-style: normal;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
