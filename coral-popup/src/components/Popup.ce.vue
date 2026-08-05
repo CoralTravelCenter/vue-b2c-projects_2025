@@ -1,19 +1,28 @@
 <script setup lang="ts">
-import { type RemovableRef, useStorage } from '@vueuse/core'
-import { onMounted, onUnmounted, shallowRef, watchEffect } from 'vue'
+import {type RemovableRef, useStorage} from '@vueuse/core'
+import {onMounted, onUnmounted, shallowRef, watchEffect} from 'vue'
 
-import { usePageScrollToggle } from '@fluejs/noscroll/vue'
+import {usePageScrollToggle} from '@fluejs/noscroll/vue'
 import parseGuardSelectors from '../helpers/parseGuardSelectors'
 import publicShow from '../helpers/publicShow.ts'
 import resolveAutoShow from '../helpers/resolveAutoShow'
 import waitUntilElementsGone from '../helpers/waitUntilElementGone.ts'
-import { AutoshowArgs, ICtx, IGuards, IProps } from '../types'
+import {AutoshowArgs, ICtx, IGuards, IProps} from '../types'
 
-const { id, autoShow, guardSelectors, ymMetrika } = defineProps<IProps>()
+const {id, autoShow, guardSelectors, ymMetrika} = defineProps<IProps>()
 
 const mounted = shallowRef(false)
 const visible = shallowRef(false)
 const isPageScrollDisabled = shallowRef(false)
+
+const emit = defineEmits<{
+	'close-click': [
+		payload: {
+			id: string
+			reason: 'button'
+		}
+	]
+}>()
 
 let autoDelayTimer: number | null = null
 let wasAutoShown: RemovableRef<boolean> | null = null
@@ -23,6 +32,15 @@ function clearAutoTimer() {
 		clearTimeout(autoDelayTimer)
 		autoDelayTimer = null
 	}
+}
+
+function onCloseClick() {
+	hide()
+
+	emit('close-click', {
+		id,
+		reason: 'button',
+	})
 }
 
 function hide() {
@@ -41,7 +59,7 @@ function onKeydown(e: KeyboardEvent) {
 }
 
 function runAutoShow(args: AutoshowArgs) {
-	const { autoShowAttr, autoDelay, wasAutoShown } = args
+	const {autoShowAttr, autoDelay, wasAutoShown} = args
 
 	if (autoShowAttr === undefined) return
 	if (autoDelay === false) return
@@ -49,7 +67,7 @@ function runAutoShow(args: AutoshowArgs) {
 
 	wasAutoShown.value = true
 
-	const ctx: ICtx = { visible, mounted, ymMetrika }
+	const ctx: ICtx = {visible, mounted, ymMetrika}
 	const doShow = () => publicShow(ctx, isPageScrollDisabled)
 
 	if (autoDelay === 0) doShow()
@@ -65,7 +83,7 @@ async function setupAutoShow() {
 	wasAutoShown = useStorage<boolean>(`coral-popup-auto-shown-${id}`, false)
 
 	const guards: IGuards = parseGuardSelectors(guardSelectors)
-	await waitUntilElementsGone({ floating: guards })
+	await waitUntilElementsGone({floating: guards})
 
 	runAutoShow({
 		autoShowAttr: autoShow,
@@ -75,7 +93,7 @@ async function setupAutoShow() {
 }
 
 function show() {
-	const ctx = { visible, mounted, ymMetrika }
+	const ctx = {visible, mounted, ymMetrika}
 	return publicShow(ctx, isPageScrollDisabled)
 }
 
@@ -97,7 +115,7 @@ onUnmounted(() => {
 	wasAutoShown = null
 })
 
-defineExpose({ show, hide })
+defineExpose({show, hide})
 </script>
 
 <template>
@@ -106,38 +124,39 @@ defineExpose({ show, hide })
 	<div v-if="mounted" part="popup-body" class="popup-body" @click.self="hide()">
 		<transition name="dialog-fade" @after-leave="afterLeave()">
 			<div
-				v-show="visible"
-				class="popup-dialog"
-				part="popup-dialog"
-				role="dialog"
-				aria-modal="true"
+					v-show="visible"
+					class="popup-dialog"
+					part="popup-dialog"
+					role="dialog"
+					aria-modal="true"
 			>
 				<button
-					class="popup-close"
-					type="button"
-					@click="hide()"
-					aria-label="Закрыть"
+						class="popup-close"
+						type="button"
+						@click="onCloseClick"
+						aria-label="Закрыть"
 				>
 					<svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-						<path d="M14.6666 1.3335L1.33331 14.6668" stroke="#535353" />
-						<path d="M1.33329 1.3335L14.6666 14.6668" stroke="#535353" />
+						<path d="M14.6666 1.3335L1.33331 14.6668" stroke="#535353"/>
+						<path d="M1.33329 1.3335L14.6666 14.6668" stroke="#535353"/>
 					</svg>
 				</button>
 
 				<div class="popup-visual">
-					<slot name="visual" part="visual" />
-					<slot name="erid" part="erid" />
+					<slot name="visual" part="visual"/>
+					<slot name="erid" part="erid"/>
 				</div>
 
+
 				<div class="popup-content" part="popup-content">
-					<slot />
-					<slot name="headline" />
-					<slot name="subline" />
+					<slot/>
+					<slot name="headline"/>
+					<slot name="subline"/>
 					<ul class="popup-benefits">
-						<slot name="benefit" />
+						<slot name="benefit"/>
 					</ul>
-					<slot name="action" />
-					<slot name="attention" />
+					<slot name="action"/>
+					<slot name="attention"/>
 				</div>
 			</div>
 		</transition>
