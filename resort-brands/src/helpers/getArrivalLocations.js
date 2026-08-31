@@ -1,8 +1,11 @@
 import {ARRIVAL_LOCATIONS_API, doRequestToServer} from "../api.js";
 
-const normalizeId = (id) => String(id).split("-")[0];
+const REQUEST_BATCH_SIZE = 5;
 
-export async function getArrivalLocation(hotels) {
+const normalizeId = (id) => id == null ? "" : String(id).split("-")[0].trim();
+const normalizeHotelName = (name) => String(name).trim().toLocaleLowerCase();
+
+export async function getArrivalLocationDetails(hotels, {signal} = {}) {
   const normalizedHotels = Array.from(
     new Set(
       (Array.isArray(hotels) ? hotels : [])
@@ -13,47 +16,52 @@ export async function getArrivalLocation(hotels) {
   );
 
   if (normalizedHotels.length === 0) {
-    console.error("getArrivalLocation: пустой/некорректный массив отелей");
-    return [];
+    return {locations: [], missingHotels: []};
   }
 
-  try {
-    const responses = await Promise.all(
-      normalizedHotels.map((name) =>
-        doRequestToServer(ARRIVAL_LOCATIONS_API, {text: name})
-      )
+  const responses = [];
+  for (let index = 0; index < normalizedHotels.length; index += REQUEST_BATCH_SIZE) {
+    const names = normalizedHotels.slice(index, index + REQUEST_BATCH_SIZE);
+    const batch = await Promise.all(
+      names.map((name) => doRequestToServer(ARRIVAL_LOCATIONS_API, {text: name}, {signal}))
     );
-
-    // 1) собираем все локации и УБИРАЕМ ДУБЛИКАТЫ ПО id (id до дефиса)
-    const byId = new Map();
-    for (const res of responses) {
-      const list = res?.result?.locations ?? [];
-      for (const loc of list) {
-        const id = normalizeId(loc?.id);
-        if (id && !byId.has(id)) {
-          byId.set(id, loc);
-        }
-      }
-    }
-
-    // 2) СТРОГО фильтруем по имени (ровно как передали)
-    const nameSet = new Set(normalizedHotels);
-    const result = [];
-    for (const [id, loc] of byId.entries()) {
-      const locationName = typeof loc?.name === "string" ? loc.name.trim() : "";
-      if (locationName && nameSet.has(locationName)) {
-        result.push({
-          id,
-          type: loc.type,
-          name: locationName,
-          friendlyUrl: loc.friendlyUrl,
-        });
-      }
-    }
-
-    return result;
-  } catch (error) {
-    console.error("Ошибка загрузки локаций:", error);
-    return [];
+    responses.push(...batch);
   }
+
+  const byId = new Map();
+  for (const res of responses) {
+    const list = res?.result?.locations ?? [];
+    for (const loc of list) {
+      const id = normalizeId(loc?.id);
+      if (id && !byId.has(id)) {
+        byId.set(id, loc);
+      }
+    }
+  }
+
+  const requestedByNormalizedName = new Map(
+    normalizedHotels.map((name) => [normalizeHotelName(name), name])
+  );
+  const result = [];
+  for (const [id, loc] of byId.entries()) {
+    const locationName = typeof loc?.name === "string" ? loc.name.trim() : "";
+    if (locationName && requestedByNormalizedName.has(normalizeHotelName(locationName))) {
+      result.push({
+        id,
+        type: loc.type,
+        name: locationName,
+        friendlyUrl: loc.friendlyUrl,
+      });
+    }
+  }
+
+  const resolvedNames = new Set(result.map((location) => normalizeHotelName(location.name)));
+  const missingHotels = normalizedHotels.filter((name) => !resolvedNames.has(normalizeHotelName(name)));
+
+  return {locations: result, missingHotels};
+}
+
+export async function getArrivalLocation(hotels, options) {
+  const {locations} = await getArrivalLocationDetails(hotels, options);
+  return locations;
 }

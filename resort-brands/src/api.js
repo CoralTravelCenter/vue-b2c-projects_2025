@@ -1,8 +1,15 @@
-export const ARRIVAL_LOCATIONS_API = '/endpoints/OnlyHotelProduct/ListArrivalLocations'
-export const HOTEL_PRICE_API = '/endpoints/OnlyHotelProduct/PriceSearchList'
-export const REDIRECT_URL_API = '/endpoints/OnlyHotelProduct/PriceSearchEncrypt'
+export const ARRIVAL_LOCATIONS_API = '/endpoints/PackageTourHotelProduct/ListArrivalLocations'
+export const HOTEL_PRICE_API = '/endpoints/PackageTourHotelProduct/PriceSearchList'
+export const REDIRECT_URL_API = '/endpoints/PackageTourHotelProduct/PriceSearchEncrypt'
 
-export async function doRequestToServer(url, data) {
+export const DEFAULT_DEPARTURE = {
+  id: '2671-5',
+  name: 'Москва',
+  friendlyUrl: 'moskva',
+  type: 5,
+}
+
+export async function doRequestToServer(url, data, {signal} = {}) {
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -10,6 +17,7 @@ export async function doRequestToServer(url, data) {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: JSON.stringify(data),
+      signal,
     });
 
     // Проверяем HTTP-статус ответа
@@ -19,7 +27,9 @@ export async function doRequestToServer(url, data) {
 
     return await response.json();
   } catch (e) {
-    console.error(`Request to ${url} failed:`, e.message);
+    if (e?.name !== 'AbortError') {
+      console.error(`Request to ${url} failed:`, e.message);
+    }
     throw e;
   }
 }

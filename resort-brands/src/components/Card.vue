@@ -45,6 +45,8 @@ const displayedNights = computed(() => {
 	return Number.isFinite(nights) && nights > 0 ? nights : 7
 })
 
+const pricePerTourist = computed(() => priceCalculation(props.slide?.price))
+
 async function onRedirectClick({name}) {
 	if (!name || isRedirecting.value || !hasValidSearchParams.value) return
 
@@ -55,11 +57,22 @@ async function onRedirectClick({name}) {
 
 		const res = await getRedirectUrl(arvLoc, brandDatesRange.value, brandNightsQuantity.value);
 		const redirectionUrl = res?.result?.redirectionUrl
-		const queryParam = res?.result?.queryParam
+		const queryParam = res?.result?.queryParams?.qp
+			?? new URLSearchParams(res?.result?.queryParam || '').get('qp')
 		if (!redirectionUrl || !queryParam) return
 
-		const builtLink = `https://www.coral.ru/${redirectionUrl}?qp=${queryParam}&p=2&w=0&s=0`;
-		window.open(builtLink, '_blank', 'noopener,noreferrer');
+		const builtLink = new URL(redirectionUrl, 'https://www.coral.ru/')
+		if (builtLink.origin !== 'https://www.coral.ru') {
+			throw new Error('Сервер вернул ссылку на недопустимый домен')
+		}
+		builtLink.searchParams.set('qp', queryParam)
+		builtLink.searchParams.set('p', '1')
+		builtLink.searchParams.set('w', '0')
+		builtLink.searchParams.set('s', '0')
+		builtLink.searchParams.set('ws', '10')
+		window.open(builtLink.toString(), '_blank', 'noopener,noreferrer');
+	} catch (error) {
+		console.error('Не удалось сформировать ссылку бронирования:', error)
 	} finally {
 		isRedirecting.value = false
 	}
@@ -83,7 +96,7 @@ async function onRedirectClick({name}) {
       {{ slide.location_name }}
     </span>
 
-		<h3 id="card__hotel-name" class="card__hotel-name">
+		<h3 class="card__hotel-name">
 			{{ slide.name }}
 		</h3>
 
@@ -101,9 +114,10 @@ async function onRedirectClick({name}) {
 
 		<div class="card__push-bottom">
 			<div class="card__price">
-        <span>
-          от {{ priceCalculation(slide.price) }} <small>/ ночь</small>
-        </span>
+				<span v-if="pricePerTourist">
+					от {{ pricePerTourist }} <small>/ за туриста</small>
+				</span>
+				<span v-else>Цена по запросу</span>
 
 				<!-- Если реального URL нет, можно заменить на <button> и повесить обработчик -->
 				<button
@@ -116,7 +130,7 @@ async function onRedirectClick({name}) {
 			</div>
 
 			<span class="card__attention">
-        * Цена указана из расчёта проживания не менее {{ displayedNights }} ночей, за одного туриста, без перелёта
+					* Цена указана за одного туриста при размещении на {{ displayedNights }} ночей, включая перелёт из Москвы
       </span>
 		</div>
 	</article>

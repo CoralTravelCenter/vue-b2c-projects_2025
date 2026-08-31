@@ -1,4 +1,6 @@
 export function getParsedRating(rawRating) {
+  if (typeof rawRating !== 'string') return null;
+
   if (rawRating.includes('*')) {
     const numeric = rawRating.replace('*', '').trim();
     const num = parseInt(numeric, 10);

@@ -25,7 +25,7 @@
   background: #0093d0;
   border: 1px solid #0093d0;
   border-radius: 64px;
-  transition: all var(--transtion);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .coral-main-btn:hover {

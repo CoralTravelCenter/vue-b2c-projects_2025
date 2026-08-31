@@ -1,6 +1,6 @@
+// import './data.js';
 import {createApp} from 'vue';
 import App from './App.vue';
-// import './data.js';
 import {register} from 'swiper/element/bundle';
 import {Skeletor} from 'vue-skeletor';
 import 'vue-skeletor/dist/vue-skeletor.css';

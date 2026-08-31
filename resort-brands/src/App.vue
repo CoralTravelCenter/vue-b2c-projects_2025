@@ -8,10 +8,16 @@ import BrandList from "./components/BrandList.vue";
 import CountryTabs from "./components/CountryTabs.vue";
 import CountrySelect from "./components/CountrySelect.vue";
 
+const resortBrands = globalThis._resortBrands
+if (!Array.isArray(resortBrands?.countries) || !Array.isArray(resortBrands?.brands)) {
+	throw new Error('Конфигурация window._resortBrands отсутствует или имеет неверный формат')
+}
+
 // UI-состояние и результаты
 const isLoading = ref(false)
 const isError = ref(null)
 const data = ref([])
+const dataStatus = ref('idle')
 const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
 // Хранилища
@@ -19,10 +25,10 @@ const filters = useSessionStorage('rb-filters', {}, {serializer: StorageSerializ
 const dataCache = useSessionStorage('rb-data', {}, {serializer: StorageSerializers.object})
 
 // Исходные данные
-const defaultCountry = _resortBrands.countries[0]?.name || ''
+const defaultCountry = resortBrands.countries[0]?.name || ''
 
 // Страны
-const countries = computed(() => _resortBrands.countries.map((c) => c.name))
+const countries = computed(() => resortBrands.countries.map((c) => c.name))
 
 // Текущая страна: хранение/чтение из sessionStorage
 const currentCountry = computed({
@@ -32,8 +38,16 @@ const currentCountry = computed({
 
 // Список брендов выбранной страны (фильтруем отключённые)
 const brandsOfCurrentCountry = computed(() => {
-	const c = _resortBrands.countries.find((x) => x.name === currentCountry.value)
+	const c = resortBrands.countries.find((x) => x.name === currentCountry.value)
 	return c ? Array.from(new Set(c.brands.map((b) => b.name))) : []
+})
+
+const brandLogosOfCurrentCountry = computed(() => {
+	const country = resortBrands.countries.find((item) => item.name === currentCountry.value)
+	return Object.fromEntries((country?.brands ?? []).map((brand) => {
+		const globalBrand = resortBrands.brands.find((item) => item.name === brand.name)
+		return [brand.name, globalBrand?.img_src || brand.img_src || '']
+	}))
 })
 
 // Текущий бренд: учитываем отключённые + записываем в кэш
@@ -41,22 +55,18 @@ const currentBrand = computed({
 	get() {
 		const saved = readBrand(filters, '')
 		const list = brandsOfCurrentCountry.value
-		// saved валиден и не отключён
 		if (saved && list.includes(saved)) return saved
-		// иначе берём первый доступный
-		const fallback = list[0] || ''
-		if (fallback && fallback !== saved) writeBrand(filters, fallback)
-		return fallback
+		return list[0] || ''
 	},
 	set: (v) => writeBrand(filters, v),
 })
 
 // Узлы бренда
 const brandNodeInCountry = computed(() => {
-	const country = _resortBrands.countries.find((c) => c.name === currentCountry.value)
+	const country = resortBrands.countries.find((c) => c.name === currentCountry.value)
 	return country?.brands.find((b) => b.name === currentBrand.value) || null
 })
-const globalBrandNode = computed(() => _resortBrands.brands.find((b) => b.name === currentBrand.value) || null)
+const globalBrandNode = computed(() => resortBrands.brands.find((b) => b.name === currentBrand.value) || null)
 
 // Сводная информация о бренде
 const brandInfo = computed(() => {
@@ -93,22 +103,47 @@ provide('brandNightsQuantity', brandNightsQuantity)
 let lastRequestId = 0
 
 // Загрузка данных (реакция на страну/бренд)
-watch([currentCountry, currentBrand], async () => {
+watch([currentCountry, currentBrand], async (_, __, onCleanup) => {
 	const requestId = ++lastRequestId
-	const key = `${currentBrand.value}::${currentCountry.value}`.trim().toLowerCase()
 	const hotels = brandHotelsOfCountry.value
 	const range = brandDatesRange.value
 	const nights = brandNightsQuantity.value
+	const key = JSON.stringify({
+		product: 'package-tour-v1',
+		country: currentCountry.value,
+		brand: currentBrand.value,
+		hotels,
+		range,
+		nights,
+	})
+	const controller = new AbortController()
 
-	// перед загрузкой убираем старые карточки, чтобы не мигали
+	onCleanup(() => controller.abort())
+
 	data.value = []
+	dataStatus.value = 'idle'
+	isError.value = null
+	isLoading.value = true
 
-	const result = await fetchData(isError, isLoading, dataCache, key, hotels, range, nights)
-
-	// Игнорируем "устаревший" ответ, если пользователь успел сменить фильтр
-	if (requestId !== lastRequestId) return
-
-	data.value = Array.isArray(result) ? result : []
+	try {
+		const result = await fetchData(dataCache, key, hotels, range, nights, controller.signal)
+		if (requestId === lastRequestId) {
+			data.value = Array.isArray(result?.items) ? result.items : []
+			dataStatus.value = result?.status || 'no-offers'
+			if (result?.missingHotels?.length) {
+				console.warn('Часть отелей не найдена в API:', result.missingHotels)
+			}
+		}
+	} catch (error) {
+		if (error?.name !== 'AbortError' && requestId === lastRequestId) {
+			isError.value = error?.message || 'Не удалось загрузить данные'
+			dataStatus.value = 'error'
+		}
+	} finally {
+		if (requestId === lastRequestId) {
+			isLoading.value = false
+		}
+	}
 }, {immediate: true})
 </script>
 
@@ -160,13 +195,24 @@ watch([currentCountry, currentBrand], async () => {
 						:currentCountry="currentCountry"
 				/>
 
-				<!-- 3) нет данных -> заглушка -->
+				<div v-else-if="isError" class="no-data-message" role="alert">
+					<p>Не удалось загрузить предложения. Попробуйте обновить страницу.</p>
+				</div>
+
 				<div v-else class="no-data-message" aria-live="polite">
-					<p>Для выбранной сети нет доступных предложений.</p>
+					<p v-if="dataStatus === 'expired'">Период поиска завершился. Обновите даты для выбранной сети.</p>
+					<p v-else-if="dataStatus === 'invalid-config'">Для выбранной сети неверно настроены параметры поиска.</p>
+					<p v-else-if="dataStatus === 'no-locations'">Отели выбранной сети не найдены в системе бронирования.</p>
+					<p v-else>Отели найдены, но на выбранные даты предложений нет.</p>
 				</div>
 			</div>
 		</div>
-		<BrandList class="brands-nav" :brands="brandsOfCurrentCountry" v-model:currentBrand="currentBrand"/>
+		<BrandList
+				class="brands-nav"
+				:brands="brandsOfCurrentCountry"
+				:brandLogos="brandLogosOfCurrentCountry"
+				v-model:currentBrand="currentBrand"
+		/>
 	</div>
 </template>
 

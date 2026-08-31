@@ -7,15 +7,15 @@ import {reactive} from 'vue'
  *  - brands: массив строк с именами брендов
  * ========================== */
 const props = defineProps({
-	currentBrand: {type: String, required: true},
 	brands: {type: Array, required: true, default: () => []},
+	brandLogos: {type: Object, default: () => ({})},
 })
 
 /* ==========================
  *  v-model (defineModel)
  *  - currentBrand: выбранный бренд
  * ========================== */
-const model = defineModel('currentBrand')
+const model = defineModel('currentBrand', {type: String, required: true})
 
 /* ==========================
  *  Метрика (Яндекс.Метрика)
@@ -23,6 +23,7 @@ const model = defineModel('currentBrand')
 const YM_ID = 96674199
 const LOGO_CDN_BASE = 'https://b2ccdn.coral.ru/content/landing-pages/resort-brands-home'
 const logoVariantIndexByBrand = reactive({})
+const logoUnavailableByBrand = reactive({})
 
 function sendAnalytics(brand) {
 	if (typeof window !== 'undefined' && typeof window.ym === 'function') {
@@ -41,13 +42,16 @@ function toSnakeCaseBrandName(brand) {
 }
 
 function getLogoCandidates(brand) {
+	const configuredUrl = props.brandLogos[brand]
 	const originalUrl = `${LOGO_CDN_BASE}/${brand}.png`
 	const snakeCaseName = toSnakeCaseBrandName(brand)
 	const snakeCaseUrl = `${LOGO_CDN_BASE}/${snakeCaseName}.png`
 
-	return snakeCaseName && snakeCaseUrl !== originalUrl
-		? [originalUrl, snakeCaseUrl]
-		: [originalUrl]
+	return Array.from(new Set([
+		configuredUrl,
+		originalUrl,
+		snakeCaseName ? snakeCaseUrl : '',
+	].filter(Boolean)))
 }
 
 function getLogoSrc(brand) {
@@ -62,6 +66,8 @@ function handleLogoError(brand) {
 
 	if (currentIndex < candidates.length - 1) {
 		logoVariantIndexByBrand[brand] = currentIndex + 1
+	} else {
+		logoUnavailableByBrand[brand] = true
 	}
 }
 
@@ -91,6 +97,7 @@ function setCurrentBrand(newBrand) {
 					@click="setCurrentBrand(brand)"
 			>
 				<img
+						v-if="!logoUnavailableByBrand[brand]"
 						class="brand-list__img"
 						:src="getLogoSrc(brand)"
 						:alt="brand"
@@ -100,6 +107,7 @@ function setCurrentBrand(newBrand) {
 						decoding="async"
 						@error="handleLogoError(brand)"
 				/>
+				<span v-else class="brand-list__fallback">{{ brand }}</span>
 			</button>
 		</li>
 	</ul>
@@ -192,5 +200,13 @@ function setCurrentBrand(newBrand) {
 	.brand-list--scroll {
 		width: 80% !important;
 	}
+}
+
+.brand-list__fallback {
+	max-width: 100px;
+	font-weight: 600;
+	font-size: 11px;
+	line-height: 1.2;
+	text-align: center;
 }
 </style>
