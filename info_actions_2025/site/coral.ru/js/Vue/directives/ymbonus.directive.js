@@ -1,52 +1,94 @@
-// v-promo-impression.js
 import {useIntersectionObserver} from '@vueuse/core';
+import {trackBonusImpression} from '../../analytics/metrika';
 
-const seen = new WeakSet();
+const viewedPromotionIds = new Set();
+const directiveState = Symbol('bonus-impression-state');
+const METRIKA_RETRY_INTERVAL = 500;
+const METRIKA_RETRY_LIMIT = 60;
 
-function getSiteConfig() {
-  const isCoral = location.host.includes('coral');
-  return isCoral
-    ? {site: 'coral', counterId: 96674199, goal: 'coral-bonus-show'}
-    : {site: 'sunmar', counterId: 215233, goal: 'sunmar-bonus-show'};
+function normalizeBinding(binding) {
+  const value = binding.value ?? {};
+
+  return {
+    id: typeof value.id === 'string' ? value.id.trim() : '',
+    name: typeof value.name === 'string' ? value.name.trim() : '',
+    enabled: value.enabled === true,
+    brand: value.brand,
+  };
 }
 
 export default {
   mounted(el, binding) {
-    // ждём только строку — название акции
-    const bannerName =
-      typeof binding.value === 'string' ? binding.value.trim() : '';
+    const promotion = normalizeBinding(binding);
+    if (!promotion.enabled || !promotion.id || !promotion.name || !promotion.brand) return;
+    if (viewedPromotionIds.has(promotion.id)) return;
 
-    if (!bannerName || seen.has(el)) return;
+    let isVisible = false;
+    let retryCount = 0;
+    let retryTimer = null;
+    let stopObserver = () => {};
 
-    const {counterId, goal} = getSiteConfig();
-    const threshold = 0.2; // фиксируем порог (можно поменять при желании)
+    const clearRetry = () => {
+      if (retryTimer === null) return;
+      clearInterval(retryTimer);
+      retryTimer = null;
+    };
 
-    const {stop} = useIntersectionObserver(
+    const markAsViewed = () => {
+      viewedPromotionIds.add(promotion.id);
+      clearRetry();
+      stopObserver();
+    };
+
+    const tryToTrack = () => {
+      if (!isVisible || viewedPromotionIds.has(promotion.id)) return;
+
+      const sent = trackBonusImpression({
+        brand: promotion.brand,
+        promotionId: promotion.id,
+        promotionName: promotion.name,
+      });
+
+      if (sent) markAsViewed();
+    };
+
+    const startRetry = () => {
+      if (retryTimer !== null) return;
+
+      retryTimer = setInterval(() => {
+        retryCount += 1;
+        tryToTrack();
+
+        if (retryCount >= METRIKA_RETRY_LIMIT) clearRetry();
+      }, METRIKA_RETRY_INTERVAL);
+    };
+
+    const observer = useIntersectionObserver(
       el,
       ([entry]) => {
-        if (!entry.isIntersecting || seen.has(el)) return;
+        isVisible = entry.isIntersecting;
 
-        seen.add(el);
-
-        if (typeof window.ym === 'function') {
-          const yaParams = {
-            [location.pathname]: {banner: bannerName},
-          };
-          window.ym(counterId, 'reachGoal', goal, yaParams);
+        if (!isVisible) {
+          clearRetry();
+          return;
         }
 
-        stop();
-        el.__ymStop = undefined;
+        tryToTrack();
+        if (!viewedPromotionIds.has(promotion.id)) startRetry();
       },
-      {threshold}
+      {threshold: 0.2},
     );
+    stopObserver = observer.stop;
+    if (viewedPromotionIds.has(promotion.id)) stopObserver();
 
-    el.__ymStop = stop;
+    el[directiveState] = () => {
+      clearRetry();
+      stopObserver();
+      delete el[directiveState];
+    };
   },
 
-  unmounted(el) {
-    el.__ymStop?.();
-    el.__ymStop = undefined;
-    seen.delete(el);
+  beforeUnmount(el) {
+    el[directiveState]?.();
   },
 };

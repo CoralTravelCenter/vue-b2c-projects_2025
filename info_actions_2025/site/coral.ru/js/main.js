@@ -3,7 +3,6 @@ import {createApp} from "vue";
 import App from "./Vue/App.vue";
 import ymBonus from "./Vue/directives/ymbonus.directive";
 import Clipboard from "./Vue/directives/clipboard.directive";
-import vEntry from "./Vue/directives/entry.directive";
 import {hostReactAppReady} from "../../../../usefuls";
 
 (async () => {
@@ -13,6 +12,5 @@ import {hostReactAppReady} from "../../../../usefuls";
   app.use(Button);
   app.directive("bonus", ymBonus);
   app.directive("clipboard", Clipboard);
-  app.directive("entry", vEntry);
   app.mount("#info-actions");
 })()

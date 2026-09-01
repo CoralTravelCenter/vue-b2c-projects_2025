@@ -1,105 +1,109 @@
 <script setup>
-import {filterFreshOffers} from "../filterFreshOffers";
-import Tabs from "./components/Tabs/Tabs.vue";
-import Card from "./components/Card/Card.vue";
-import {computed, ref} from "vue";
-import {useUrlSearchParams} from "@vueuse/core";
+import {computed, ref} from 'vue';
+import {useNow, useUrlSearchParams} from '@vueuse/core';
+import {dispatchPromotionClick} from '../analytics/promotion-events';
+import {detectBrand, getDisplayBrand} from '../domain/brand';
+import {ALL_FILTER, normalizePromotions} from '../domain/promotions';
+import {filterFreshOffers} from '../filterFreshOffers';
+import Card from './components/Card/Card.vue';
+import Tabs from './components/Tabs/Tabs.vue';
 
-const currentFilter = ref("Все акции");
+const currentFilter = ref(ALL_FILTER);
+const now = useNow({interval: 60_000});
+const params = useUrlSearchParams('history');
+const brand = getDisplayBrand();
+const analyticsBrand = detectBrand();
+const promotions = normalizePromotions(window._promotion_settings);
 
-const promotionsArr = ref(window._promotion_settings ?? []);
-
-// только свежие акции
-const freshOffers = computed(() =>
-		promotionsArr.value.filter(o => filterFreshOffers(o))
+const freshPromotions = computed(() =>
+  promotions.filter(promotion => filterFreshOffers(promotion, now.value)),
 );
 
-const offersNormalized = computed(() =>
-		freshOffers.value.map(p => {
-			const raw = p.filter ?? "";
-			const arr = Array.isArray(raw)
-					? raw
-					: String(raw)
-							.split(",")
-							.map(s => s.trim())
-							.filter(Boolean);
-
-			const filtersArr = [...new Set(arr)]; // дедуп
-
-			return {...p, filtersArr};
-		})
-);
-
-
-const filters = computed(() => {
-	const set = new Set();
-	offersNormalized.value.forEach(p => p.filtersArr.forEach(f => set.add(f)));
-	return ["Все акции", ...set];
-});
-
+const filters = computed(() => [
+  ALL_FILTER,
+  ...new Set(freshPromotions.value.flatMap(promotion => promotion.filters)),
+]);
 
 const filteredPromotions = computed(() => {
-	if (currentFilter.value === "Все акции") return offersNormalized.value;
-	return offersNormalized.value.filter(p =>
-			p.filtersArr.includes(currentFilter.value)
-	);
+  if (currentFilter.value === ALL_FILTER) return freshPromotions.value;
+
+  return freshPromotions.value.filter(promotion =>
+    promotion.filters.includes(currentFilter.value),
+  );
 });
 
-const params = useUrlSearchParams("history");
-const domen = computed(() => location.origin.includes('coral.ru'));
-const isApplication = computed(() => params.mw === "true");
+const isApplication = computed(() => params.mw === 'true');
 
+function getErid(promotion) {
+  return isApplication.value ? promotion.appErid : promotion.erid;
+}
 
-const isBonus = p => p.filtersArr.some(f => /bonus/i.test(f));
-
-
+function handlePromotionClick(promotion, position, destination) {
+  dispatchPromotionClick({
+    promotion,
+    brand,
+    position,
+    currentFilter: currentFilter.value,
+    destination,
+  });
+}
 </script>
 
 <template>
-	<Tabs :filters="filters" v-model="currentFilter" :class="domen ? 'coral' : 'sunmar'"/>
+  <div class="promotions-app" :data-brand="brand">
+    <Tabs v-model="currentFilter" :filters="filters" />
 
-	<ul class="cards-container" :key="currentFilter">
-		<Card
-				v-for="promotion in filteredPromotions"
-				:key="promotion.name"
-				class="card"
-				:class="domen ? 'coral' : 'sunmar'"
-				:data-filter="promotion.filtersArr.join(', ')"
-				:visual="promotion.visual"
-				:name="promotion.name"
-				:description="promotion.description"
-				:url="promotion.url"
-				:promo_end_text="promotion.promo_end_text"
-				:ligal="promotion.ligal"
-				:erid="isApplication ? promotion.app_erid : promotion.erid"
-				:entry_point="promotion.entry_point"
-				v-bonus="isBonus(promotion) && promotion.name"
-		/>
-	</ul>
+    <ul v-if="filteredPromotions.length" class="cards-container">
+      <Card
+        v-for="(promotion, index) in filteredPromotions"
+        :key="promotion.id"
+        v-bonus="{
+          id: promotion.id,
+          name: promotion.nameText,
+          enabled: promotion.analytics.bonusImpression,
+          brand: analyticsBrand,
+        }"
+        class="card"
+        :brand="brand"
+        :erid="getErid(promotion)"
+        :promotion="promotion"
+        @promotion-click="destination => handlePromotionClick(promotion, index + 1, destination)"
+      />
+    </ul>
+
+    <p v-else class="promotions-empty" role="status">
+      Сейчас нет активных акций
+    </p>
+  </div>
 </template>
 
 <style scoped lang="scss">
 @use '../../../common/css/mixins';
 
 .cards-container {
-	margin: 0;
-	padding: 0;
-	list-style: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 
-	@include mixins.flex-grid(1, 24px, center);
+  @include mixins.flex-grid(1, 24px, center);
 
-	@media (width >= 768px) {
-		@include mixins.flex-grid(2, 24px, start);
-	}
+  @media (width >= 768px) {
+    @include mixins.flex-grid(2, 24px, start);
+  }
 
-	@media (width >= 1280px) {
-		@include mixins.flex-grid(4, 24px, start);
-	}
+  @media (width >= 1280px) {
+    @include mixins.flex-grid(4, 24px, start);
+  }
 }
 
-.cards-container:has(.sunmar) {
-	@media (width >= 1280px) {
-		@include mixins.flex-grid(3, 24px, start);
-	}
+[data-brand='sunmar'] .cards-container {
+  @media (width >= 1280px) {
+    @include mixins.flex-grid(3, 24px, start);
+  }
+}
+
+.promotions-empty {
+  margin: 32px 0;
+  text-align: center;
 }
 </style>

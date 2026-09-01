@@ -1,33 +1,35 @@
 <script setup>
+import {ALL_FILTER} from '../../../domain/promotions';
+
 defineProps({
-	filters: {
-		type: Array,
-		required: true
-	}
-})
+  filters: {
+    type: Array,
+    required: true,
+  },
+});
 
-const model = defineModel({default: 'Все акции'})
-
-function selectFilter(filter) {
-	model.value = filter
-}
+const model = defineModel({
+  type: String,
+  default: ALL_FILTER,
+});
 </script>
 
 <template>
-	<nav class="tabs-navigation">
-		<ul class="tabs-navigation__list no-scrollbar">
-			<li
-					v-for="filter in filters"
-					:key="filter"
-					class="tabs-navigation__item"
-					:class="{ 'js-active': model === filter }"
-					:data-tab="filter"
-					@click="selectFilter(filter)"
-			>
-				{{ filter }}
-			</li>
-		</ul>
-	</nav>
+  <nav class="tabs-navigation" aria-label="Фильтр акций">
+    <ul class="tabs-navigation__list no-scrollbar">
+      <li v-for="filter in filters" :key="filter">
+        <button
+          class="tabs-navigation__item"
+          :class="{'js-active': model === filter}"
+          type="button"
+          :aria-pressed="model === filter"
+          @click="model = filter"
+        >
+          {{ filter }}
+        </button>
+      </li>
+    </ul>
+  </nav>
 </template>
 
 <style scoped lang="scss">
